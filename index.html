@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0c1423">
+  <meta name="description" content="Easy Home 3D — 免費開源的 2D 平面圖與 3D 裝修規劃工具。畫牆、加門窗、放傢俬、量尺寸、自動儲存。">
+  <title>Easy Home 3D · 免費開源裝修圖</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="identity">
+      <span class="mark" aria-hidden="true">⌂</span>
+      <div><div class="eyebrow">FREE · OPEN SOURCE · LOCAL FIRST</div><h1>Easy Home <b>3D</b></h1></div>
+    </div>
+    <div class="project-head">
+      <label class="sr-only" for="projectName">專案名稱</label>
+      <input id="projectName" maxlength="80" value="我的平面圖" aria-label="專案名稱" title="編輯專案名稱">
+      <span id="saveStatus" class="save-status" aria-live="polite">本機儲存</span>
+    </div>
+    <div class="head-actions">
+      <button id="projectsButton" class="subtle">專案</button>
+      <button id="exportButton" class="subtle">匯出 JSON</button>
+      <button id="helpButton" class="subtle icon-button" title="使用教學" aria-label="使用教學">?</button>
+      <a class="source-link" href="https://github.com/loktoto/Easy-home-3d-model" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+    </div>
+  </header>
+  <nav class="toolbar" aria-label="編輯工具">
+    <div class="tabs"><button id="view2d" class="tab active" aria-pressed="true">▦ 2D 平面圖</button><button id="view3d" class="tab" aria-pressed="false">⬡ 3D 模型</button></div>
+    <div class="separator"></div>
+    <button data-tool="select" class="tool active" title="選取及移動物件">↖ <span>選取</span></button>
+    <button data-tool="wall" class="tool" title="連續點選兩點畫牆">╱ <span>畫牆</span></button>
+    <button data-tool="door" class="tool" title="按一下牆身加門">▯ <span>門</span></button>
+    <button data-tool="window" class="tool" title="按一下牆身加窗">▤ <span>窗</span></button>
+    <button id="addFurnitureButton" class="tool" title="新增傢俬">▣ <span>傢俬</span></button>
+    <button data-tool="measure" class="tool" title="點選兩點測量距離">⌁ <span>量度</span></button>
+    <button data-tool="pan" class="tool" title="拖動畫布">✥ <span>移動畫布</span></button>
+    <div class="separator"></div>
+    <button id="snapButton" class="tool active small" aria-pressed="true">吸附：開</button>
+    <button id="dimsButton" class="tool active small" aria-pressed="true">尺寸：開</button>
+    <button id="undoButton" class="tool small" title="復原 (Ctrl/⌘+Z)">↶</button>
+    <button id="redoButton" class="tool small" title="重做">↷</button>
+    <button id="fitButton" class="tool small" title="全部置中">⊞</button>
+    <button id="propertiesButton" class="tool small mobile-only" title="屬性">設定</button>
+  </nav>
+  <main class="workspace">
+    <section class="stage-wrap" aria-label="2D／3D 繪圖區">
+      <canvas id="stage" tabindex="0" aria-label="可編輯平面圖畫布；使用工具列選擇畫牆、量度、傢俬"></canvas>
+      <div class="viewport-info"><span id="modeHint">畫牆：按第一點，再按第二點；完成後按 Esc。</span><span id="drawingStats">0 幅牆 · 0 件傢俬</span></div>
+      <div id="startTip" class="start-tip">
+        <div class="start-icon">⌂</div>
+        <h2>由你的屋企開始</h2>
+        <p>建立空白平面圖，再用「畫牆」逐幅畫出房間；所有尺寸以米 (m) 計算。</p>
+        <div class="start-buttons"><button id="startWall" class="primary">＋ 開始畫牆</button><button id="loadDemo" class="ghost">看看示範圖</button></div>
+        <small>毋須註冊 · 自動儲存在此瀏覽器 · 資料不會上傳</small>
+      </div>
+      <div class="viewport-controls"><button id="zoomIn" aria-label="放大">＋</button><button id="zoomOut" aria-label="縮小">－</button><button id="fitBottom" aria-label="顯示全部">⤢</button></div>
+      <div class="view-corner"><span id="scaleLabel">1 格 = 0.5 m</span><span id="selectionHint"></span></div>
+      <div id="toast" role="status" aria-live="polite"></div>
+    </section>
+    <aside id="inspector" class="inspector" aria-label="尺寸及物件屬性">
+      <div class="panel-title"><div><div class="eyebrow">DESIGN WORKSPACE</div><h2>屬性及尺寸</h2></div><button id="closeInspector" class="mobile-only panel-close" aria-label="關閉">✕</button></div>
+      <div id="inspectorContent"></div>
+      <div class="panel-footer">
+        <strong>準確尺寸，由你掌握。</strong>
+        <p>預設尺寸僅供規劃。訂購傢俬或施工前，必須現場覆尺並核對門窗及牆厚。</p>
+      </div>
+    </aside>
+  </main>
+  <footer class="footer"><span>Easy Home 3D · MIT License</span><span>免費開源 · 無需帳號 · 個人資料預設只存在本機</span><a href="https://convika.com/zh-hant/" target="_blank" rel="noopener noreferrer">如何將 HTML 發佈成連結 ↗</a></footer>
+</div>
+
+<dialog id="projectsDialog" class="dialog">
+  <div class="dialog-head"><h2>我的專案</h2><button class="close-dialog" data-close="projectsDialog" aria-label="關閉">✕</button></div>
+  <p class="muted">每個專案獨立保存在此瀏覽器。清除瀏覽資料可能導致資料消失，請定期匯出 JSON 備份。</p>
+  <div id="projectList" class="project-list"></div>
+  <div class="dialog-actions"><button id="newBlank" class="primary">＋ 新建空白平面圖</button><button id="newDemo" class="ghost">新建示範圖</button><button id="importButton" class="ghost">匯入 JSON</button></div>
+</dialog>
+<dialog id="furnitureDialog" class="dialog">
+  <div class="dialog-head"><h2>選擇傢俬</h2><button class="close-dialog" data-close="furnitureDialog" aria-label="關閉">✕</button></div>
+  <p class="muted">選擇後放在畫面中央，可拖動、旋轉、輸入準確闊度／深度／高度，亦可鎖定位置。</p>
+  <div id="furnitureCatalog" class="catalog"></div>
+</dialog>
+<dialog id="helpDialog" class="dialog">
+  <div class="dialog-head"><h2>30 秒學識用</h2><button class="close-dialog" data-close="helpDialog" aria-label="關閉">✕</button></div>
+  <ol class="help-list">
+    <li><b>畫牆：</b>揀「畫牆」後按起點及終點，會顯示實際長度；繼續點下一點可連續畫。</li>
+    <li><b>改尺寸：</b>揀一幅牆，可直接輸入兩端 X／Y 座標、牆厚與高度；一切單位為米。</li>
+    <li><b>門窗：</b>選「門」或「窗」，再按在任何牆上；可修改闊度、離牆角距離及窗台高度。</li>
+    <li><b>加傢俬：</b>選家具類型，拖到合適位置，輸入闊／深／高；鎖定後不可誤拖，亦可解除鎖定及刪除。</li>
+    <li><b>量距離：</b>用「量度」選兩點，顯示相距多少米；2D／3D 可隨時切換。</li>
+    <li><b>儲存：</b>系統在本機自動儲存。可切換多個專案、用 JSON 匯出或匯入；沒有雲端同步。</li>
+  </ol>
+  <p class="muted">滑鼠滾輪可縮放，拖空白畫布可移動畫面。3D 模式拖動畫面可旋轉視角。Esc 取消畫牆；Delete 刪除選取物件；Ctrl/⌘+Z 復原。</p>
+</dialog>
+<input id="importFile" type="file" accept=".json,application/json" hidden>
+<script src="./app.js" defer></script>
+</body>
+</html>
