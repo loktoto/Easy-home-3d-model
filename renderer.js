@@ -100,11 +100,24 @@ function projectFactory(w,h,bounds,opts){
  function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
  const forward=normalize(target.map((v,i)=>v-camera[i])),right=normalize(cross(forward,[0,0,1])),up=cross(right,forward);
  const f=Math.min(w,h)*1.42;
- return function(p){
+ const project=function(p){
   const q=[p[0]-camera[0],p[1]-camera[1],p[2]-camera[2]];
   const z=dot(q,forward);
   return {x:w/2+f*dot(q,right)/Math.max(.1,z),y:h/2-f*dot(q,up)/Math.max(.1,z),z,valid:z>.1};
  };
+ project.toFloor=function(pos){
+  const nx=(pos.x-w/2)/f,ny=(h/2-pos.y)/f;
+  const dir=forward.map((v,i)=>v+nx*right[i]+ny*up[i]);
+  if(dir[2]>=-.005)return null;
+  const t=-camera[2]/dir[2];
+  if(!Number.isFinite(t)||t<0)return null;
+  return G.point(camera[0]+dir[0]*t,camera[1]+dir[1]*t);
+ };
+ return project;
+}
+function screenToFloor(canvas,model,orbit,pos){
+ const project=projectFactory(canvas.clientWidth,canvas.clientHeight,G.getBounds(model),{orbit});
+ return project.toFloor(pos);
 }
 function polygon(ctx,pts,fill,stroke="#284257",width=1){
  if(pts.length<3||pts.some(p=>!p.valid))return;
@@ -176,5 +189,5 @@ function draw(canvas,ctx,model,opts){
  if(opts.mode==="3d")return paint3D(ctx,w,h,model,opts);
  paint2D(ctx,w,h,model,opts);return [];
 }
-root.EasyHomeRenderer={draw,toWorld};
+root.EasyHomeRenderer={draw,toWorld,screenToFloor};
 })(window);
