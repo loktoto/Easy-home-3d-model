@@ -346,7 +346,9 @@ function renderInspector(){
   const w=m.walls.find(v=>v.id===o.wallId);
   html='<div class="item-summary"><strong>'+(o.type==="door"?"門":"窗")+'</strong><small>附在 '+$num(w?G.length(w.a,w.b):0)+' m 牆上</small></div>'+
     '<div class="fields2">'+field("闊度 (m)","width",o.width)+field("離起點 (m)","offset",o.offset)+field("高度 (m)","height",o.height)+(o.type==="window"?field("窗台離地 (m)","sill",o.sill):"")+'</div>'+
-    '<p class="tip">「離起點」為開口<b>中心</b>到牆起點的距離。門窗在 3D 模式會顯示開口。</p>'+inspectorActions();
+    row("開口左邊剩餘牆長",w?$num(Math.max(0,o.offset-o.width/2))+" m":"—")+
+    row("開口右邊剩餘牆長",w?$num(Math.max(0,G.length(w.a,w.b)-o.offset-o.width/2))+" m":"—")+
+    '<p class="tip">「離起點」為開口<b>中心</b>到牆起點的距離。上面列出開口兩側剩餘牆長，方便預留門邊傢俬空間。</p>'+inspectorActions();
  }else if(s.kind==="furniture"){
   html='<div class="item-summary"><strong>'+esc(o.name)+'</strong><small>'+(o.locked?"🔒 已鎖定位置":"可拖動及修改尺寸")+'</small></div>'+
     '<div class="field"><label for="objName">傢俬名稱</label><input id="objName" data-prop="name" maxlength="80" value="'+esc(o.name)+'"></div>'+
@@ -354,6 +356,9 @@ function renderInspector(){
     '<h3>擺放位置</h3><div class="fields2">'+field("中心 X","x",o.x)+field("中心 Y","y",o.y)+field("旋轉 (°)","rotation",G.round(o.rotation*180/Math.PI,1),"1")+
     '<div class="field"><label for="colorInput">顏色</label><input id="colorInput" data-prop="color" type="color" value="'+esc(o.color)+'"></div></div>'+
     row("底面積",G.round(o.w*o.d,2)+" m²")+
+    '<h3>傢俬與牆身的邊緣距離</h3>'+
+    (m.walls.length?G.furnitureClearances(o,m.walls).slice(0,4).map(g=>row("第 "+g.index+" 幅牆", $num(g.distance)+" m")).join(""):'<p class="tip">先畫牆，才可計算與牆身的距離。</p>')+
+    '<p class="tip">顯示傢俬外邊緣與牆面的最短平面距離（包括牆厚），不包括門扇開啟及實際施工誤差。</p>'+
     '<div class="secondary-actions"><button class="'+(o.locked?"lock":"ghost")+'" data-act="lock">'+(o.locked?"🔓 解除鎖定":"🔒 鎖定傢俬")+'</button><button data-act="rotate">⟳ 旋轉 90°</button><button data-act="duplicate">複製</button></div>'+inspectorActions();
  }else{
   html='<div class="item-summary"><strong>量度線</strong><small>兩點直線距離</small></div>'+row("量度結果",$num(G.length(o.a,o.b))+" m")+
