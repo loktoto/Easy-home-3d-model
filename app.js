@@ -9,7 +9,7 @@ let state,history=[],future=[],saveTimer=null,toastTimer=null,drawRequested=fals
 const ui={
  mode:"2d",tool:"select",snap:true,dimensions:true,
  view:{scale:80,panX:0,panY:0},orbit:{azimuth:-.75,elevation:.82,distance:1},
- selected:null,pending:null,cursor:null,drag:null,hits:[]
+ selected:null,pending:null,cursor:null,drag:null,hits:[],wallStart:null,wallCount:0
 };
 function newProject(data){return {id:G.uid(),name:data.name,data,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};}
 function readStore(){
@@ -101,7 +101,8 @@ function refresh(){
  const m=model();$("drawingStats").textContent=m.walls.length+" 幅牆 · "+m.openings.length+" 個門窗 · "+m.furniture.length+" 件傢俬";
  $("startTip").hidden=!!(m.walls.length||m.furniture.length||m.openings.length||m.measurements.length||ui.tool!=="select"||ui.mode!=="2d");
  $("modeHint").textContent=ui.mode==="3d"?"3D 模式：拖動旋轉，滾輪縮放，按 2D 可返回編輯。":
- ui.tool==="wall"?"畫牆：按第一點再按第二點；可連續畫。Esc 結束。":
+ ui.tool==="room"?"畫房間：依次點選兩個對角，立即建立四幅牆。點 Esc 可以取消。":
+ ui.tool==="wall"?"逐幅畫牆：點起點及終點；連續畫牆，回到第一點可結束，亦可按 Esc。":
  ui.tool==="door"?"加入門：按一下牆身，再於右側輸入實際門闊。":
  ui.tool==="window"?"加入窗：按一下牆身，再調整窗闊、窗高及窗台高度。":
  ui.tool==="measure"?"量度：先按起點，再按終點，顯示兩點距離。":
@@ -118,12 +119,12 @@ function fit(){
  ui.orbit.distance=1;render();
 }
 function mode(next){
- ui.mode=next;ui.pending=null;ui.drag=null;if(next==="3d")ui.tool="select";
+ ui.mode=next;ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.drag=null;if(next==="3d")ui.tool="select";
  $("inspector").classList.remove("open");refresh();
 }
 function tool(next){
  if(ui.mode==="3d"&&next!=="select"&&next!=="pan")ui.mode="2d";
- ui.tool=next;ui.pending=null;ui.drag=null;refresh();
+ ui.tool=next;ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.drag=null;refresh();
 }
 const position=e=>{const r=canvas.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};};
 const world=e=>R.toWorld(position(e),ui.view,canvas.clientWidth,canvas.clientHeight);
@@ -175,6 +176,36 @@ function addOpening(which,p){
   width,height:which==="door"?Math.min(2.1,w.height):Math.min(1.1,w.height*.5),sill:which==="door"?0:Math.min(.9,w.height*.35)};
  commit(()=>model().openings.push(opening));setSelection("opening",opening.id);
 }
+function joinedMove(original,updated,excludeId,originalWalls=null){
+ const targets=originalWalls||model().walls;
+ for(const base of targets){
+  if(base.id===excludeId)continue;
+  const live=model().walls.find(w=>w.id===base.id);if(!live)continue;
+  for(const key of ["a","b"]){
+   if(G.length(base[key],original)<.028)live[key]=G.point(updated.x,updated.y);
+  }
+ }
+}
+function hitWallHandle(p){
+ if(ui.selected?.kind!=="wall")return null;
+ const wall=getObject();if(!wall)return null;
+ const threshold=Math.max(.13,15/ui.view.scale);
+ if(G.length(p,wall.a)<threshold)return "a";
+ if(G.length(p,wall.b)<threshold)return "b";
+ return null;
+}
+function rectangleWalls(a,b){
+ const x1=Math.min(a.x,b.x),x2=Math.max(a.x,b.x),y1=Math.min(a.y,b.y),y2=Math.max(a.y,b.y);
+ const corners=[G.point(x1,y1),G.point(x2,y1),G.point(x2,y2),G.point(x1,y2)];
+ const m=model(),segments=[];
+ for(let i=0;i<4;i++){
+  const a=corners[i],b=corners[(i+1)%4];
+  const duplicate=m.walls.some(w=>
+   (G.length(w.a,a)<.025&&G.length(w.b,b)<.025)||(G.length(w.a,b)<.025&&G.length(w.b,a)<.025));
+  if(!duplicate)segments.push(G.wall([a.x,a.y],[b.x,b.y],{height:m.wallHeight,thickness:m.wallThickness}));
+ }
+ return segments;
+}
 function changeStart(e){
  e.preventDefault();canvas.focus({preventScroll:true});
  const p=position(e);
@@ -186,11 +217,28 @@ function changeStart(e){
  }
  const w=world(e);let q=snapped(w,ui.pending&&e.shiftKey?ui.pending:null);
  ui.cursor=q;
- if(ui.tool==="wall"){
+ if(ui.tool==="room"){
   if(!ui.pending){ui.pending=q;refresh();return;}
+  const a=ui.pending, b=q;
+  if(Math.abs(b.x-a.x)<.4||Math.abs(b.y-a.y)<.4){toast("房間長及闊最少 0.4 米；請選較遠的對角");return;}
+  const walls=rectangleWalls(a,b);
+  if(!walls.length){toast("這個房間已有四面牆");ui.pending=null;tool("select");return;}
+  commit(()=>model().walls.push(...walls));
+  ui.pending=null;ui.cursor=null;ui.tool="select";refresh();
+  toast("已建立 "+$num(Math.abs(a.x-b.x))+" × "+$num(Math.abs(a.y-b.y))+" 米房間；下一步加門窗");
+  return;
+ }
+ if(ui.tool==="wall"){
+  if(!ui.pending){ui.pending=q;ui.wallStart=q;ui.wallCount=0;refresh();return;}
   if(G.length(ui.pending,q)<.1){toast("牆最少需要 0.1 米");return;}
   const m=model(),next=G.wall([ui.pending.x,ui.pending.y],[q.x,q.y],{height:m.wallHeight,thickness:m.wallThickness});
-  commit(()=>m.walls.push(next));ui.pending=q;render();return;
+  commit(()=>m.walls.push(next));
+  ui.wallCount++;
+  if(ui.wallCount>=3&&G.length(q,ui.wallStart)<.05){
+   ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.tool="select";refresh();
+   toast("已封閉房間輪廓；可加門窗及傢俬");
+  }else{ui.pending=q;render();}
+  return;
  }
  if(ui.tool==="measure"){
   if(!ui.pending){ui.pending=q;render();return;}
@@ -200,12 +248,13 @@ function changeStart(e){
  }
  if(ui.tool==="door"||ui.tool==="window"){addOpening(ui.tool,w);return;}
  if(ui.tool==="pan"){ui.drag={type:"pan",start:p,panX:ui.view.panX,panY:ui.view.panY};canvas.setPointerCapture(e.pointerId);return;}
- const hit=hit2d(w);
+ const endKey=hitWallHandle(w);
+ const hit=endKey?{kind:"wall",id:ui.selected.id,endpoint:endKey}:hit2d(w);
  if(hit){
   setSelection(hit.kind,hit.id);
   const obj=getObject(),locked=hit.kind==="furniture"&&obj.locked;
   if(!locked&&hit.kind!=="measurement"){
-   ui.drag={type:hit.kind,origin:w,start:p,before:snapshot(),original:JSON.parse(JSON.stringify(obj)),moved:false};
+   ui.drag={type:hit.endpoint?"wall-endpoint":hit.kind,endpoint:hit.endpoint||null,origin:w,start:p,before:snapshot(),original:JSON.parse(JSON.stringify(obj)),originalWalls:hit.kind==="wall"?JSON.parse(JSON.stringify(model().walls)):null,moved:false};
   }else if(locked)toast("已鎖定傢俬；先到屬性解除鎖定");
  }else{setSelection(null,null);ui.drag={type:"pan",start:p,panX:ui.view.panX,panY:ui.view.panY};}
  canvas.setPointerCapture(e.pointerId);
@@ -234,8 +283,17 @@ function changeMove(e){
  if(d.type==="furniture"){
   obj.x=adj(d.original.x+dx);obj.y=adj(d.original.y+dy);
  }else if(d.type==="wall"){
-  obj.a=G.point(adj(d.original.a.x+dx),adj(d.original.a.y+dy));
-  obj.b=G.point(adj(d.original.b.x+dx),adj(d.original.b.y+dy));
+  const nextA=G.point(adj(d.original.a.x+dx),adj(d.original.a.y+dy));
+  const nextB=G.point(adj(d.original.b.x+dx),adj(d.original.b.y+dy));
+  joinedMove(d.original.a,nextA,obj.id,d.originalWalls);
+  joinedMove(d.original.b,nextB,obj.id,d.originalWalls);
+  obj.a=nextA;obj.b=nextB;
+ }else if(d.type==="wall-endpoint"){
+  const next=G.point(adj(ui.cursor.x),adj(ui.cursor.y));
+  const other=d.endpoint==="a"?obj.b:obj.a;
+  if(G.length(next,other)<.1)return;
+  joinedMove(d.original[d.endpoint],next,obj.id,d.originalWalls);
+  obj[d.endpoint]=next;
  }else if(d.type==="opening"){
   const wall=model().walls.find(v=>v.id===obj.wallId);if(!wall)return;
   const hit=G.distancePointSegment(w,wall.a,wall.b),len=G.length(wall.a,wall.b);
@@ -251,7 +309,7 @@ function changeEnd(){
  }
 }
 function escapeAction(){
- if(ui.pending){ui.pending=null;refresh();toast("已結束當前繪製");}
+ if(ui.pending){ui.pending=null;ui.wallStart=null;ui.wallCount=0;refresh();toast("已結束當前繪製");}
  else if(ui.selected){setSelection(null,null);$("inspector").classList.remove("open");}
  else tool("select");
 }
@@ -267,7 +325,15 @@ function editNumber(prop,value){
     const candidate={a:G.point(obj.a.x,obj.a.y),b:G.point(obj.b.x,obj.b.y)};
     candidate[key][axis]=G.clamp(n,-1000,1000);
     if(G.length(candidate.a,candidate.b)<.1)throw new Error("牆長不可少於 0.1 米");
+    joinedMove(obj[key],candidate[key],obj.id);
     obj[key][axis]=candidate[key][axis];
+   }
+   else if(prop==="length"){
+    if(n<.1||n>1000)throw new Error("牆長必須在 0.1 至 1000 米之間");
+    const len=G.length(obj.a,obj.b);
+    const next=G.point(obj.a.x+(obj.b.x-obj.a.x)*n/len,obj.a.y+(obj.b.y-obj.a.y)*n/len);
+    joinedMove(obj.b,next,obj.id);
+    obj.b=next;
    }
    else if(prop==="height")obj.height=G.clamp(n,1.7,6);
    else if(prop==="thickness")obj.thickness=G.clamp(n,.05,.8);
@@ -338,10 +404,11 @@ function renderInspector(){
  let html="";
  if(s.kind==="wall"){
   html='<div class="item-summary"><strong>牆身</strong><small>長 '+$num(G.length(o.a,o.b))+' m · 高 '+$num(o.height)+' m</small></div>'+
+    '<h3>直接設定牆長</h3>'+field("牆長 (m)","length",$num(G.length(o.a,o.b)))+
     '<h3>準確端點座標（米）</h3><div class="fields2">'+field("起點 X","ax",o.a.x)+field("起點 Y","ay",o.a.y)+field("終點 X","bx",o.b.x)+field("終點 Y","by",o.b.y)+'</div>'+
     '<h3>牆身規格</h3><div class="fields2">'+field("牆高 (m)","height",o.height)+field("牆厚 (m)","thickness",o.thickness)+'</div>'+
     row("牆長", $num(G.length(o.a,o.b))+" m")+row("已放門窗",m.openings.filter(v=>v.wallId===o.id).length+" 個")+
-    '<p class="tip">修改端點 X / Y 可準確設定牆長。移動整幅牆時，已附在牆上的門窗會跟隨。</p>'+inspectorActions();
+    '<p class="tip">直接修改牆長，或拖動兩端黃色控制點。相接牆身會跟隨端點；移動整幅牆時也會保留連接。</p>'+inspectorActions();
  }else if(s.kind==="opening"){
   const w=m.walls.find(v=>v.id===o.wallId);
   html='<div class="item-summary"><strong>'+(o.type==="door"?"門":"窗")+'</strong><small>附在 '+$num(w?G.length(w.a,w.b):0)+' m 牆上</small></div>'+
@@ -423,6 +490,7 @@ function bind(){
  $("helpButton").onclick=()=>showDialog("helpDialog");
  $("addFurnitureButton").onclick=()=>showDialog("furnitureDialog");
  $("startWall").onclick=()=>tool("wall");
+ $("startRoom").onclick=()=>tool("room");
  $("loadDemo").onclick=()=>{if(model().walls.length||model().furniture.length)return createProject(true);
   if(!confirm("載入一般示範平面圖？目前空白圖則會被示範取代。"))return;
   const before=snapshot();active().data=G.demo(active().name);record(before);fit();
