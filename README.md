@@ -7,6 +7,8 @@ A free, open-source, privacy-first 2D/3D floor-plan and furniture editor that ru
 
 **Live public demo (Cloudflare Workers):** https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/
 
+**Download standalone HTML for Convika (no build needed):** [easy-home-3d-standalone.html](easy-home-3d-standalone.html) · [Raw file](https://raw.githubusercontent.com/loktoto/Easy-home-3d-model/main/easy-home-3d-standalone.html)
+
 > 已透過 Cloudflare Browser Rendering 實際開啟公開網址，確認頁面標題、空白圖則和編輯屬性介面成功渲染。GitHub Pages 目前仍須在倉庫 Settings → Pages 啟用。
 
 > **私隱**：由專案擁有者的私人 House_3D_Model 原型重新設計成通用的空白圖則工具。**不包含私人住宅圖則、私人傢俬記錄、私人 Cloudflare Worker／D1、同步金鑰或存檔。** 原私人 GitHub 倉庫及其雲端資料沒有被公開、修改或連接。
