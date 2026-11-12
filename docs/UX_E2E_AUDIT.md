@@ -13,6 +13,7 @@ This is a real executable browser app, not a static mock-up. The owner requested
 3. [W3C WCAG 2.2](https://www.w3.org/TR/WCAG22/): 2.5.7 dragging alternatives, 2.5.8 pointer target minimums, 2.5.3 accessible names, 2.4.7 visible focus.
 4. [Playwright CI guide](https://playwright.dev/docs/ci): executable GitHub Actions browser tests with screenshots and traces on failures.
 5. [Playwright 1.65 release](https://github.com/microsoft/playwright/releases): browser automation pin (current stable checked 2026-11-12).
+6. [Apple Human Interface Guidelines — Buttons](https://developer.apple.com/design/human-interface-guidelines/buttons): generally 44 × 44 pt tap region, clear primary actions, recognizable labels and press feedback.
 
 ## Retained and independently revalidated
 
@@ -75,4 +76,17 @@ All user layout changes remain in browser localStorage; no login, analytics or c
 ## Release policy
 
 Only describe a commit as production verified when the latest commit's unit/build and E2E workflows both pass. Deploy the exact tested source. If Cloudflare and GitHub are different commits, disclose this as a version mismatch until redeployed and smoke-tested. Do not ship private plans or any secrets.
+
+
+## Final verification evidence (2026-11-12)
+
+- Browser E2E run: https://github.com/loktoto/Easy-home-3d-model/actions/runs/43178748534
+  - **14 collected; 10 passed; 4 intentionally skipped** because each of the two browser projects has project-specific tests. This is not 14 passes.
+  - Desktop Chromium: empty start; complete walls/openings/furniture/edit/move/lock/undo/redo/3D/JSON/reload journey; quick two-corner room and joined-wall precise length; direct 3D furniture dragging; 320 px width; standalone HTML.
+  - Mobile Safari WebKit: empty start; demo/furniture/edit/2D-3D; 320 px width; standalone HTML with touch room creation, furniture and reload.
+- Unit/build workflow: https://github.com/loktoto/Easy-home-3d-model/actions/runs/43178748617 (successful).
+- Cloudflare production Worker updated from standalone source commit 4d713530be5be8eb92d8937cab454e226a309ac2 and deploy API returned success.
+- Production DOM independently verified through Cloudflare Browser Rendering at https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/ with the "畫第一間房" button, empty stats and 2D/3D navigation.
+- The repository's standalone HTML is around 74 KB and contains its CSS + JS, with no runtime network assets.
+- **Scope of verification:** browser emulator + independent production-load smoke test; physical-device matrix, visual accessibility certification and building accuracy are not guaranteed.
 
