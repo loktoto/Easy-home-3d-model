@@ -224,3 +224,30 @@ test('320px phone never hides project controls beyond document width',async({pag
  const overflow=await page.evaluate(()=>({doc:document.documentElement.scrollWidth,screen:window.innerWidth}));
  expect(overflow.doc).toBeLessThanOrEqual(overflow.screen+2);
 });
+
+
+test('published standalone one-file HTML: create room, furniture, save, reload without external assets',async({page},testInfo)=>{
+ const external=[];
+ page.on('request',req=>{if(/^https?:/.test(req.url())&&!req.url().startsWith('http://127.0.0.1:4173/'))external.push(req.url());});
+ await page.goto('/easy-home-3d-standalone.html');
+ await expect(page.locator('#startRoom')).toBeVisible();
+ await page.locator('#startRoom').click();
+ const stage=page.locator('#stage'),r=await stage.boundingBox();
+ const p1={x:Math.floor(r.width*.36),y:Math.floor(r.height*.35)};
+ const p2={x:Math.floor(r.width*.64),y:Math.floor(r.height*.62)};
+ if(testInfo.project.name==='mobile-webkit'){
+  await stage.tap({position:p1});await stage.tap({position:p2});
+ }else{
+  await stage.click({position:p1});await stage.click({position:p2});
+ }
+ await expect(page.locator('#drawingStats')).toContainText('4 幅牆');
+ await page.locator('#addFurnitureButton').click();
+ await page.locator('#furnitureCatalog button').filter({hasText:'梳化'}).click();
+ await expect(page.locator('#inspectorContent')).toContainText('梳化');
+ const before=await saved(page);expect(before.model.furniture).toHaveLength(1);
+ await page.reload();
+ const restored=await saved(page);
+ expect(restored.model.walls).toHaveLength(4);
+ expect(restored.model.furniture).toHaveLength(1);
+ expect(external).toEqual([]);
+});
