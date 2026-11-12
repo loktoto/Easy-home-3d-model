@@ -30,6 +30,14 @@ function distancePointSegment(p,a,b){
  const foot=lerp(a,b,t);
  return {distance:length(p,foot),t,foot};
 }
+function openingFits(candidate,existing,clearance=.05){
+ if(!candidate||!Array.isArray(existing))return false;
+ return existing.every(o=>{
+  if(o.id===candidate.id||o.wallId!==candidate.wallId)return true;
+  const c=Math.abs(num(o.offset)-num(candidate.offset));
+  return c>=((num(o.width)+num(candidate.width))/2+clearance-1e-6);
+ });
+}
 function furnitureCorners(f){
  const c=Math.cos(f.rotation||0),s=Math.sin(f.rotation||0),hw=f.w/2,hd=f.d/2;
  return [[-hw,-hd],[hw,-hd],[hw,hd],[-hw,hd]].map(v=>point(f.x+v[0]*c-v[1]*s,f.y+v[0]*s+v[1]*c));
@@ -121,7 +129,7 @@ function fileImport(text){
  if(text.length>3000000)throw new Error("檔案超過 3 MB 限制");
  const obj=JSON.parse(text);return sanitize(obj&&obj.format===SCHEMA?obj.project:obj);
 }
-const api={SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,furnitureCorners,furnitureClearances,inPoly,empty,wall,demo,sanitize,getBounds,fileExport,fileImport};
+const api={SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,inPoly,empty,wall,demo,sanitize,getBounds,fileExport,fileImport};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.EasyHomeCore=api;
 })(typeof window!=="undefined"?window:globalThis);
