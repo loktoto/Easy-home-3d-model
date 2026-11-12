@@ -34,6 +34,29 @@ function furnitureCorners(f){
  const c=Math.cos(f.rotation||0),s=Math.sin(f.rotation||0),hw=f.w/2,hd=f.d/2;
  return [[-hw,-hd],[hw,-hd],[hw,hd],[-hw,hd]].map(v=>point(f.x+v[0]*c-v[1]*s,f.y+v[0]*s+v[1]*c));
 }
+function segmentsIntersect(a,b,c,d){
+ const cross=(p,q,r)=>(q.x-p.x)*(r.y-p.y)-(q.y-p.y)*(r.x-p.x);
+ const o1=cross(a,b,c),o2=cross(a,b,d),o3=cross(c,d,a),o4=cross(c,d,b);
+ if(o1*o2<0&&o3*o4<0)return true;
+ return distancePointSegment(c,a,b).distance<EPS||
+        distancePointSegment(d,a,b).distance<EPS||
+        distancePointSegment(a,c,d).distance<EPS||
+        distancePointSegment(b,c,d).distance<EPS;
+}
+function segmentDistance(a,b,c,d){
+ if(segmentsIntersect(a,b,c,d))return 0;
+ return Math.min(distancePointSegment(a,c,d).distance,distancePointSegment(b,c,d).distance,
+   distancePointSegment(c,a,b).distance,distancePointSegment(d,a,b).distance);
+}
+function furnitureClearances(f,walls){
+ const poly=furnitureCorners(f);const result=[];
+ for(let i=0;i<walls.length;i++){
+  const wall=walls[i];let d=Infinity;
+  for(let k=0;k<4;k++)d=Math.min(d,segmentDistance(poly[k],poly[(k+1)%4],wall.a,wall.b));
+  result.push({wallId:wall.id,index:i+1,distance:round(Math.max(0,d-wall.thickness/2),3)});
+ }
+ return result.sort((a,b)=>a.distance-b.distance);
+}
 function inPoly(pt,poly){
  let inside=false;
  for(let i=0,j=poly.length-1;i<poly.length;j=i++){
@@ -98,7 +121,7 @@ function fileImport(text){
  if(text.length>3000000)throw new Error("檔案超過 3 MB 限制");
  const obj=JSON.parse(text);return sanitize(obj&&obj.format===SCHEMA?obj.project:obj);
 }
-const api={SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,furnitureCorners,inPoly,empty,wall,demo,sanitize,getBounds,fileExport,fileImport};
+const api={SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,furnitureCorners,furnitureClearances,inPoly,empty,wall,demo,sanitize,getBounds,fileExport,fileImport};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.EasyHomeCore=api;
 })(typeof window!=="undefined"?window:globalThis);
