@@ -384,7 +384,7 @@ function addFurniture(type){
  const b=G.getBounds(model());
  const where=ui.mode==="3d"?{x:b.cx,y:b.cy}:center;
  const f={id:G.uid(),type:c.type,name:c.name,x:G.round(where.x,2),y:G.round(where.y,2),w:c.w,d:c.d,h:c.h,rotation:0,locked:false,color:c.color};
- commit(()=>model().furniture.push(f));$("furnitureDialog").close();setSelection("furniture",f.id);toast("已加入"+c.name+"；可以拖動及調整尺寸");
+ commit(()=>model().furniture.push(f));ui.mode="2d";ui.tool="select";ui.pending=null;ui.wallStart=null;ui.drag=null;$("furnitureDialog").close();refresh();setSelection("furniture",f.id);toast("已加入"+c.name+"；現在可直接拖動，或於屬性修改尺寸");
 }
 function field(label,key,value,step=".01",min=null,max=null){
  return '<div class="field"><label for="prop-'+key+'">'+label+'</label><input id="prop-'+key+'" data-prop="'+key+'" type="number" inputmode="decimal" step="'+step+'"'+(min===null?"":' min="'+min+'"')+(max===null?"":' max="'+max+'"')+' value="'+esc(value)+'"></div>';
