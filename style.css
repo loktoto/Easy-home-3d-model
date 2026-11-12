@@ -24,3 +24,17 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
 @media(prefers-reduced-motion: reduce){
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+/* Compact phones: preserve all actions without forcing horizontal page scrolling */
+@media(max-width:420px){
+ .top{gap:5px;padding-left:7px;padding-right:7px}
+ .top .mark{display:none}
+ .top .identity{flex:none;min-width:0}
+ .top .identity h1{font-size:14px;white-space:nowrap;letter-spacing:-.07em}
+ .project-head{min-width:52px;flex:1}
+ .project-head input{min-width:0;padding:8px 5px;letter-spacing:-.04em}
+ .head-actions{gap:3px;flex:none}
+ .head-actions .subtle{padding:8px 6px;font-size:0;min-height:36px}
+ #projectsButton::after{content:"專案";font-size:11px}
+ #exportButton::after{content:"⇩";font-size:18px}
+}
