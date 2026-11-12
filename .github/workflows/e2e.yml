@@ -1,0 +1,44 @@
+name: End-to-end usability regression (Chromium + Mobile Safari)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'style.css'
+      - 'core.js'
+      - 'renderer.js'
+      - 'app.js'
+      - 'package.json'
+      - 'playwright.config.mjs'
+      - 'tests/e2e/**'
+      - '.github/workflows/e2e.yml'
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install test runner
+        run: npm install --no-audit --no-fund
+      - name: Install Chromium and WebKit
+        run: npx playwright install --with-deps chromium webkit
+      - name: Run browser E2E tests
+        run: npx playwright test
+      - name: Upload browser traces, screenshots and HTML report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: easy-home-3d-e2e-evidence
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
