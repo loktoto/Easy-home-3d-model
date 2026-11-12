@@ -36,7 +36,7 @@ function paint2D(ctx,w,h,model,opts){
   let cursor=0;const col=chosen.kind==="wall"&&chosen.id===wall.id?"#ffcb7f":"#ddebf4";
   for(const interval of intervals){if(interval.start>cursor){line(ctx,S(G.lerp(wall.a,wall.b,cursor)),S(G.lerp(wall.a,wall.b,interval.start)),col,Math.max(4,wall.thickness*sc));}cursor=Math.max(cursor,interval.end);}
   if(cursor<1)line(ctx,S(G.lerp(wall.a,wall.b,cursor)),b,col,Math.max(4,wall.thickness*sc));
-  if(chosen.kind==="wall"&&chosen.id===wall.id){for(const p of [a,b]){ctx.fillStyle="#ffcb7f";ctx.beginPath();ctx.arc(p.x,p.y,5,0,Math.PI*2);ctx.fill();}}
+  if(chosen.kind==="wall"&&chosen.id===wall.id){for(const p of [a,b]){ctx.fillStyle="#ffcb7f";ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fill();}}
   if(dims){const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2,nx=-(b.y-a.y)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y)),ny=(b.x-a.x)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y));pill(ctx,G.round(len,2).toFixed(2)+" m",cx+nx*18,cy+ny*18);}
  }
  for(const o of model.openings){
@@ -71,11 +71,21 @@ function paint2D(ctx,w,h,model,opts){
  }
  if(opts.pending&&opts.cursor){
   const a=S(opts.pending),b=S(opts.cursor);
-  line(ctx,a,b,"#7dc3ff",2,[7,5]);
-  pill(ctx,G.round(G.length(opts.pending,opts.cursor),2).toFixed(2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-15);
-  ctx.beginPath();ctx.arc(a.x,a.y,4,0,Math.PI*2);ctx.fillStyle="#b2e2ff";ctx.fill();
+  if(opts.tool==="room"){
+   const x=Math.min(a.x,b.x),y=Math.min(a.y,b.y),rw=Math.abs(a.x-b.x),rh=Math.abs(a.y-b.y);
+   ctx.fillStyle="#479cdb24";ctx.strokeStyle="#86ceff";ctx.lineWidth=2;ctx.setLineDash([8,5]);
+   ctx.fillRect(x,y,rw,rh);ctx.strokeRect(x,y,rw,rh);ctx.setLineDash([]);
+   const width=G.round(Math.abs(opts.pending.x-opts.cursor.x),2).toFixed(2);
+   const depth=G.round(Math.abs(opts.pending.y-opts.cursor.y),2).toFixed(2);
+   pill(ctx,width+" m",x+rw/2,y-13);pill(ctx,depth+" m",x-28,y+rh/2);
+   pill(ctx,G.round(Math.abs(opts.pending.x-opts.cursor.x)*Math.abs(opts.pending.y-opts.cursor.y),2)+" m²",x+rw/2,y+rh/2,"#e0fff1","#215c50");
+  }else{
+   line(ctx,a,b,"#7dc3ff",2,[7,5]);
+   pill(ctx,G.round(G.length(opts.pending,opts.cursor),2).toFixed(2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-15);
+  }
+  ctx.beginPath();ctx.arc(a.x,a.y,5,0,Math.PI*2);ctx.fillStyle="#b2e2ff";ctx.fill();
  }
- if(opts.cursor&&opts.tool==="wall"&&!opts.pending){
+ if(opts.cursor&&(opts.tool==="wall"||opts.tool==="room")&&!opts.pending){
   const p=S(opts.cursor);line(ctx,{x:p.x-7,y:p.y},{x:p.x+7,y:p.y},"#a6d9ff");line(ctx,{x:p.x,y:p.y-7},{x:p.x,y:p.y+7},"#a6d9ff");
  }
 }
