@@ -2,3 +2,25 @@
 @media(max-width:1040px){.identity{min-width:auto}.identity .eyebrow{display:none}.identity h1{font-size:19px}.mark{width:36px;height:36px;font-size:26px}.top{gap:9px;padding:8px 10px}.project-head{max-width:300px}.head-actions{gap:4px}.subtle,.source-link{padding:9px 8px}.inspector{width:270px}}
 @media(max-width:780px){.app{min-height:0}.top{height:59px}.identity h1{font-size:17px;white-space:nowrap}.project-head input{padding:8px;font-size:12px}.save-status{display:none}.head-actions .source-link{display:none}.head-actions .icon-button{display:none}.head-actions button{font-size:11px}.toolbar{padding:7px 8px;gap:4px}.tab{padding:8px 9px;font-size:11px}.tool{padding:8px;font-size:12px}.tool span{display:none}.separator{margin:0 2px}.inspector{position:absolute;z-index:10;bottom:0;right:0;left:0;width:100%;max-height:64dvh;border:1px solid #466581;border-radius:17px 17px 0 0;box-shadow:0 -15px 45px #0009;transform:translateY(110%);transition:transform .2s;padding:15px 17px;overflow-y:auto}.inspector.open{transform:translateY(0)}.workspace{position:relative}.mobile-only{display:inline-block}.panel-title{margin-bottom:9px}.start-tip{padding:23px 17px}.viewport-info{left:8px;right:8px;top:7px}.viewport-info span{font-size:10px;padding:6px 8px}.viewport-info #drawingStats{display:none}.footer span:nth-child(2){display:none}.footer{font-size:10px;padding:4px 8px}.view-corner{left:8px;bottom:9px;gap:5px;font-size:10px}}
 @media(max-width:395px){.top{gap:6px}.mark{width:30px;height:30px;font-size:22px}.identity h1{font-size:14px}.head-actions button{padding:8px 6px}.project-head input{font-size:11px}.toolbar .tabs .tab{padding:8px}.footer{font-size:9px}}
+
+/* 2026 UX accessibility pass: generous touch targets, discoverable labels, responsive onboarding */
+.toolbar .tool,.toolbar .tab{min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:5px}
+.viewport-controls button{min-width:44px;min-height:44px;width:44px;height:44px}
+.start-buttons{flex-wrap:wrap}
+.start-buttons button{min-height:44px}
+button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3px solid #97d7ff;outline-offset:2px}
+.inspector .secondary-actions button,.inspector .aside-action{min-height:44px}
+@media(max-width:780px){
+ .toolbar .tool span{display:inline}
+ .toolbar{scroll-snap-type:x proximity}
+ .toolbar .tool,.toolbar .tabs{scroll-snap-align:start}
+ .toolbar .tool{min-height:44px}
+ .start-tip{max-width:min(450px,calc(100% - 24px))}
+ .start-buttons .primary{flex:1 1 100%}
+ .start-buttons .ghost{flex:1 1 calc(50% - 9px);font-size:12px}
+ .viewport-info #modeHint{max-width:min(370px,calc(100% - 25px))}
+ .inspector input{min-height:44px}
+}
+@media(prefers-reduced-motion: reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
