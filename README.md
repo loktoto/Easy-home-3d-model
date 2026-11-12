@@ -5,6 +5,10 @@ A free, open-source, privacy-first 2D/3D floor-plan and furniture editor that ru
 
 [繁體中文](#繁體中文) · [English](#english) · [MIT License](LICENSE)
 
+**Live public demo (Cloudflare Workers):** https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/
+
+> Cloudflare API 已確認 Worker 新版本部署為 100% 並啟用公開 subdomain；未完成獨立真實瀏覽器驗收。GitHub Pages 目前仍須先在倉庫設定啟用。
+
 > **私隱**：由專案擁有者的私人 House_3D_Model 原型重新設計成通用的空白圖則工具。**不包含私人住宅圖則、私人傢俬記錄、私人 Cloudflare Worker／D1、同步金鑰或存檔。** 原私人 GitHub 倉庫及其雲端資料沒有被公開、修改或連接。
 
 ## 繁體中文
