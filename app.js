@@ -114,7 +114,10 @@ function refresh(){
  ui.tool==="window"?"加入窗：按一下牆身，再調整窗闊、窗高及窗台高度。":
  ui.tool==="measure"?"量度：先按起點，再按終點，顯示兩點距離。":
  ui.tool==="pan"?"移動畫布：拖動畫面；滑鼠滾輪縮放。":
- "選取：按傢俬或牆身可修改尺寸，拖動可移位。";
+ m.walls.length===0?"第 1 步／3：揀「畫房間」點兩個對角，或者逐幅畫牆。":
+ m.openings.length===0?"第 2 步／3：已畫出牆身；下一步加入門窗，或直接放傢俬。":
+ m.furniture.length===0?"第 3 步／3：加傢俬、修改闊深高並移動到正確位置。":
+ "完成基本擺位：可選取物件微調尺寸、轉 3D、匯出 JSON 備份。";
  $("scaleLabel").textContent=ui.mode==="2d"?"單位：米 (m) · 格線按縮放顯示":"透視 3D · 模型尺寸以米 (m) 計";
  $("selectionHint").textContent=ui.selected?"已選取："+(getObject()?.name||(ui.selected.kind==="wall"?"牆身":ui.selected.kind==="opening"?"門窗":"量度")):"";
  renderInspector();render();
@@ -601,6 +604,17 @@ function bind(){
  document.addEventListener("keydown",e=>{
   if(["INPUT","TEXTAREA","SELECT"].includes(document.activeElement?.tagName)||document.querySelector("dialog[open]"))return;
   if(e.key==="Escape"){escapeAction();return;}
+  if(ui.selected?.kind==="furniture"&&["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key)){
+   const obj=getObject();if(obj&&!obj.locked){
+    e.preventDefault();const delta=e.shiftKey?.25:.05;
+    commit(()=>{
+     if(e.key==="ArrowLeft")obj.x=G.round(obj.x-delta,3);
+     if(e.key==="ArrowRight")obj.x=G.round(obj.x+delta,3);
+     if(e.key==="ArrowUp")obj.y=G.round(obj.y-delta,3);
+     if(e.key==="ArrowDown")obj.y=G.round(obj.y+delta,3);
+    });return;
+   }
+  }
   if(e.key==="Delete"||e.key==="Backspace"){if(ui.selected){e.preventDefault();deleteSelected();}return;}
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();e.shiftKey?redo():undo();return;}
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();redo();}
