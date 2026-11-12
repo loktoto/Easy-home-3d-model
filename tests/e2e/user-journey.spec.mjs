@@ -184,3 +184,43 @@ test('beginner room workflow: two corners, exact wall length, connected wall end
  expect(Math.hypot(snap.model.walls[0].b.x-snap.model.walls[0].a.x,snap.model.walls[0].b.y-snap.model.walls[0].a.y)).toBeCloseTo(oldLength,2);
  await expect(page.locator('#inspectorContent')).toContainText('直接設定牆長');
 });
+
+
+test('furniture can be selected and moved in 3D, with coordinates kept in 2D',async({page},testInfo)=>{
+ test.skip(testInfo.project.name!=='desktop-chromium','3D mouse pointer regression');
+ await page.goto('/');
+ await page.locator('#addFurnitureButton').click();
+ await page.locator('#furnitureCatalog button').filter({hasText:'自訂方塊'}).click();
+ const first=await saved(page);
+ const initial={x:first.model.furniture[0].x,y:first.model.furniture[0].y};
+ await page.locator('#view3d').click();
+ await expect(page.locator('#modeHint')).toContainText('3D');
+ const p=await page.evaluate(()=>{
+  const store=JSON.parse(localStorage.getItem('easy-home-3d:projects:v1'));
+  const m=store.projects.find(x=>x.id===store.activeId).data;
+  const f=m.furniture[0];
+  return window.EasyHomeRenderer.projectPoint(document.querySelector('#stage'),m,{azimuth:-.75,elevation:.82,distance:1},[f.x,f.y,f.h]);
+ });
+ expect(p.valid).toBe(true);
+ const g=await canvasGeometry(page);
+ await page.mouse.move(g.r.x+p.x,g.r.y+p.y);
+ await page.mouse.down();
+ await page.mouse.move(g.r.x+p.x+48,g.r.y+p.y+21,{steps:12});
+ await page.mouse.up();
+ const moved=await saved(page);
+ const f=moved.model.furniture[0];
+ expect(Math.hypot(f.x-initial.x,f.y-initial.y)).toBeGreaterThan(.05);
+ await page.locator('#view2d').click();
+ const after=await saved(page);
+ expect(after.model.furniture[0].x).toBe(f.x);
+ expect(after.model.furniture[0].y).toBe(f.y);
+});
+
+test('320px phone never hides project controls beyond document width',async({page})=>{
+ await page.setViewportSize({width:320,height:700});
+ await page.goto('/');
+ await expect(page.locator('#projectsButton')).toBeVisible();
+ await expect(page.locator('#exportButton')).toBeVisible();
+ const overflow=await page.evaluate(()=>({doc:document.documentElement.scrollWidth,screen:window.innerWidth}));
+ expect(overflow.doc).toBeLessThanOrEqual(overflow.screen+2);
+});
