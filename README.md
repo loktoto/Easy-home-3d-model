@@ -17,20 +17,20 @@ A free, open-source, privacy-first 2D/3D floor-plan and furniture editor that ru
 
 ### 功能
 
-- 🧱 **由空白開始**：直接畫牆（兩點確定、連續畫牆），支援吸附格線／牆端點。
-- 📏 **真實尺寸**：牆長、門窗闊度、傢俬闊 × 深、量度線；精確輸入牆兩端座標、牆高及牆厚，單位米 (m)。
-- 🚪 **門窗編輯**：在牆上加門窗，調整闊度、位置、窗台高度；3D 模式呈現開口。
+- 🧱 **由空白開始**：新手點選兩個對角建立房間；亦可逐幅畫牆，支援端點／格線吸附、牆角連動和即時房間面積預覽。
+- 📏 **真實尺寸**：直接輸入牆長及兩端座標、牆高／厚度；門窗闊度、門邊剩餘距離、傢俬闊 × 深 × 高、量度線和傢俬距牆尺寸（m）。
+- 🚪 **門窗編輯**：在牆上加門窗，調整闊度、位置、窗台高度；檢查同牆重疊開口、預留 5 cm 間距；3D 呈現開口。
 - 🛋️ **自訂傢俬**：12 種物件，包括梳化、床、衣櫃、餐枱、廚櫃、書枱。可改闊、深、高、顏色、角度、位置、名稱。
 - 🔒 **鎖定／解鎖／刪除／複製傢俬**：避免誤拖；牆及量度線也可以刪除。
-- 🧊 **2D ⇄ 3D**：2D 畫圖、3D 旋轉視角；隨時返回編輯。
+- 🧊 **2D ⇄ 3D**：2D 編輯，3D 旋轉視角或直接拖動未鎖定的傢俬；隨時返回 2D。手機支援雙指縮放。
 - 💾 **本機自動存檔 + 多專案**：使用瀏覽器 localStorage，毋須帳號、資料庫或 API。
 - 📁 **JSON 備份／還原**：所有牆、開口、傢俬、鎖定及量度資料均可匯出／重新匯入。
-- ↶ **Undo / Redo**：最多 65 次編輯歷史。
+- ↶ **Undo / Redo**：最多 65 次編輯歷史；仍然存在的選取物件不會因復原而失去選取。方向鍵可微調傢俬。
 - 📱 **支援手機、平板、桌面**：Responsive、無廣告、無追蹤、無外部 JavaScript 依賴。
 
 ### 立即使用
 
-開啟網站 →「開始畫牆」→ 按第一個角及第二個角 → 畫出所有牆 → 用「門」、「窗」加入開口 → 加入傢俬 → 切換 3D。選取物件即可輸入準確尺寸。
+開啟網站 →「畫第一間房」→ 在畫布點兩個對角 → 選牆輸入準確牆長 → 加入門窗 → 加入傢俬 → 調整闊深高及位置 → 2D／3D 檢查 → 匯出 JSON 備份。
 
 **本機運行：** 下載整個倉庫，打開 `index.html` 即可；不需要 Node.js、API key 或後端。也可下載 GitHub Actions 的 `easy-home-3d-convika` Artifact，內含單一 HTML。
 
@@ -51,7 +51,7 @@ https://loktoto.github.io/Easy-home-3d-model/
 
 ### 開發、測試及版本管理
 
-無 npm 依賴。
+網站運行無 npm 依賴；開發者執行 Playwright E2E 測試才需要安裝測試套件。
 
 ~~~bash
 node --check core.js
@@ -59,6 +59,9 @@ node --check renderer.js
 node --check app.js
 node --test tests/*.test.cjs
 python3 scripts/build-single.py
+npm install
+npx playwright install --with-deps chromium webkit
+npm run test:e2e
 ~~~
 
 | 檔案 | 用途 |
@@ -69,6 +72,8 @@ python3 scripts/build-single.py
 | `renderer.js` | 2D 畫圖、標尺寸、3D 透視模型 |
 | `app.js` | 牆／門窗／傢俬編輯、復原、儲存及專案 |
 | `tests/core.test.cjs` | 資料結構及幾何測試 |
+| `tests/e2e/user-journey.spec.mjs` | 端對端桌面／手機瀏覽器測試 |
+| `docs/UX_E2E_AUDIT.md` | UX 研究、已修正缺陷、完整驗收基準 |
 | `scripts/build-single.py` | 產生可直接交給 Convika 的 HTML |
 | `.github/workflows/site.yml` | GitHub Actions 測試、打包及 Pages 部署 |
 
@@ -77,7 +82,7 @@ python3 scripts/build-single.py
 - 圖則只存於自己的瀏覽器 localStorage；**不會發送到伺服器，沒有雲端同步**。
 - 清除瀏覽資料、私人瀏覽模式及儲存空間不足，可能令資料遺失；請定期「匯出 JSON」。
 - 不直接支援匯入原私人版本的特製 JSON，避免不當公開私人圖則。
-- 本工具**不是 CAD／結構工程或正式施工圖**，亦**沒有自動驗證承重、建築法規、門窗衝突、消防要求或傢俬碰撞**。
+- 本工具**不是 CAD／結構工程或正式施工圖**。雖然會檢查同一幅牆的門窗重疊，但**沒有驗證承重、建築法規、門扇開啟、消防要求或傢俬碰撞**。
 - 訂造傢俬、拆牆、鑿牆或裝修之前，請由合資格人士現場覆尺、核對實際結構和法規。
 
 歡迎提交 Issues / PR，改善牆角交匯、房間自動閉合、樓層、材質、DXF/SVG、3D 性能及語言支援。詳見 [CONTRIBUTING.md](CONTRIBUTING.md)。
