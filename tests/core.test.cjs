@@ -64,3 +64,15 @@ test("all catalog items have positive dimensions and valid colours",()=>{
 test("file import rejects huge payloads",()=>{
  assert.throws(()=>G.fileImport(" ".repeat(3000001)),/3 MB/);
 });
+
+test("furniture clearances include wall thickness",()=>{
+ const walls=[G.wall([0,0],[5,0],{thickness:.2})];
+ const f={x:2,y:1.5,w:1,d:1,rotation:0};
+ const gaps=G.furnitureClearances(f,walls);
+ assert.equal(gaps.length,1);
+ assert.equal(gaps[0].distance,.9);
+});
+test("segment collision reports zero distance",()=>{
+ const a={x:0,y:0},b={x:2,y:2},c={x:0,y:2},d={x:2,y:0};
+ assert.equal(G.segmentDistance(a,b,c,d),0);
+});
