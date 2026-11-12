@@ -76,3 +76,13 @@ test("segment collision reports zero distance",()=>{
  const a={x:0,y:0},b={x:2,y:2},c={x:0,y:2},d={x:2,y:0};
  assert.equal(G.segmentDistance(a,b,c,d),0);
 });
+
+test("door and window overlapping intervals are rejected with 5cm clearance",()=>{
+ const door={id:"a",wallId:"wall-a",offset:1,width:1};
+ const adjacent={id:"b",wallId:"wall-a",offset:2.1,width:1};
+ const overlap={id:"c",wallId:"wall-a",offset:1.8,width:1};
+ assert.equal(G.openingFits(adjacent,[door]),true);
+ assert.equal(G.openingFits(overlap,[door]),false);
+ assert.equal(G.openingFits({...door,width:1.1},[door]),true);
+ assert.equal(G.openingFits({...overlap,wallId:"other-wall"},[door]),true);
+});
