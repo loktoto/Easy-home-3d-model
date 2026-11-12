@@ -154,3 +154,33 @@ test('touch/mobile: first-run demo, reachable controls, furniture edit, 2D/3D na
  expect((await saved(page)).model.furniture.some(f=>f.name==='書枱')).toBe(true);
  expect(errors).toEqual([]);
 });
+
+
+test('beginner room workflow: two corners, exact wall length, connected wall endpoints, undo',async({page},testInfo)=>{
+ test.skip(testInfo.project.name!=='desktop-chromium','Precision geometry mouse workflow');
+ await page.goto('/');
+ await page.locator('#startRoom').click();
+ const g=await canvasGeometry(page);
+ const first={x:g.cx-110,y:g.cy-80},second={x:g.cx+110,y:g.cy+80};
+ await clickPoint(page,first.x,first.y);
+ await clickPoint(page,second.x,second.y);
+ await expect(page.locator('#drawingStats')).toContainText('4 幅牆');
+ let snap=await saved(page);
+ expect(snap.model.walls).toHaveLength(4);
+ const a=snap.model.walls[0],joined=snap.model.walls[1];
+ expect(Math.hypot(a.b.x-joined.a.x,a.b.y-joined.a.y)).toBeLessThan(.001);
+ const oldLength=Math.hypot(a.b.x-a.a.x,a.b.y-a.a.y);
+ await clickPoint(page,g.cx,first.y);
+ await expect(page.locator('#inspectorContent')).toContainText('直接設定牆長');
+ await page.locator('#prop-length').fill('3.75');
+ await page.locator('#prop-length').press('Tab');
+ snap=await saved(page);
+ const w=snap.model.walls[0],neighbor=snap.model.walls[1];
+ expect(Math.hypot(w.b.x-w.a.x,w.b.y-w.a.y)).toBeCloseTo(3.75,2);
+ expect(Math.hypot(w.b.x-neighbor.a.x,w.b.y-neighbor.a.y)).toBeLessThan(.001);
+ await expect(page.locator('#inspectorContent')).toContainText('牆身');
+ await page.locator('#undoButton').click();
+ snap=await saved(page);
+ expect(Math.hypot(snap.model.walls[0].b.x-snap.model.walls[0].a.x,snap.model.walls[0].b.y-snap.model.walls[0].a.y)).toBeCloseTo(oldLength,2);
+ await expect(page.locator('#inspectorContent')).toContainText('直接設定牆長');
+});
