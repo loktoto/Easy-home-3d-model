@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0c1423">
+  <meta name="description" content="Easy Home 3D — 免費開源的 2D 平面圖與 3D 裝修規劃工具。畫牆、加門窗、放傢俬、量尺寸、自動儲存。">
+  <title>Easy Home 3D · 免費開源裝修圖</title>
+  <style>
+:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color-scheme:dark;--bg:#0b1320;--panel:#121e30;--line:#2a3d52;--ink:#e8f1fb;--sub:#9db0c6;--blue:#77afff;--blue-dark:#2767bf;--mint:#79d8b0;--danger:#ff9a9a}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{background:var(--bg);color:var(--ink)}button,input,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);color:var(--ink);background:#22344b;border-radius:9px}button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}button:disabled{opacity:.35;cursor:not-allowed}a{color:var(--blue)}.app{height:100vh;height:100dvh;display:flex;flex-direction:column;min-height:400px}.top{height:72px;display:flex;align-items:center;gap:17px;padding:10px 17px;background:#101b2b;border-bottom:1px solid var(--line);flex:none}.identity{display:flex;align-items:center;gap:9px;min-width:201px}.mark{background:linear-gradient(135deg,#5b92ea,#3ad5b5);height:40px;width:40px;display:grid;place-items:center;border-radius:12px;font-size:30px;color:#fff}.eyebrow{font-size:9px;letter-spacing:.13em;color:var(--mint);font-weight:800}.identity h1{font-size:22px;letter-spacing:-.05em;line-height:1.1;margin:4px 0 0}.identity h1 b{color:var(--blue)}.project-head{display:flex;flex:1;min-width:110px;max-width:380px;align-items:center;gap:7px}.project-head input{border:1px solid #324860;background:#152235;border-radius:10px;padding:10px 11px;color:var(--ink);font-size:13px;font-weight:650;min-width:0;flex:1}.save-status{flex:none;white-space:nowrap;font-size:11px;color:var(--mint)}.save-status.error{color:var(--danger)}.head-actions{margin-left:auto;display:flex;gap:7px;align-items:center}.subtle,.source-link{border:1px solid #34485f;background:#202f44;font-size:12px;font-weight:650;color:#e1ecfa;text-decoration:none;border-radius:9px;padding:10px 12px;white-space:nowrap}.source-link{background:#194363;border-color:#355f79}.icon-button{width:38px;padding:10px}.toolbar{background:#121f30;border-bottom:1px solid #2c4158;display:flex;align-items:center;gap:5px;padding:8px 12px;overflow-x:auto;flex:none;scrollbar-width:thin}.tabs{display:flex;background:#091321;border-radius:10px;padding:3px;border:1px solid #2d425b;flex:none}.tab{border:0;background:transparent;border-radius:8px;padding:9px 12px;color:var(--sub);font-size:12px;font-weight:800;white-space:nowrap}.tab.active{background:#2a62a5;color:#fff}.tool{border:1px solid transparent;flex:none;background:#1b2d44;color:#c4d6ea;padding:9px 11px;font-size:12px;font-weight:650;white-space:nowrap}.tool.active{background:#284f6e;border-color:#5289be;color:#fff}.tool.small{font-size:11px;padding:9px 10px}.separator{height:27px;border-left:1px solid #3b536a;margin:0 5px;flex:none}.workspace{display:flex;flex:1;min-height:0}.stage-wrap{position:relative;flex:1;min-width:0;overflow:hidden;background:#0a1423}#stage{width:100%;height:100%;display:block;touch-action:none;outline:0;cursor:crosshair}.viewport-info{position:absolute;pointer-events:none;left:14px;top:12px;right:12px;display:flex;justify-content:space-between;gap:12px;align-items:start}.viewport-info span{background:#101f31d9;border:1px solid #36516d;border-radius:9px;padding:8px 11px;font-size:11px;color:#d5e5f6;line-height:1.5}.viewport-info span:last-child{white-space:nowrap}.viewport-controls{position:absolute;right:13px;bottom:47px;display:flex;flex-direction:column;gap:6px}.viewport-controls button{background:#1b2e46e8;width:38px;height:38px;font-size:19px;font-weight:700;box-shadow:0 4px 15px #0005}.view-corner{position:absolute;bottom:14px;left:15px;right:60px;pointer-events:none;display:flex;gap:14px;color:#acc2d8;font-size:11px}.view-corner span{background:#0c1a29db;border-radius:7px;padding:5px 8px}.inspector{width:300px;flex:none;display:flex;flex-direction:column;background:var(--panel);border-left:1px solid var(--line);overflow-y:auto;padding:19px 15px}.panel-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}.panel-title h2{font-size:19px;margin:4px 0 0;letter-spacing:-.02em}#inspectorContent{flex:1}.panel-footer{border-top:1px solid var(--line);padding-top:14px;margin-top:20px;color:#9cb3ca;font-size:11px;line-height:1.7}.panel-footer strong{color:#e2b681;font-size:12px}.panel-footer p{margin:5px 0}.footer{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#101b2b;border-top:1px solid #2b3b50;min-height:32px;flex:none;padding:5px 17px;color:#8da4ba;font-size:10px}.footer a{color:#a9cfff;text-decoration:none}.start-tip{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(155deg,#1b3046f3,#102032f5);border:1px solid #3a5974;box-shadow:0 18px 50px #0006;border-radius:20px;padding:29px 24px;text-align:center;max-width:min(430px,calc(100% - 30px));width:100%;z-index:1}.start-tip[hidden]{display:none}.start-icon{font-size:48px;color:var(--mint)}.start-tip h2{font-size:23px;margin:8px 0}.start-tip p{color:#bbcee2;font-size:13px;line-height:1.8;margin:9px 0 18px}.start-buttons{display:flex;gap:9px;justify-content:center}.start-tip small{display:block;color:#849bb2;margin-top:17px;line-height:1.6}.primary{background:var(--blue-dark);border-color:#4279bb;color:#fff;font-weight:750;padding:11px 13px}.ghost{background:#20344a;border-color:#36546f;color:#d7e8f8;font-weight:700;padding:11px 13px}.inspector h3{font-size:14px;margin:17px 0 9px}.inspector .tip{font-size:12px;color:#9eb4c9;line-height:1.65}.item-summary{border:1px solid #38516d;border-radius:11px;padding:11px;background:#1a2b40;margin-bottom:12px}.item-summary strong{display:block;font-size:15px}.item-summary small{display:block;color:#9db3c9;margin-top:5px}.field{margin-bottom:11px}.field label{display:block;color:#9cb3c8;font-size:11px;font-weight:700;margin-bottom:6px}.field input,.field select{display:block;width:100%;min-width:0;border:1px solid #3a536d;background:#0d1b2b;border-radius:9px;padding:10px 9px;color:#eaf4fc;font-size:15px}.field input[type=color]{height:43px;padding:3px}.fields2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.fields3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.secondary-actions{display:flex;gap:7px;margin-top:14px;flex-wrap:wrap}.secondary-actions button{padding:10px 11px;font-weight:700;font-size:12px;flex:1}.danger{background:#572e38;color:#ffb9b9;border-color:#79505a}.lock{background:#245144;border-color:#447c68}.muted{font-size:12px;color:#a7bbcf;line-height:1.7}.mini-stat{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #2a3d51;padding:10px 0;font-size:12px}.mini-stat strong{font-size:13px;color:#e0ecfb}.aside-action{display:block;width:100%;padding:12px;margin:12px 0;font-size:13px;font-weight:750}.empty-inspector{padding-top:12px;color:#aabed2;font-size:13px;line-height:1.85}.badge{display:inline-flex;padding:5px 7px;color:#8ee8c1;border:1px solid #286c57;background:#163b35;border-radius:6px;font-size:10px;margin:5px 0}.dialog{color:var(--ink);background:#152337;border:1px solid #3f5c77;border-radius:17px;max-width:min(550px,calc(100vw - 24px));width:100%;max-height:85dvh;overflow:auto;padding:20px;box-shadow:0 20px 65px #0009}.dialog::backdrop{background:#040a15ba}.dialog-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.dialog-head h2{margin:0;font-size:21px}.close-dialog,.panel-close{width:33px;height:33px;background:#283d53}.dialog-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}.dialog-actions button{flex:1;min-width:160px}.project-list{margin-top:17px;display:flex;flex-direction:column;gap:8px}.project-item{display:flex;align-items:center;justify-content:space-between;gap:9px;background:#1b2c41;border:1px solid #3a526d;border-radius:10px;padding:10px}.project-item.current{border-color:#70b3fb;background:#23405e}.project-item .project-text{min-width:0}.project-item strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}.project-item small{display:block;color:#9ab3cb;margin-top:4px;font-size:11px}.project-item .buttons{display:flex;gap:5px;flex:none}.project-item button{padding:8px 10px;font-size:11px}.catalog{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:15px}.catalog button{padding:15px 10px;text-align:left;min-height:85px;background:#1b3046;border:1px solid #385774;display:flex;flex-direction:column;gap:6px}.catalog button:hover{background:#25425f}.catalog .f-icon{font-size:25px;color:var(--mint)}.catalog strong{font-size:13px}.catalog small{font-size:11px;color:#9fb5cb}.help-list{line-height:1.75;padding-left:20px;color:#cedeee;font-size:13px}.help-list li{margin-bottom:9px}#toast{position:absolute;left:50%;bottom:25px;transform:translateX(-50%);z-index:5;background:#213e56;box-shadow:0 7px 20px #0008;border:1px solid #527ba0;border-radius:10px;padding:10px 13px;pointer-events:none;color:#eff8ff;font-size:12px;opacity:0;transition:opacity .2s;max-width:90%;text-align:center}#toast.show{opacity:1}.mobile-only{display:none}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:1040px){.identity{min-width:auto}.identity .eyebrow{display:none}.identity h1{font-size:19px}.mark{width:36px;height:36px;font-size:26px}.top{gap:9px;padding:8px 10px}.project-head{max-width:300px}.head-actions{gap:4px}.subtle,.source-link{padding:9px 8px}.inspector{width:270px}}
+@media(max-width:780px){.app{min-height:0}.top{height:59px}.identity h1{font-size:17px;white-space:nowrap}.project-head input{padding:8px;font-size:12px}.save-status{display:none}.head-actions .source-link{display:none}.head-actions .icon-button{display:none}.head-actions button{font-size:11px}.toolbar{padding:7px 8px;gap:4px}.tab{padding:8px 9px;font-size:11px}.tool{padding:8px;font-size:12px}.tool span{display:none}.separator{margin:0 2px}.inspector{position:absolute;z-index:10;bottom:0;right:0;left:0;width:100%;max-height:64dvh;border:1px solid #466581;border-radius:17px 17px 0 0;box-shadow:0 -15px 45px #0009;transform:translateY(110%);transition:transform .2s;padding:15px 17px;overflow-y:auto}.inspector.open{transform:translateY(0)}.workspace{position:relative}.mobile-only{display:inline-block}.panel-title{margin-bottom:9px}.start-tip{padding:23px 17px}.viewport-info{left:8px;right:8px;top:7px}.viewport-info span{font-size:10px;padding:6px 8px}.viewport-info #drawingStats{display:none}.footer span:nth-child(2){display:none}.footer{font-size:10px;padding:4px 8px}.view-corner{left:8px;bottom:9px;gap:5px;font-size:10px}}
+@media(max-width:395px){.top{gap:6px}.mark{width:30px;height:30px;font-size:22px}.identity h1{font-size:14px}.head-actions button{padding:8px 6px}.project-head input{font-size:11px}.toolbar .tabs .tab{padding:8px}.footer{font-size:9px}}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="identity">
+      <span class="mark" aria-hidden="true">⌂</span>
+      <div><div class="eyebrow">FREE · OPEN SOURCE · LOCAL FIRST</div><h1>Easy Home <b>3D</b></h1></div>
+    </div>
+    <div class="project-head">
+      <label class="sr-only" for="projectName">專案名稱</label>
+      <input id="projectName" maxlength="80" value="我的平面圖" aria-label="專案名稱" title="編輯專案名稱">
+      <span id="saveStatus" class="save-status" aria-live="polite">本機儲存</span>
+    </div>
+    <div class="head-actions">
+      <button id="projectsButton" class="subtle">專案</button>
+      <button id="exportButton" class="subtle">匯出 JSON</button>
+      <button id="helpButton" class="subtle icon-button" title="使用教學" aria-label="使用教學">?</button>
+      <a class="source-link" href="https://github.com/loktoto/Easy-home-3d-model" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+    </div>
+  </header>
+  <nav class="toolbar" aria-label="編輯工具">
+    <div class="tabs"><button id="view2d" class="tab active" aria-pressed="true">▦ 2D 平面圖</button><button id="view3d" class="tab" aria-pressed="false">⬡ 3D 模型</button></div>
+    <div class="separator"></div>
+    <button data-tool="select" class="tool active" title="選取及移動物件">↖ <span>選取</span></button>
+    <button data-tool="wall" class="tool" title="連續點選兩點畫牆">╱ <span>畫牆</span></button>
+    <button data-tool="door" class="tool" title="按一下牆身加門">▯ <span>門</span></button>
+    <button data-tool="window" class="tool" title="按一下牆身加窗">▤ <span>窗</span></button>
+    <button id="addFurnitureButton" class="tool" title="新增傢俬">▣ <span>傢俬</span></button>
+    <button data-tool="measure" class="tool" title="點選兩點測量距離">⌁ <span>量度</span></button>
+    <button data-tool="pan" class="tool" title="拖動畫布">✥ <span>移動畫布</span></button>
+    <div class="separator"></div>
+    <button id="snapButton" class="tool active small" aria-pressed="true">吸附：開</button>
+    <button id="dimsButton" class="tool active small" aria-pressed="true">尺寸：開</button>
+    <button id="undoButton" class="tool small" title="復原 (Ctrl/⌘+Z)">↶</button>
+    <button id="redoButton" class="tool small" title="重做">↷</button>
+    <button id="fitButton" class="tool small" title="全部置中">⊞</button>
+    <button id="propertiesButton" class="tool small mobile-only" title="屬性">設定</button>
+  </nav>
+  <main class="workspace">
+    <section class="stage-wrap" aria-label="2D／3D 繪圖區">
+      <canvas id="stage" tabindex="0" aria-label="可編輯平面圖畫布；使用工具列選擇畫牆、量度、傢俬"></canvas>
+      <div class="viewport-info"><span id="modeHint">畫牆：按第一點，再按第二點；完成後按 Esc。</span><span id="drawingStats">0 幅牆 · 0 件傢俬</span></div>
+      <div id="startTip" class="start-tip">
+        <div class="start-icon">⌂</div>
+        <h2>由你的屋企開始</h2>
+        <p>建立空白平面圖，再用「畫牆」逐幅畫出房間；所有尺寸以米 (m) 計算。</p>
+        <div class="start-buttons"><button id="startWall" class="primary">＋ 開始畫牆</button><button id="loadDemo" class="ghost">看看示範圖</button></div>
+        <small>毋須註冊 · 自動儲存在此瀏覽器 · 資料不會上傳</small>
+      </div>
+      <div class="viewport-controls"><button id="zoomIn" aria-label="放大">＋</button><button id="zoomOut" aria-label="縮小">－</button><button id="fitBottom" aria-label="顯示全部">⤢</button></div>
+      <div class="view-corner"><span id="scaleLabel">1 格 = 0.5 m</span><span id="selectionHint"></span></div>
+      <div id="toast" role="status" aria-live="polite"></div>
+    </section>
+    <aside id="inspector" class="inspector" aria-label="尺寸及物件屬性">
+      <div class="panel-title"><div><div class="eyebrow">DESIGN WORKSPACE</div><h2>屬性及尺寸</h2></div><button id="closeInspector" class="mobile-only panel-close" aria-label="關閉">✕</button></div>
+      <div id="inspectorContent"></div>
+      <div class="panel-footer">
+        <strong>準確尺寸，由你掌握。</strong>
+        <p>預設尺寸僅供規劃。訂購傢俬或施工前，必須現場覆尺並核對門窗及牆厚。</p>
+      </div>
+    </aside>
+  </main>
+  <footer class="footer"><span>Easy Home 3D · MIT License</span><span>免費開源 · 無需帳號 · 個人資料預設只存在本機</span><a href="https://convika.com/zh-hant/" target="_blank" rel="noopener noreferrer">如何將 HTML 發佈成連結 ↗</a></footer>
+</div>
+
+<dialog id="projectsDialog" class="dialog">
+  <div class="dialog-head"><h2>我的專案</h2><button class="close-dialog" data-close="projectsDialog" aria-label="關閉">✕</button></div>
+  <p class="muted">每個專案獨立保存在此瀏覽器。清除瀏覽資料可能導致資料消失，請定期匯出 JSON 備份。</p>
+  <div id="projectList" class="project-list"></div>
+  <div class="dialog-actions"><button id="newBlank" class="primary">＋ 新建空白平面圖</button><button id="newDemo" class="ghost">新建示範圖</button><button id="importButton" class="ghost">匯入 JSON</button></div>
+</dialog>
+<dialog id="furnitureDialog" class="dialog">
+  <div class="dialog-head"><h2>選擇傢俬</h2><button class="close-dialog" data-close="furnitureDialog" aria-label="關閉">✕</button></div>
+  <p class="muted">選擇後放在畫面中央，可拖動、旋轉、輸入準確闊度／深度／高度，亦可鎖定位置。</p>
+  <div id="furnitureCatalog" class="catalog"></div>
+</dialog>
+<dialog id="helpDialog" class="dialog">
+  <div class="dialog-head"><h2>30 秒學識用</h2><button class="close-dialog" data-close="helpDialog" aria-label="關閉">✕</button></div>
+  <ol class="help-list">
+    <li><b>畫牆：</b>揀「畫牆」後按起點及終點，會顯示實際長度；繼續點下一點可連續畫。</li>
+    <li><b>改尺寸：</b>揀一幅牆，可直接輸入兩端 X／Y 座標、牆厚與高度；一切單位為米。</li>
+    <li><b>門窗：</b>選「門」或「窗」，再按在任何牆上；可修改闊度、離牆角距離及窗台高度。</li>
+    <li><b>加傢俬：</b>選家具類型，拖到合適位置，輸入闊／深／高；鎖定後不可誤拖，亦可解除鎖定及刪除。</li>
+    <li><b>量距離：</b>用「量度」選兩點，顯示相距多少米；2D／3D 可隨時切換。</li>
+    <li><b>儲存：</b>系統在本機自動儲存。可切換多個專案、用 JSON 匯出或匯入；沒有雲端同步。</li>
+  </ol>
+  <p class="muted">滑鼠滾輪可縮放，拖空白畫布可移動畫面。3D 模式拖動畫面可旋轉視角。Esc 取消畫牆；Delete 刪除選取物件；Ctrl/⌘+Z 復原。</p>
+</dialog>
+<input id="importFile" type="file" accept=".json,application/json" hidden>
+
+
+
+<script>
+/* Easy Home 3D — geometry and document format. MIT © 2026 loktoto */
+(function(root){
+"use strict";
+const SCHEMA="easy-home-3d", VERSION=1, EPS=1e-8;
+const catalog=[
+ {type:"sofa",name:"梳化",icon:"▰",w:2.1,d:0.88,h:0.85,color:"#6da9bf"},
+ {type:"bed",name:"雙人床",icon:"▣",w:1.5,d:1.9,h:0.55,color:"#ad91d7"},
+ {type:"single-bed",name:"單人床",icon:"▤",w:0.95,d:1.9,h:0.52,color:"#b19cd8"},
+ {type:"table",name:"飯枱",icon:"▦",w:1.4,d:0.8,h:0.76,color:"#d4a66d"},
+ {type:"chair",name:"椅子",icon:"▢",w:0.48,d:0.5,h:0.85,color:"#b7a18a"},
+ {type:"desk",name:"書枱",icon:"▥",w:1.2,d:0.6,h:0.75,color:"#bd926b"},
+ {type:"wardrobe",name:"衣櫃",icon:"▥",w:1.6,d:0.6,h:2.2,color:"#91a8c0"},
+ {type:"shelf",name:"書架",icon:"▤",w:0.85,d:0.35,h:1.8,color:"#ba9971"},
+ {type:"fridge",name:"雪櫃",icon:"▣",w:0.68,d:0.7,h:1.78,color:"#9aaebe"},
+ {type:"kitchen",name:"廚櫃",icon:"▦",w:1.8,d:0.6,h:0.9,color:"#82aab5"},
+ {type:"washer",name:"洗衣機",icon:"▧",w:0.6,d:0.6,h:0.85,color:"#95b8c9"},
+ {type:"custom",name:"自訂方塊",icon:"◇",w:1,d:1,h:1,color:"#72bca6"}
+];
+const num=(n,def=0)=>typeof n==="number"&&Number.isFinite(n)?n:def;
+const clamp=(n,min,max)=>Math.min(max,Math.max(min,n));
+const round=(n,p=2)=>Math.round(n*Math.pow(10,p))/Math.pow(10,p);
+const uid=()=>typeof crypto!=="undefined"&&crypto.randomUUID?crypto.randomUUID():"id-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2);
+const point=(x,y)=>({x:num(x),y:num(y)});
+const length=(a,b)=>Math.hypot(b.x-a.x,b.y-a.y);
+const midpoint=(a,b)=>point((a.x+b.x)/2,(a.y+b.y)/2);
+const lerp=(a,b,t)=>point(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t);
+function distancePointSegment(p,a,b){
+ const vx=b.x-a.x,vy=b.y-a.y,den=vx*vx+vy*vy;
+ const t=den<EPS?0:clamp(((p.x-a.x)*vx+(p.y-a.y)*vy)/den,0,1);
+ const foot=lerp(a,b,t);
+ return {distance:length(p,foot),t,foot};
+}
+function furnitureCorners(f){
+ const c=Math.cos(f.rotation||0),s=Math.sin(f.rotation||0),hw=f.w/2,hd=f.d/2;
+ return [[-hw,-hd],[hw,-hd],[hw,hd],[-hw,hd]].map(v=>point(f.x+v[0]*c-v[1]*s,f.y+v[0]*s+v[1]*c));
+}
+function segmentsIntersect(a,b,c,d){
+ const cross=(p,q,r)=>(q.x-p.x)*(r.y-p.y)-(q.y-p.y)*(r.x-p.x);
+ const o1=cross(a,b,c),o2=cross(a,b,d),o3=cross(c,d,a),o4=cross(c,d,b);
+ if(o1*o2<0&&o3*o4<0)return true;
+ return distancePointSegment(c,a,b).distance<EPS||
+        distancePointSegment(d,a,b).distance<EPS||
+        distancePointSegment(a,c,d).distance<EPS||
+        distancePointSegment(b,c,d).distance<EPS;
+}
+function segmentDistance(a,b,c,d){
+ if(segmentsIntersect(a,b,c,d))return 0;
+ return Math.min(distancePointSegment(a,c,d).distance,distancePointSegment(b,c,d).distance,
+   distancePointSegment(c,a,b).distance,distancePointSegment(d,a,b).distance);
+}
+function furnitureClearances(f,walls){
+ const poly=furnitureCorners(f);const result=[];
+ for(let i=0;i<walls.length;i++){
+  const wall=walls[i];let d=Infinity;
+  for(let k=0;k<4;k++)d=Math.min(d,segmentDistance(poly[k],poly[(k+1)%4],wall.a,wall.b));
+  result.push({wallId:wall.id,index:i+1,distance:round(Math.max(0,d-wall.thickness/2),3)});
+ }
+ return result.sort((a,b)=>a.distance-b.distance);
+}
+function inPoly(pt,poly){
+ let inside=false;
+ for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+   const a=poly[i],b=poly[j];if((a.y>pt.y)!==(b.y>pt.y)&&pt.x<(b.x-a.x)*(pt.y-a.y)/(b.y-a.y)+a.x)inside=!inside;
+ }
+ return inside;
+}
+function empty(name){
+ return {schema:SCHEMA,version:VERSION,name:name||"我的平面圖",wallHeight:2.7,wallThickness:0.13,walls:[],openings:[],furniture:[],measurements:[]};
+}
+function wall(a,b,extra){return Object.assign({id:uid(),a:point(a[0],a[1]),b:point(b[0],b[1]),height:2.7,thickness:0.13},extra||{});}
+function demo(name){
+ const m=empty(name||"示範：6 × 4.5 米");
+ const coords=[[[0,0],[6,0]],[[6,0],[6,4.5]],[[6,4.5],[0,4.5]],[[0,4.5],[0,0]],[[2.5,0],[2.5,2.4]],[[0,2.4],[2.5,2.4]]];
+ m.walls=coords.map(c=>wall(c[0],c[1]));
+ m.openings=[
+  {id:uid(),wallId:m.walls[0].id,type:"door",offset:4.65,width:0.9,height:2.1,sill:0},
+  {id:uid(),wallId:m.walls[1].id,type:"window",offset:2.3,width:1.5,height:1.15,sill:0.9},
+  {id:uid(),wallId:m.walls[4].id,type:"door",offset:1.1,width:0.78,height:2.1,sill:0}
+ ];
+ const furniture=(type,x,y,rot=0)=>{const c=catalog.find(v=>v.type===type);return {id:uid(),type:c.type,name:c.name,x,y,w:c.w,d:c.d,h:c.h,rotation:rot,locked:false,color:c.color};};
+ m.furniture=[furniture("sofa",4.3,3.7),furniture("table",4.3,1.4),furniture("bed",1.1,1.2),furniture("wardrobe",0.35,3.55)];
+ return m;
+}
+function sanitize(raw){
+ if(!raw||typeof raw!=="object"||raw.schema!==SCHEMA||raw.version!==VERSION)throw new Error("不支援的圖則格式或版本");
+ if(!Array.isArray(raw.walls)||!Array.isArray(raw.furniture)||!Array.isArray(raw.openings)||!Array.isArray(raw.measurements))throw new Error("圖則資料不完整");
+ if(raw.walls.length>500||raw.furniture.length>500||raw.openings.length>250||raw.measurements.length>500)throw new Error("物件數量超出限制");
+ const safePos=(v)=>clamp(num(v),-1000,1000);
+ const safePoint=p=>point(safePos(p&&p.x),safePos(p&&p.y));
+ const safeName=(s,fallback)=>typeof s==="string"?s.slice(0,80):fallback;
+ const m=empty(safeName(raw.name,"匯入平面圖"));
+ m.wallHeight=clamp(num(raw.wallHeight,2.7),1.7,6);
+ m.wallThickness=clamp(num(raw.wallThickness,.13),.05,.8);
+ const seen=new Set();
+ function id(v){const key=typeof v==="string"&&v.length<100?v:uid();if(seen.has(key)){const next=uid();seen.add(next);return next;}seen.add(key);return key;}
+ m.walls=raw.walls.map(w=>({id:id(w.id),a:safePoint(w.a),b:safePoint(w.b),height:clamp(num(w.height,2.7),1.7,6),thickness:clamp(num(w.thickness,.13),.05,.8)})).filter(w=>length(w.a,w.b)>=.1);
+ const wallIds=new Set(m.walls.map(w=>w.id));
+ m.openings=raw.openings.filter(o=>wallIds.has(o.wallId)&&["door","window"].includes(o.type)).map(o=>{
+   const w=m.walls.find(v=>v.id===o.wallId),len=length(w.a,w.b);
+   const width=clamp(num(o.width,.8),.3,Math.min(3,len*.9));
+   return {id:id(o.id),wallId:w.id,type:o.type,width,offset:clamp(num(o.offset,len/2),width/2,len-width/2),height:clamp(num(o.height,o.type==="door"?2.1:1.1),.3,w.height),sill:o.type==="door"?0:clamp(num(o.sill,.9),.2,Math.max(.2,w.height-.3))};
+ }).filter(o=>o.width>=.3);
+ m.furniture=raw.furniture.map(f=>{
+   const c=catalog.find(v=>v.type===f.type)||catalog[catalog.length-1];
+   return {id:id(f.id),type:c.type,name:safeName(f.name,c.name),x:safePos(f.x),y:safePos(f.y),w:clamp(num(f.w,c.w),.1,15),d:clamp(num(f.d,c.d),.1,15),h:clamp(num(f.h,c.h),.1,6),rotation:clamp(num(f.rotation),-Math.PI*100,Math.PI*100),locked:f.locked===true,color:/^#[0-9a-f]{6}$/i.test(f.color||"")?f.color:c.color};
+ });
+ m.measurements=raw.measurements.map(q=>({id:id(q.id),a:safePoint(q.a),b:safePoint(q.b)}));
+ return m;
+}
+function getBounds(model){
+ const pts=[];for(const w of model.walls)pts.push(w.a,w.b);
+ for(const f of model.furniture)pts.push(...furnitureCorners(f));
+ for(const q of model.measurements)pts.push(q.a,q.b);
+ if(!pts.length)return {minX:-4,maxX:4,minY:-3,maxY:3,width:8,height:6,cx:0,cy:0,empty:true};
+ const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y);
+ const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+ return {minX,maxX,minY,maxY,width:Math.max(.1,maxX-minX),height:Math.max(.1,maxY-minY),cx:(minX+maxX)/2,cy:(minY+maxY)/2,empty:false};
+}
+function fileExport(model){return JSON.stringify({format:SCHEMA,exportedAt:new Date().toISOString(),project:model},null,2);}
+function fileImport(text){
+ if(text.length>3000000)throw new Error("檔案超過 3 MB 限制");
+ const obj=JSON.parse(text);return sanitize(obj&&obj.format===SCHEMA?obj.project:obj);
+}
+const api={SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,furnitureCorners,furnitureClearances,inPoly,empty,wall,demo,sanitize,getBounds,fileExport,fileImport};
+if(typeof module!=="undefined"&&module.exports)module.exports=api;
+root.EasyHomeCore=api;
+})(typeof window!=="undefined"?window:globalThis);
+
+;
+/* Easy Home 3D — offline canvas renderer (2D + perspective 3D). MIT © 2026 loktoto */
+(function(root){
+"use strict";
+const G=root.EasyHomeCore;
+const rgba=(hex,alpha)=>{const v=parseInt((hex||"#82a8bb").replace("#",""),16);return "rgba("+((v>>16)&255)+","+((v>>8)&255)+","+(v&255)+","+alpha+")";};
+function line(ctx,a,b,color,width=1,dash=[]){
+ ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([]);
+}
+function pill(ctx,text,x,y,fg="#e9f2ff",bg="#173049"){
+ ctx.font="700 11px system-ui,sans-serif";const w=ctx.measureText(text).width+13;
+ ctx.fillStyle=bg;ctx.beginPath();ctx.roundRect(x-w/2,y-10,w,19,5);ctx.fill();
+ ctx.fillStyle=fg;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(text,x,y);
+}
+function grid(ctx,w,h,view,toScreen){
+ const s=view.scale;let step=s>105?.25:s>48?.5:s>24?1:2;
+ const min=toWorld({x:0,y:0},view,w,h),max=toWorld({x:w,y:h},view,w,h);
+ const a=Math.floor(min.x/step)*step,b=Math.ceil(max.x/step)*step,c=Math.floor(min.y/step)*step,d=Math.ceil(max.y/step)*step;
+ ctx.strokeStyle="#203249";ctx.lineWidth=1;ctx.beginPath();
+ for(let x=a;x<=b+.00001;x+=step){const p=toScreen({x,y:0});ctx.moveTo(Math.round(p.x)+.5,0);ctx.lineTo(Math.round(p.x)+.5,h);}
+ for(let y=c;y<=d+.00001;y+=step){const p=toScreen({x:0,y});ctx.moveTo(0,Math.round(p.y)+.5);ctx.lineTo(w,Math.round(p.y)+.5);}
+ ctx.stroke();
+ const origin=toScreen({x:0,y:0});line(ctx,{x:origin.x,y:0},{x:origin.x,y:h},"#2a4761",1);line(ctx,{x:0,y:origin.y},{x:w,y:origin.y},"#2a4761",1);
+}
+function toWorld(p,view,w,h){return G.point((p.x-w/2-view.panX)/view.scale,(p.y-h/2-view.panY)/view.scale);}
+function paint2D(ctx,w,h,model,opts){
+ const view=opts.view,sc=view.scale;
+ const S=p=>({x:w/2+view.panX+p.x*sc,y:h/2+view.panY+p.y*sc});
+ grid(ctx,w,h,view,S);
+ const chosen=opts.selected||{}, dims=opts.dimensions!==false;
+ const wallOpening=new Map();
+ for(const o of model.openings){const list=wallOpening.get(o.wallId)||[];list.push(o);wallOpening.set(o.wallId,list);}
+ for(const wall of model.walls){
+  const a=S(wall.a),b=S(wall.b),len=G.length(wall.a,wall.b);
+  if(len<.01)continue;
+  const intervals=(wallOpening.get(wall.id)||[]).map(o=>({start:G.clamp((o.offset-o.width/2)/len,0,1),end:G.clamp((o.offset+o.width/2)/len,0,1)})).sort((a,b)=>a.start-b.start);
+  let cursor=0;const col=chosen.kind==="wall"&&chosen.id===wall.id?"#ffcb7f":"#ddebf4";
+  for(const interval of intervals){if(interval.start>cursor){line(ctx,S(G.lerp(wall.a,wall.b,cursor)),S(G.lerp(wall.a,wall.b,interval.start)),col,Math.max(4,wall.thickness*sc));}cursor=Math.max(cursor,interval.end);}
+  if(cursor<1)line(ctx,S(G.lerp(wall.a,wall.b,cursor)),b,col,Math.max(4,wall.thickness*sc));
+  if(chosen.kind==="wall"&&chosen.id===wall.id){for(const p of [a,b]){ctx.fillStyle="#ffcb7f";ctx.beginPath();ctx.arc(p.x,p.y,5,0,Math.PI*2);ctx.fill();}}
+  if(dims){const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2,nx=-(b.y-a.y)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y)),ny=(b.x-a.x)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y));pill(ctx,G.round(len,2).toFixed(2)+" m",cx+nx*18,cy+ny*18);}
+ }
+ for(const o of model.openings){
+  const wall=model.walls.find(v=>v.id===o.wallId);if(!wall)continue;
+  const len=G.length(wall.a,wall.b);if(len<.1)continue;
+  const a=S(G.lerp(wall.a,wall.b,(o.offset-o.width/2)/len)),b=S(G.lerp(wall.a,wall.b,(o.offset+o.width/2)/len)),mid={x:(a.x+b.x)/2,y:(a.y+b.y)/2};
+  const c=chosen.kind==="opening"&&chosen.id===o.id?"#ffd17e":o.type==="window"?"#6ee6ec":"#ebad68";
+  if(o.type==="window"){
+   line(ctx,a,b,c,6);line(ctx,a,b,"#18314d",2);
+  }else{
+   line(ctx,a,b,c,2,[4,4]);
+   const dx=b.x-a.x,dy=b.y-a.y;const sign=dx*dy>=0?1:1;
+   const hinge=a,edge={x:a.x-dy*sign,y:a.y+dx*sign};
+   line(ctx,hinge,edge,c,1);
+   ctx.beginPath();ctx.arc(hinge.x,hinge.y,Math.hypot(dx,dy),Math.atan2(edge.y-hinge.y,edge.x-hinge.x),Math.atan2(b.y-hinge.y,b.x-hinge.x),true);ctx.strokeStyle=rgba("#ebad68",.5);ctx.lineWidth=1;ctx.stroke();
+  }
+  if(dims&&sc>35)pill(ctx,G.round(o.width,2).toFixed(2)+" m",mid.x,mid.y-12,c);
+ }
+ for(const f of model.furniture){
+  const corners=G.furnitureCorners(f).map(S);
+  ctx.beginPath();corners.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();
+  ctx.fillStyle=rgba(f.color,.62);ctx.fill();ctx.strokeStyle=chosen.kind==="furniture"&&chosen.id===f.id?"#ffdd89":f.locked?"#edca96":"#b9dbea";ctx.lineWidth=chosen.id===f.id&&chosen.kind==="furniture"?3:1.5;ctx.stroke();
+  const center=S(f);ctx.font="700 12px system-ui,sans-serif";ctx.textBaseline="middle";ctx.textAlign="center";ctx.fillStyle="#f5f9ff";
+  if(Math.min(f.w,f.d)*sc>39){ctx.fillText((f.locked?"🔒 ":"")+f.name.slice(0,10),center.x,center.y-6);if(dims)ctx.fillText(G.round(f.w,2)+" × "+G.round(f.d,2)+" m",center.x,center.y+11);}
+  else ctx.fillText(f.locked?"🔒":"▣",center.x,center.y);
+ }
+ for(const q of model.measurements){
+  const a=S(q.a),b=S(q.b),active=chosen.kind==="measurement"&&chosen.id===q.id;
+  line(ctx,a,b,active?"#ffd17e":"#7ee5bb",1.6,[4,4]);
+  for(const p of [a,b]){ctx.fillStyle=active?"#ffd17e":"#8fe7c8";ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();}
+  pill(ctx,G.round(G.length(q.a,q.b),2).toFixed(2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-12,"#92e4ca");
+ }
+ if(opts.pending&&opts.cursor){
+  const a=S(opts.pending),b=S(opts.cursor);
+  line(ctx,a,b,"#7dc3ff",2,[7,5]);
+  pill(ctx,G.round(G.length(opts.pending,opts.cursor),2).toFixed(2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-15);
+  ctx.beginPath();ctx.arc(a.x,a.y,4,0,Math.PI*2);ctx.fillStyle="#b2e2ff";ctx.fill();
+ }
+ if(opts.cursor&&opts.tool==="wall"&&!opts.pending){
+  const p=S(opts.cursor);line(ctx,{x:p.x-7,y:p.y},{x:p.x+7,y:p.y},"#a6d9ff");line(ctx,{x:p.x,y:p.y-7},{x:p.x,y:p.y+7},"#a6d9ff");
+ }
+}
+function projectFactory(w,h,bounds,opts){
+ const orbit=opts.orbit||{azimuth:-.65,elevation:.82,distance:1};
+ const cx=bounds.cx,cy=bounds.cy,span=Math.max(bounds.width,bounds.height,4);
+ const dist=span*1.85*orbit.distance+4,el=G.clamp(orbit.elevation,.15,1.48),az=orbit.azimuth;
+ const camera=[cx+dist*Math.cos(el)*Math.sin(az),cy+dist*Math.cos(el)*Math.cos(az),dist*Math.sin(el)+2];
+ const target=[cx,cy,1];
+ function normalize(a){const m=Math.hypot(...a)||1;return a.map(v=>v/m);}
+ function cross(a,b){return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
+ function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
+ const forward=normalize(target.map((v,i)=>v-camera[i])),right=normalize(cross(forward,[0,0,1])),up=cross(right,forward);
+ const f=Math.min(w,h)*1.42;
+ return function(p){
+  const q=[p[0]-camera[0],p[1]-camera[1],p[2]-camera[2]];
+  const z=dot(q,forward);
+  return {x:w/2+f*dot(q,right)/Math.max(.1,z),y:h/2-f*dot(q,up)/Math.max(.1,z),z,valid:z>.1};
+ };
+}
+function polygon(ctx,pts,fill,stroke="#284257",width=1){
+ if(pts.length<3||pts.some(p=>!p.valid))return;
+ ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();
+ ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke();}
+}
+function boxFaces(model,project,items,box){
+ const c=Math.cos(box.rot||0),s=Math.sin(box.rot||0),hx=box.w/2,hy=box.d/2;
+ const XY=[[-hx,-hy],[hx,-hy],[hx,hy],[-hx,hy]].map(v=>[box.x+v[0]*c-v[1]*s,box.y+v[0]*s+v[1]*c]);
+ const pts=XY.map(v=>project([v[0],v[1],box.z])).concat(XY.map(v=>project([v[0],v[1],box.z+box.h])));
+ const faces=[[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7],[4,5,6,7]];
+ const colors=[rgba(box.color,.86),rgba(box.color,.73),rgba(box.color,.8),rgba(box.color,.68),box.kind==="wall"?"#dce8f1":box.color];
+ for(let i=0;i<faces.length;i++){
+   const poly=faces[i].map(j=>pts[j]);
+   const avg=poly.reduce((v,p)=>v+p.z,0)/poly.length;
+   items.push({poly,depth:avg,color:colors[i],kind:box.kind,id:box.id});
+ }
+}
+function boxOnWall(model,proj,faces,wall,t0,t1,z,h){
+ if(t1<=t0+.0001||h<=.01)return;
+ const a=G.lerp(wall.a,wall.b,t0),b=G.lerp(wall.a,wall.b,t1);
+ boxFaces(model,proj,faces,{x:(a.x+b.x)/2,y:(a.y+b.y)/2,z,w:G.length(a,b),d:wall.thickness,h,rot:Math.atan2(b.y-a.y,b.x-a.x),color:"#c0d2e2",kind:"wall",id:wall.id});
+}
+function paint3D(ctx,w,h,model,opts){
+ const bounds=G.getBounds(model),project=projectFactory(w,h,bounds,opts),hits=[],faces=[];
+ const pad=1.5,minX=bounds.minX-pad,maxX=bounds.maxX+pad,minY=bounds.minY-pad,maxY=bounds.maxY+pad;
+ polygon(ctx,[[minX,minY,0],[maxX,minY,0],[maxX,maxY,0],[minX,maxY,0]].map(project),"#172c3d","#365267");
+ const step=Math.max(bounds.width,bounds.height)>18?2:.5;
+ for(let x=Math.floor(minX/step)*step;x<=maxX;x+=step){
+  const a=project([x,minY,.008]),b=project([x,maxY,.008]);line(ctx,a,b,"#2a465b",.8);
+ }
+ for(let y=Math.floor(minY/step)*step;y<=maxY;y+=step){
+  const a=project([minX,y,.008]),b=project([maxX,y,.008]);line(ctx,a,b,"#2a465b",.8);
+ }
+ for(const wall of model.walls){
+  const len=G.length(wall.a,wall.b);if(len<.1)continue;
+  const openings=model.openings.filter(v=>v.wallId===wall.id).sort((a,b)=>a.offset-b.offset);
+  let t=0;for(const o of openings){
+   const ta=G.clamp((o.offset-o.width/2)/len,0,1),tb=G.clamp((o.offset+o.width/2)/len,0,1);
+   boxOnWall(model,project,faces,wall,t,ta,0,wall.height);
+   if(o.sill>.02)boxOnWall(model,project,faces,wall,ta,tb,0,Math.min(o.sill,wall.height));
+   const top=o.sill+o.height;
+   if(top<wall.height-.02)boxOnWall(model,project,faces,wall,ta,tb,top,wall.height-top);
+   if(o.type==="window"){
+    const a=G.lerp(wall.a,wall.b,ta),b=G.lerp(wall.a,wall.b,tb);
+    const mid=G.midpoint(a,b);
+    boxFaces(model,project,faces,{x:mid.x,y:mid.y,z:o.sill,w:G.length(a,b),d:.018,h:Math.min(o.height,wall.height-o.sill),rot:Math.atan2(b.y-a.y,b.x-a.x),color:"#68b7d8",kind:"opening",id:o.id});
+   }
+   t=Math.max(t,tb);
+  }
+  boxOnWall(model,project,faces,wall,t,1,0,wall.height);
+ }
+ for(const f of model.furniture)boxFaces(model,project,faces,{x:f.x,y:f.y,z:0,w:f.w,d:f.d,h:f.h,rot:f.rotation,color:f.color,kind:"furniture",id:f.id});
+ faces.sort((a,b)=>b.depth-a.depth);
+ for(const f of faces){
+  const active=opts.selected&&opts.selected.kind===f.kind&&opts.selected.id===f.id;
+  polygon(ctx,f.poly,f.color,active?"#ffdb83":f.kind==="wall"?"#6c899f":"#283a4d",active?2.2:.9);
+  if(f.kind==="furniture"||f.kind==="wall")hits.push({poly:f.poly,kind:f.kind,id:f.id});
+ }
+ for(const q of model.measurements){
+  const a=project([q.a.x,q.a.y,.05]),b=project([q.b.x,q.b.y,.05]);
+  line(ctx,a,b,"#81e7b6",2,[5,5]);pill(ctx,G.round(G.length(q.a,q.b),2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-8,"#9af5ce");
+ }
+ return hits;
+}
+function draw(canvas,ctx,model,opts){
+ const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return [];
+ ctx.clearRect(0,0,w,h);ctx.fillStyle="#0b1727";ctx.fillRect(0,0,w,h);
+ if(opts.mode==="3d")return paint3D(ctx,w,h,model,opts);
+ paint2D(ctx,w,h,model,opts);return [];
+}
+root.EasyHomeRenderer={draw,toWorld};
+})(window);
+
+;
+/* Easy Home 3D — browser editor. No tracking, account or server required. MIT © 2026 loktoto */
+(function(){
+"use strict";
+const G=window.EasyHomeCore,R=window.EasyHomeRenderer;
+const $=id=>document.getElementById(id);
+const canvas=$("stage"),ctx=canvas.getContext("2d"),STORAGE="easy-home-3d:projects:v1";
+const $num=n=>G.round(n,2).toFixed(2), esc=v=>String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let state,history=[],future=[],saveTimer=null,toastTimer=null,drawRequested=false;
+const ui={
+ mode:"2d",tool:"select",snap:true,dimensions:true,
+ view:{scale:80,panX:0,panY:0},orbit:{azimuth:-.75,elevation:.82,distance:1},
+ selected:null,pending:null,cursor:null,drag:null,hits:[]
+};
+function newProject(data){return {id:G.uid(),name:data.name,data,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};}
+function readStore(){
+ try{
+  const raw=JSON.parse(localStorage.getItem(STORAGE)||"null");
+  if(raw&&Array.isArray(raw.projects)&&raw.projects.length<=100){
+   const projects=[];
+   for(const p of raw.projects){try{
+    const m=G.sanitize(p.data);
+    projects.push({id:String(p.id||G.uid()),name:String(p.name||m.name).slice(0,80),data:m,createdAt:p.createdAt||"",updatedAt:p.updatedAt||""});
+   }catch(e){}}
+   if(projects.length)return {projects,activeId:projects.some(p=>p.id===raw.activeId)?raw.activeId:projects[0].id};
+  }
+ }catch(e){console.warn("Local storage unavailable or invalid",e);}
+ const p=newProject(G.empty());return {projects:[p],activeId:p.id};
+}
+state=readStore();
+const active=()=>state.projects.find(p=>p.id===state.activeId)||state.projects[0];
+const model=()=>active().data;
+function saveNow(){
+ clearTimeout(saveTimer);saveTimer=null;
+ try{
+  localStorage.setItem(STORAGE,JSON.stringify(state));
+  $("saveStatus").textContent="✓ 本機已儲存";$("saveStatus").classList.remove("error");
+ }catch(e){$("saveStatus").textContent="⚠ 未能儲存，請匯出備份";$("saveStatus").classList.add("error");}
+}
+function scheduleSave(){
+ active().updatedAt=new Date().toISOString();
+ $("saveStatus").textContent="儲存中…";clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,250);
+}
+function snapshot(){return JSON.stringify(model());}
+function record(before){
+ if(before===snapshot())return false;
+ history.push(before);if(history.length>65)history.shift();future=[];scheduleSave();refresh();return true;
+}
+function commit(fn){
+ const before=snapshot();fn();return record(before);
+}
+function undo(){
+ if(!history.length)return toast("已經沒有可以復原的操作");
+ future.push(snapshot());active().data=G.sanitize(JSON.parse(history.pop()));ui.selected=null;ui.pending=null;scheduleSave();refresh();toast("已復原");
+}
+function redo(){
+ if(!future.length)return toast("已經沒有可以重做的操作");
+ history.push(snapshot());active().data=G.sanitize(JSON.parse(future.pop()));ui.selected=null;ui.pending=null;scheduleSave();refresh();toast("已重做");
+}
+function clearUndo(){history=[];future=[];ui.selected=null;ui.pending=null;ui.cursor=null;ui.drag=null;}
+function toast(text){
+ const el=$("toast");el.textContent=text;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2500);
+}
+function getObject(){
+ if(!ui.selected)return null;
+ const m=model();
+ return ui.selected.kind==="wall"?m.walls.find(o=>o.id===ui.selected.id):
+ ui.selected.kind==="opening"?m.openings.find(o=>o.id===ui.selected.id):
+ ui.selected.kind==="furniture"?m.furniture.find(o=>o.id===ui.selected.id):
+ m.measurements.find(o=>o.id===ui.selected.id);
+}
+function setSelection(kind,id){
+ ui.selected=id?{kind,id}:null;renderInspector();render();
+ if(ui.selected&&window.matchMedia("(max-width:780px)").matches)$("inspector").classList.add("open");
+}
+function render(){
+ if(drawRequested)return;drawRequested=true;
+ requestAnimationFrame(()=>{
+  drawRequested=false;
+  const w=canvas.clientWidth,h=canvas.clientHeight;
+  if(!w||!h)return;
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){
+   canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
+  }
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ui.hits=R.draw(canvas,ctx,model(),ui);
+ });
+}
+function refresh(){
+ $("projectName").value=active().name;
+ $("view2d").classList.toggle("active",ui.mode==="2d");
+ $("view3d").classList.toggle("active",ui.mode==="3d");
+ $("view2d").setAttribute("aria-pressed",ui.mode==="2d");
+ $("view3d").setAttribute("aria-pressed",ui.mode==="3d");
+ document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===ui.tool));
+ $("snapButton").textContent="吸附："+(ui.snap?"開":"關");$("snapButton").classList.toggle("active",ui.snap);
+ $("snapButton").setAttribute("aria-pressed",String(ui.snap));
+ $("dimsButton").textContent="尺寸："+(ui.dimensions?"開":"關");$("dimsButton").classList.toggle("active",ui.dimensions);
+ $("dimsButton").setAttribute("aria-pressed",String(ui.dimensions));
+ $("undoButton").disabled=!history.length;$("redoButton").disabled=!future.length;
+ const m=model();$("drawingStats").textContent=m.walls.length+" 幅牆 · "+m.openings.length+" 個門窗 · "+m.furniture.length+" 件傢俬";
+ $("startTip").hidden=!!(m.walls.length||m.furniture.length||m.openings.length||m.measurements.length||ui.tool!=="select"||ui.mode!=="2d");
+ $("modeHint").textContent=ui.mode==="3d"?"3D 模式：拖動旋轉，滾輪縮放，按 2D 可返回編輯。":
+ ui.tool==="wall"?"畫牆：按第一點再按第二點；可連續畫。Esc 結束。":
+ ui.tool==="door"?"加入門：按一下牆身，再於右側輸入實際門闊。":
+ ui.tool==="window"?"加入窗：按一下牆身，再調整窗闊、窗高及窗台高度。":
+ ui.tool==="measure"?"量度：先按起點，再按終點，顯示兩點距離。":
+ ui.tool==="pan"?"移動畫布：拖動畫面；滑鼠滾輪縮放。":
+ "選取：按傢俬或牆身可修改尺寸，拖動可移位。";
+ $("scaleLabel").textContent=ui.mode==="2d"?"單位：米 (m) · 格線按縮放顯示":"透視 3D · 模型尺寸以米 (m) 計";
+ $("selectionHint").textContent=ui.selected?"已選取："+(getObject()?.name||(ui.selected.kind==="wall"?"牆身":ui.selected.kind==="opening"?"門窗":"量度")):"";
+ renderInspector();render();
+}
+function fit(){
+ const bounds=G.getBounds(model()),w=canvas.clientWidth||800,h=canvas.clientHeight||550;
+ ui.view.scale=G.clamp(Math.min(w/(bounds.width+2.5),h/(bounds.height+2.5)),18,145);
+ ui.view.panX=-bounds.cx*ui.view.scale;ui.view.panY=-bounds.cy*ui.view.scale;
+ ui.orbit.distance=1;render();
+}
+function mode(next){
+ ui.mode=next;ui.pending=null;ui.drag=null;if(next==="3d")ui.tool="select";
+ $("inspector").classList.remove("open");refresh();
+}
+function tool(next){
+ if(ui.mode==="3d"&&next!=="select"&&next!=="pan")ui.mode="2d";
+ ui.tool=next;ui.pending=null;ui.drag=null;refresh();
+}
+const position=e=>{const r=canvas.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};};
+const world=e=>R.toWorld(position(e),ui.view,canvas.clientWidth,canvas.clientHeight);
+function snapped(p,original=null){
+ if(!ui.snap)return G.point(G.round(p.x,3),G.round(p.y,3));
+ let q=G.point(Math.round(p.x*10)/10,Math.round(p.y*10)/10);
+ let d=.24;
+ for(const wall of model().walls)for(const end of [wall.a,wall.b]){
+  const len=G.length(p,end);if(len<d){d=len;q=G.point(end.x,end.y);}
+ }
+ if(original){
+  const dx=Math.abs(q.x-original.x),dy=Math.abs(q.y-original.y);
+  if(dx>dy*2.3)q.y=original.y;
+  else if(dy>dx*2.3)q.x=original.x;
+ }
+ return q;
+}
+function nearestWall(p){
+ let found=null,threshold=Math.max(.16,17/ui.view.scale);
+ for(const wall of model().walls){
+  const t=G.distancePointSegment(p,wall.a,wall.b);
+  if(t.distance<threshold&&(!found||found.distance>t.distance))found={wall,distance:t.distance,t:t.t,foot:t.foot};
+ }
+ return found;
+}
+function hit2d(p){
+ const m=model();
+ for(let i=m.furniture.length-1;i>=0;i--)if(G.inPoly(p,G.furnitureCorners(m.furniture[i])))return {kind:"furniture",id:m.furniture[i].id};
+ for(let i=m.measurements.length-1;i>=0;i--)if(G.distancePointSegment(p,m.measurements[i].a,m.measurements[i].b).distance<Math.max(.09,9/ui.view.scale))return {kind:"measurement",id:m.measurements[i].id};
+ for(let i=m.openings.length-1;i>=0;i--){
+  const o=m.openings[i],wall=m.walls.find(v=>v.id===o.wallId);if(!wall)continue;
+  const len=G.length(wall.a,wall.b),hit=G.distancePointSegment(p,wall.a,wall.b);
+  if(hit.distance<Math.max(.18,14/ui.view.scale)&&Math.abs(hit.t*len-o.offset)<=o.width/2+.08)return {kind:"opening",id:o.id};
+ }
+ const w=nearestWall(p);return w?{kind:"wall",id:w.wall.id}:null;
+}
+function selected3d(pos){
+ for(let i=ui.hits.length-1;i>=0;i--){
+  const h=ui.hits[i];if(G.inPoly(pos,h.poly))return {kind:h.kind,id:h.id};
+ }
+ return null;
+}
+function addOpening(which,p){
+ const hit=nearestWall(p);
+ if(!hit)return toast("請先畫牆，再按牆身加入"+(which==="door"?"門":"窗"));
+ const w=hit.wall,len=G.length(w.a,w.b);if(len<.45)return toast("牆太短，無法放置門窗");
+ const width=Math.min(which==="door"?.85:1.2,len*.8);
+ const opening={id:G.uid(),type:which,wallId:w.id,offset:G.clamp(hit.t*len,width/2,len-width/2),
+  width,height:which==="door"?Math.min(2.1,w.height):Math.min(1.1,w.height*.5),sill:which==="door"?0:Math.min(.9,w.height*.35)};
+ commit(()=>model().openings.push(opening));setSelection("opening",opening.id);
+}
+function changeStart(e){
+ e.preventDefault();canvas.focus({preventScroll:true});
+ const p=position(e);
+ if(ui.mode==="3d"){
+  const hit=ui.tool==="select"?selected3d(p):null;
+  if(hit){setSelection(hit.kind,hit.id);ui.drag={type:"3dselect",start:p};}
+  else{ui.drag={type:"orbit",start:p,az:ui.orbit.azimuth,el:ui.orbit.elevation};}
+  canvas.setPointerCapture(e.pointerId);return;
+ }
+ const w=world(e);let q=snapped(w,ui.pending&&e.shiftKey?ui.pending:null);
+ ui.cursor=q;
+ if(ui.tool==="wall"){
+  if(!ui.pending){ui.pending=q;refresh();return;}
+  if(G.length(ui.pending,q)<.1){toast("牆最少需要 0.1 米");return;}
+  const m=model(),next=G.wall([ui.pending.x,ui.pending.y],[q.x,q.y],{height:m.wallHeight,thickness:m.wallThickness});
+  commit(()=>m.walls.push(next));ui.pending=q;render();return;
+ }
+ if(ui.tool==="measure"){
+  if(!ui.pending){ui.pending=q;render();return;}
+  if(G.length(ui.pending,q)<.02){toast("請選兩個不同位置");return;}
+  const measurement={id:G.uid(),a:ui.pending,b:q};
+  commit(()=>model().measurements.push(measurement));ui.pending=null;setSelection("measurement",measurement.id);return;
+ }
+ if(ui.tool==="door"||ui.tool==="window"){addOpening(ui.tool,w);return;}
+ if(ui.tool==="pan"){ui.drag={type:"pan",start:p,panX:ui.view.panX,panY:ui.view.panY};canvas.setPointerCapture(e.pointerId);return;}
+ const hit=hit2d(w);
+ if(hit){
+  setSelection(hit.kind,hit.id);
+  const obj=getObject(),locked=hit.kind==="furniture"&&obj.locked;
+  if(!locked&&hit.kind!=="measurement"){
+   ui.drag={type:hit.kind,origin:w,start:p,before:snapshot(),original:JSON.parse(JSON.stringify(obj)),moved:false};
+  }else if(locked)toast("已鎖定傢俬；先到屬性解除鎖定");
+ }else{setSelection(null,null);ui.drag={type:"pan",start:p,panX:ui.view.panX,panY:ui.view.panY};}
+ canvas.setPointerCapture(e.pointerId);
+}
+function changeMove(e){
+ const p=position(e);
+ if(ui.mode==="3d"){
+  if(ui.drag&&ui.drag.type==="orbit"){
+   ui.orbit.azimuth=ui.drag.az+(p.x-ui.drag.start.x)*.008;
+   ui.orbit.elevation=G.clamp(ui.drag.el+(p.y-ui.drag.start.y)*.006,.15,1.48);render();
+  }
+  return;
+ }
+ const w=world(e);ui.cursor=snapped(w,ui.pending&&e.shiftKey?ui.pending:null);
+ const d=ui.drag;
+ if(!d){render();return;}
+ if(d.type==="pan"){
+  ui.view.panX=d.panX+(p.x-d.start.x);ui.view.panY=d.panY+(p.y-d.start.y);render();return;
+ }
+ if(!d.original)return;
+ if(Math.hypot(p.x-d.start.x,p.y-d.start.y)<3&&!d.moved)return;
+ d.moved=true;
+ const dx=w.x-d.origin.x,dy=w.y-d.origin.y;
+ const adj=v=>ui.snap?Math.round(v*20)/20:G.round(v,3);
+ const obj=getObject();if(!obj)return;
+ if(d.type==="furniture"){
+  obj.x=adj(d.original.x+dx);obj.y=adj(d.original.y+dy);
+ }else if(d.type==="wall"){
+  obj.a=G.point(adj(d.original.a.x+dx),adj(d.original.a.y+dy));
+  obj.b=G.point(adj(d.original.b.x+dx),adj(d.original.b.y+dy));
+ }else if(d.type==="opening"){
+  const wall=model().walls.find(v=>v.id===obj.wallId);if(!wall)return;
+  const hit=G.distancePointSegment(w,wall.a,wall.b),len=G.length(wall.a,wall.b);
+  obj.offset=G.round(G.clamp(hit.t*len,obj.width/2,len-obj.width/2),2);
+ }
+ render();
+}
+function changeEnd(){
+ if(ui.drag){
+  const d=ui.drag;ui.drag=null;
+  if(d.moved&&d.before!==snapshot()){record(d.before);}
+  else render();
+ }
+}
+function escapeAction(){
+ if(ui.pending){ui.pending=null;refresh();toast("已結束當前繪製");}
+ else if(ui.selected){setSelection(null,null);$("inspector").classList.remove("open");}
+ else tool("select");
+}
+function editNumber(prop,value){
+ if(!ui.selected)return;
+ const obj=getObject();if(!obj)return;
+ const n=Number(value);if(!Number.isFinite(n))return toast("請輸入有效數字");
+ const type=ui.selected.kind;
+ commit(()=>{
+  if(type==="wall"){
+   if(["ax","ay","bx","by"].includes(prop)){
+    const key=prop[0]==="a"?"a":"b",axis=prop[1]==="x"?"x":"y";
+    const candidate={a:G.point(obj.a.x,obj.a.y),b:G.point(obj.b.x,obj.b.y)};
+    candidate[key][axis]=G.clamp(n,-1000,1000);
+    if(G.length(candidate.a,candidate.b)<.1)throw new Error("牆長不可少於 0.1 米");
+    obj[key][axis]=candidate[key][axis];
+   }
+   else if(prop==="height")obj.height=G.clamp(n,1.7,6);
+   else if(prop==="thickness")obj.thickness=G.clamp(n,.05,.8);
+   for(const opening of model().openings.filter(o=>o.wallId===obj.id)){
+    const len=G.length(obj.a,obj.b);
+    opening.width=Math.min(opening.width,len*.85);opening.offset=G.clamp(opening.offset,opening.width/2,len-opening.width/2);
+   }
+  }else if(type==="opening"){
+   const wall=model().walls.find(v=>v.id===obj.wallId);
+   if(!wall)return;
+   const len=G.length(wall.a,wall.b);
+   if(prop==="width")obj.width=G.clamp(n,.3,Math.min(3,len*.85));
+   if(prop==="offset")obj.offset=G.clamp(n,obj.width/2,len-obj.width/2);
+   if(prop==="height")obj.height=G.clamp(n,.3,wall.height-(obj.sill||0));
+   if(prop==="sill"&&obj.type==="window")obj.sill=G.clamp(n,.2,wall.height-.3);
+   obj.offset=G.clamp(obj.offset,obj.width/2,len-obj.width/2);
+   obj.height=Math.min(obj.height,wall.height-obj.sill);
+  }else if(type==="furniture"){
+   if(["w","d","h"].includes(prop))obj[prop]=G.clamp(n,.1,15);
+   else if(["x","y"].includes(prop))obj[prop]=G.clamp(n,-1000,1000);
+   else if(prop==="rotation")obj.rotation=G.round(n*Math.PI/180,7);
+  }else if(type==="measurement"){
+   if(["ax","ay","bx","by"].includes(prop)){const key=prop[0]==="a"?"a":"b",axis=prop[1]==="x"?"x":"y";obj[key][axis]=G.clamp(n,-1000,1000);}
+  }
+ });
+}
+function deleteSelected(){
+ if(!ui.selected)return;const id=ui.selected.id,kind=ui.selected.kind;
+ commit(()=>{
+  const m=model(),arr=kind==="wall"?m.walls:kind==="opening"?m.openings:kind==="furniture"?m.furniture:m.measurements;
+  const i=arr.findIndex(v=>v.id===id);if(i>=0)arr.splice(i,1);
+  if(kind==="wall")m.openings=m.openings.filter(o=>o.wallId!==id);
+ });
+ ui.selected=null;$("inspector").classList.remove("open");refresh();toast("已刪除");
+}
+function rotateSelected(){
+ const o=getObject();if(!o||ui.selected.kind!=="furniture")return;
+ commit(()=>o.rotation=G.round(o.rotation+Math.PI/2,7));
+}
+function duplicateSelected(){
+ const o=getObject();if(!o||ui.selected.kind!=="furniture")return;
+ const clone=JSON.parse(JSON.stringify(o));clone.id=G.uid();clone.name=o.name+" 副本";clone.x+=.3;clone.y+=.3;clone.locked=false;
+ commit(()=>model().furniture.push(clone));setSelection("furniture",clone.id);
+}
+function addFurniture(type){
+ const c=G.catalog.find(v=>v.type===type);if(!c)return;
+ const center=R.toWorld({x:canvas.clientWidth/2,y:canvas.clientHeight/2},ui.view,canvas.clientWidth,canvas.clientHeight);
+ const b=G.getBounds(model());
+ const where=ui.mode==="3d"?{x:b.cx,y:b.cy}:center;
+ const f={id:G.uid(),type:c.type,name:c.name,x:G.round(where.x,2),y:G.round(where.y,2),w:c.w,d:c.d,h:c.h,rotation:0,locked:false,color:c.color};
+ commit(()=>model().furniture.push(f));$("furnitureDialog").close();setSelection("furniture",f.id);toast("已加入"+c.name+"；可以拖動及調整尺寸");
+}
+function field(label,key,value,step=".01",min=null,max=null){
+ return '<div class="field"><label for="prop-'+key+'">'+label+'</label><input id="prop-'+key+'" data-prop="'+key+'" type="number" inputmode="decimal" step="'+step+'"'+(min===null?"":' min="'+min+'"')+(max===null?"":' max="'+max+'"')+' value="'+esc(value)+'"></div>';
+}
+function row(label,value){return '<div class="mini-stat"><span>'+label+'</span><strong>'+esc(value)+'</strong></div>';}
+function inspectorActions(extra=""){
+ return '<div class="secondary-actions">'+extra+'<button class="danger" data-act="delete">刪除物件</button></div>';
+}
+function renderInspector(){
+ const box=$("inspectorContent"),m=model(),o=getObject(),s=ui.selected;
+ if(!s||!o){
+  box.innerHTML='<div class="empty-inspector"><div class="badge">100% 本機運行</div><p>按一下牆、門窗、傢俬或量度線，即可在此修改尺寸。</p><p>新增牆壁後，可在右邊直接輸入精確座標；所有尺寸標籤以 <b>米 (m)</b> 顯示。</p></div>'+
+   '<h3>圖則概覽</h3>'+row("牆身",m.walls.length+" 幅")+row("門窗",m.openings.length+" 個")+row("傢俬",m.furniture.length+" 件")+row("量度線",m.measurements.length+" 條")+
+   '<button class="aside-action primary" data-act="furniture">＋ 新增傢俬</button><button class="aside-action ghost" data-act="projects">開啟／管理專案</button>';
+  return;
+ }
+ let html="";
+ if(s.kind==="wall"){
+  html='<div class="item-summary"><strong>牆身</strong><small>長 '+$num(G.length(o.a,o.b))+' m · 高 '+$num(o.height)+' m</small></div>'+
+    '<h3>準確端點座標（米）</h3><div class="fields2">'+field("起點 X","ax",o.a.x)+field("起點 Y","ay",o.a.y)+field("終點 X","bx",o.b.x)+field("終點 Y","by",o.b.y)+'</div>'+
+    '<h3>牆身規格</h3><div class="fields2">'+field("牆高 (m)","height",o.height)+field("牆厚 (m)","thickness",o.thickness)+'</div>'+
+    row("牆長", $num(G.length(o.a,o.b))+" m")+row("已放門窗",m.openings.filter(v=>v.wallId===o.id).length+" 個")+
+    '<p class="tip">修改端點 X / Y 可準確設定牆長。移動整幅牆時，已附在牆上的門窗會跟隨。</p>'+inspectorActions();
+ }else if(s.kind==="opening"){
+  const w=m.walls.find(v=>v.id===o.wallId);
+  html='<div class="item-summary"><strong>'+(o.type==="door"?"門":"窗")+'</strong><small>附在 '+$num(w?G.length(w.a,w.b):0)+' m 牆上</small></div>'+
+    '<div class="fields2">'+field("闊度 (m)","width",o.width)+field("離起點 (m)","offset",o.offset)+field("高度 (m)","height",o.height)+(o.type==="window"?field("窗台離地 (m)","sill",o.sill):"")+'</div>'+
+    row("開口左邊剩餘牆長",w?$num(Math.max(0,o.offset-o.width/2))+" m":"—")+
+    row("開口右邊剩餘牆長",w?$num(Math.max(0,G.length(w.a,w.b)-o.offset-o.width/2))+" m":"—")+
+    '<p class="tip">「離起點」為開口<b>中心</b>到牆起點的距離。上面列出開口兩側剩餘牆長，方便預留門邊傢俬空間。</p>'+inspectorActions();
+ }else if(s.kind==="furniture"){
+  html='<div class="item-summary"><strong>'+esc(o.name)+'</strong><small>'+(o.locked?"🔒 已鎖定位置":"可拖動及修改尺寸")+'</small></div>'+
+    '<div class="field"><label for="objName">傢俬名稱</label><input id="objName" data-prop="name" maxlength="80" value="'+esc(o.name)+'"></div>'+
+    '<h3>實際尺寸（米）</h3><div class="fields3">'+field("闊 (m)","w",o.w)+field("深 (m)","d",o.d)+field("高 (m)","h",o.h)+'</div>'+
+    '<h3>擺放位置</h3><div class="fields2">'+field("中心 X","x",o.x)+field("中心 Y","y",o.y)+field("旋轉 (°)","rotation",G.round(o.rotation*180/Math.PI,1),"1")+
+    '<div class="field"><label for="colorInput">顏色</label><input id="colorInput" data-prop="color" type="color" value="'+esc(o.color)+'"></div></div>'+
+    row("底面積",G.round(o.w*o.d,2)+" m²")+
+    '<h3>傢俬與牆身的邊緣距離</h3>'+
+    (m.walls.length?G.furnitureClearances(o,m.walls).slice(0,4).map(g=>row("第 "+g.index+" 幅牆", $num(g.distance)+" m")).join(""):'<p class="tip">先畫牆，才可計算與牆身的距離。</p>')+
+    '<p class="tip">顯示傢俬外邊緣與牆面的最短平面距離（包括牆厚），不包括門扇開啟及實際施工誤差。</p>'+
+    '<div class="secondary-actions"><button class="'+(o.locked?"lock":"ghost")+'" data-act="lock">'+(o.locked?"🔓 解除鎖定":"🔒 鎖定傢俬")+'</button><button data-act="rotate">⟳ 旋轉 90°</button><button data-act="duplicate">複製</button></div>'+inspectorActions();
+ }else{
+  html='<div class="item-summary"><strong>量度線</strong><small>兩點直線距離</small></div>'+row("量度結果",$num(G.length(o.a,o.b))+" m")+
+    '<div class="fields2">'+field("起點 X","ax",o.a.x)+field("起點 Y","ay",o.a.y)+field("終點 X","bx",o.b.x)+field("終點 Y","by",o.b.y)+'</div>'+inspectorActions();
+ }
+ box.innerHTML=html;
+}
+function showDialog(id){const d=$(id);if(!d.open)d.showModal();}
+function renderProjects(){
+ const box=$("projectList");box.textContent="";
+ for(const p of state.projects){
+  const item=document.createElement("div");item.className="project-item"+(p.id===state.activeId?" current":"");
+  const txt=document.createElement("div");txt.className="project-text";
+  const name=document.createElement("strong");name.textContent=p.name;const sub=document.createElement("small");sub.textContent=(p.id===state.activeId?"目前使用 · ":"")+p.data.walls.length+" 幅牆 · "+p.data.furniture.length+" 件傢俬";
+  txt.append(name,sub);const buttons=document.createElement("div");buttons.className="buttons";
+  if(p.id!==state.activeId){const b=document.createElement("button");b.textContent="開啟";b.onclick=()=>switchProject(p.id);buttons.append(b);}
+  const remove=document.createElement("button");remove.textContent="刪除";remove.className="danger";remove.disabled=state.projects.length===1;
+  remove.onclick=()=>{if(!confirm("永久刪除「"+p.name+"」？此操作無法復原，建議先匯出 JSON。"))return;
+   state.projects=state.projects.filter(v=>v.id!==p.id);if(p.id===state.activeId){state.activeId=state.projects[0].id;clearUndo();fit();}
+   saveNow();renderProjects();refresh();
+  };
+  buttons.append(remove);item.append(txt,buttons);box.append(item);
+ }
+}
+function switchProject(id){
+ if(!state.projects.some(p=>p.id===id))return;
+ saveNow();state.activeId=id;clearUndo();saveNow();$("projectsDialog").close();fit();refresh();
+ toast("已載入專案："+active().name);
+}
+function createProject(demoMode=false){
+ const p=newProject(demoMode?G.demo():G.empty());
+ state.projects.push(p);state.activeId=p.id;clearUndo();saveNow();$("projectsDialog").close();fit();refresh();
+ toast(demoMode?"已新增示範圖則":"已新增空白平面圖");
+}
+function exportJSON(){
+ saveNow();
+ const data=G.fileExport(model()),blob=new Blob([data],{type:"application/json;charset=utf-8"});
+ const link=document.createElement("a");link.href=URL.createObjectURL(blob);
+ const safe=active().name.replace(/[^\w\u3400-\u9fff-]/g,"_").slice(0,45)||"floorplan";
+ link.download="easy-home-3d-"+safe+".json";document.body.append(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(link.href),1200);toast("已下載 JSON 備份（包括傢俬及尺寸）");
+}
+async function importJSON(e){
+ const file=e.target.files&&e.target.files[0];e.target.value="";if(!file)return;
+ try{
+  if(file.size>3000000)throw new Error("檔案大小超過 3 MB");
+  const data=G.fileImport(await file.text());
+  const p=newProject(data);state.projects.push(p);state.activeId=p.id;clearUndo();
+  saveNow();$("projectsDialog").close();fit();refresh();toast("成功匯入："+p.name);
+ }catch(err){alert("匯入失敗："+err.message+"\n\n只接受 Easy Home 3D 匯出的 JSON。");}
+}
+function bind(){
+ $("view2d").onclick=()=>mode("2d");$("view3d").onclick=()=>mode("3d");
+ document.querySelectorAll("[data-tool]").forEach(b=>b.onclick=()=>tool(b.dataset.tool));
+ $("snapButton").onclick=()=>{ui.snap=!ui.snap;refresh();};
+ $("dimsButton").onclick=()=>{ui.dimensions=!ui.dimensions;refresh();};
+ $("undoButton").onclick=undo;$("redoButton").onclick=redo;
+ $("fitButton").onclick=fit;$("fitBottom").onclick=fit;
+ $("zoomIn").onclick=()=>zoom(1.25);$("zoomOut").onclick=()=>zoom(.8);
+ $("projectsButton").onclick=()=>{renderProjects();showDialog("projectsDialog");};
+ $("exportButton").onclick=exportJSON;
+ $("helpButton").onclick=()=>showDialog("helpDialog");
+ $("addFurnitureButton").onclick=()=>showDialog("furnitureDialog");
+ $("startWall").onclick=()=>tool("wall");
+ $("loadDemo").onclick=()=>{if(model().walls.length||model().furniture.length)return createProject(true);
+  if(!confirm("載入一般示範平面圖？目前空白圖則會被示範取代。"))return;
+  const before=snapshot();active().data=G.demo(active().name);record(before);fit();
+ };
+ $("propertiesButton").onclick=()=>$("inspector").classList.toggle("open");
+ $("closeInspector").onclick=()=>$("inspector").classList.remove("open");
+ $("newBlank").onclick=()=>createProject(false);$("newDemo").onclick=()=>createProject(true);
+ $("importButton").onclick=()=>$("importFile").click();$("importFile").onchange=importJSON;
+ document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>$((b.dataset.close)).close());
+ $("projectName").addEventListener("change",e=>{
+  const name=e.target.value.trim().slice(0,80)||"我的平面圖";
+  active().name=name;model().name=name;scheduleSave();refresh();
+ });
+ const cats=$("furnitureCatalog");for(const c of G.catalog){
+  const btn=document.createElement("button"),icon=document.createElement("span"),label=document.createElement("strong"),size=document.createElement("small");
+  icon.className="f-icon";icon.textContent=c.icon;label.textContent=c.name;
+  size.textContent=$num(c.w)+" × "+$num(c.d)+" × "+$num(c.h)+" m";
+  btn.append(icon,label,size);btn.onclick=()=>addFurniture(c.type);cats.append(btn);
+ }
+ $("inspectorContent").addEventListener("change",e=>{
+  const p=e.target.dataset.prop;if(!p)return;
+  if(p==="name"){const o=getObject();if(!o)return;commit(()=>o.name=e.target.value.slice(0,80)||"傢俬");}
+  else if(p==="color"){const o=getObject();if(!o)return;commit(()=>o.color=e.target.value);}
+  else{try{editNumber(p,e.target.value);}catch(err){toast(err.message);}}
+  refresh();
+ });
+ $("inspectorContent").addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]");if(!b)return;
+  const act=b.dataset.act;
+  if(act==="delete")deleteSelected();
+  else if(act==="lock"){const o=getObject();if(!o)return;commit(()=>o.locked=!o.locked);toast(o.locked?"已鎖定，無法誤拖":"已解除鎖定");}
+  else if(act==="rotate")rotateSelected();
+  else if(act==="duplicate")duplicateSelected();
+  else if(act==="furniture")showDialog("furnitureDialog");
+  else if(act==="projects"){renderProjects();showDialog("projectsDialog");}
+ });
+ canvas.addEventListener("pointerdown",changeStart);
+ canvas.addEventListener("pointermove",changeMove);
+ canvas.addEventListener("pointerup",changeEnd);
+ canvas.addEventListener("pointercancel",changeEnd);
+ canvas.addEventListener("wheel",e=>{e.preventDefault();zoom(e.deltaY<0?1.12:1/1.12,position(e));},{passive:false});
+ document.addEventListener("keydown",e=>{
+  if(["INPUT","TEXTAREA","SELECT"].includes(document.activeElement?.tagName)||document.querySelector("dialog[open]"))return;
+  if(e.key==="Escape"){escapeAction();return;}
+  if(e.key==="Delete"||e.key==="Backspace"){if(ui.selected){e.preventDefault();deleteSelected();}return;}
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();e.shiftKey?redo():undo();return;}
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();redo();}
+ });
+ window.addEventListener("beforeunload",saveNow);
+ window.addEventListener("resize",render);
+ if(window.ResizeObserver)new ResizeObserver(render).observe(canvas.parentElement);
+}
+function zoom(factor,at){
+ if(ui.mode==="3d"){ui.orbit.distance=G.clamp(ui.orbit.distance/factor,.35,4);render();return;}
+ const w=canvas.clientWidth,h=canvas.clientHeight;
+ const loc=at||{x:w/2,y:h/2},before=R.toWorld(loc,ui.view,w,h);
+ ui.view.scale=G.clamp(ui.view.scale*factor,12,400);
+ ui.view.panX=loc.x-w/2-before.x*ui.view.scale;
+ ui.view.panY=loc.y-h/2-before.y*ui.view.scale;
+ render();
+}
+bind();fit();refresh();saveNow();
+})();
+
+</script>
+</body>
+</html>
