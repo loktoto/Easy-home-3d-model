@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 
-function saved(page){
+async function saved(page){
+ await expect(page.locator('#saveStatus')).toContainText('本機已儲存');
  return page.evaluate(() => {
   const state=JSON.parse(localStorage.getItem('easy-home-3d:projects:v1'));
   const project=state.projects.find(p=>p.id===state.activeId);
@@ -85,7 +86,7 @@ test('full home renovation journey: draw walls, add openings, resize/move/lock f
  p=await saved(page);
  expect(p.model.furniture[0].x).toBe(moved.x);
  const rect=await canvasGeometry(page);
- const px=rect.cx+ p.model.furniture[0].x*(await page.evaluate(()=>1)); // actual canvas coordinate obtained from cursor reposition below
+ // Position is verified through the saved world coordinates above.
  await page.locator('[data-act="lock"]').click();
  p=await saved(page);
  expect(p.model.furniture[0].locked).toBe(true);
