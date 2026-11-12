@@ -189,5 +189,8 @@ function draw(canvas,ctx,model,opts){
  if(opts.mode==="3d")return paint3D(ctx,w,h,model,opts);
  paint2D(ctx,w,h,model,opts);return [];
 }
-root.EasyHomeRenderer={draw,toWorld,screenToFloor};
+function projectPoint(canvas,model,orbit,xyz){
+ return projectFactory(canvas.clientWidth,canvas.clientHeight,G.getBounds(model),{orbit})(xyz);
+}
+root.EasyHomeRenderer={draw,toWorld,screenToFloor,projectPoint};
 })(window);
