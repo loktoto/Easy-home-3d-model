@@ -92,7 +92,7 @@ function refresh(){
  $("view3d").classList.toggle("active",ui.mode==="3d");
  $("view2d").setAttribute("aria-pressed",ui.mode==="2d");
  $("view3d").setAttribute("aria-pressed",ui.mode==="3d");
- document.querySelectorAll("[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===ui.tool));
+ document.querySelectorAll("[data-tool]").forEach(b=>{const selected=b.dataset.tool===ui.tool;b.classList.toggle("active",selected);b.setAttribute("aria-pressed",String(selected));});
  $("snapButton").textContent="吸附："+(ui.snap?"開":"關");$("snapButton").classList.toggle("active",ui.snap);
  $("snapButton").setAttribute("aria-pressed",String(ui.snap));
  $("dimsButton").textContent="尺寸："+(ui.dimensions?"開":"關");$("dimsButton").classList.toggle("active",ui.dimensions);
@@ -426,7 +426,7 @@ function renderInspector(){
     '<h3>傢俬與牆身的邊緣距離</h3>'+
     (m.walls.length?G.furnitureClearances(o,m.walls).slice(0,4).map(g=>row("第 "+g.index+" 幅牆", $num(g.distance)+" m")).join(""):'<p class="tip">先畫牆，才可計算與牆身的距離。</p>')+
     '<p class="tip">顯示傢俬外邊緣與牆面的最短平面距離（包括牆厚），不包括門扇開啟及實際施工誤差。</p>'+
-    '<div class="secondary-actions"><button class="'+(o.locked?"lock":"ghost")+'" data-act="lock">'+(o.locked?"🔓 解除鎖定":"🔒 鎖定傢俬")+'</button><button data-act="rotate">⟳ 旋轉 90°</button><button data-act="duplicate">複製</button></div>'+inspectorActions();
+    '<div class="secondary-actions"><button class="primary" data-act="move">✥ 在圖則上移動</button><button class="'+(o.locked?"lock":"ghost")+'" data-act="lock">'+(o.locked?"🔓 解除鎖定":"🔒 鎖定傢俬")+'</button><button data-act="rotate">⟳ 旋轉 90°</button><button data-act="duplicate">複製</button></div>'+inspectorActions();
  }else{
   html='<div class="item-summary"><strong>量度線</strong><small>兩點直線距離</small></div>'+row("量度結果",$num(G.length(o.a,o.b))+" m")+
     '<div class="fields2">'+field("起點 X","ax",o.a.x)+field("起點 Y","ay",o.a.y)+field("終點 X","bx",o.b.x)+field("終點 Y","by",o.b.y)+'</div>'+inspectorActions();
@@ -522,6 +522,7 @@ function bind(){
   const act=b.dataset.act;
   if(act==="delete")deleteSelected();
   else if(act==="lock"){const o=getObject();if(!o)return;commit(()=>o.locked=!o.locked);toast(o.locked?"已鎖定，無法誤拖":"已解除鎖定");}
+  else if(act==="move"){ui.mode="2d";ui.tool="select";ui.pending=null;$("inspector").classList.remove("open");refresh();toast("請在平面圖直接拖動傢俬，亦可再次開啟屬性輸入座標");}
   else if(act==="rotate")rotateSelected();
   else if(act==="duplicate")duplicateSelected();
   else if(act==="furniture")showDialog("furnitureDialog");
