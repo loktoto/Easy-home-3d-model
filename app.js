@@ -263,8 +263,11 @@ function editNumber(prop,value){
  commit(()=>{
   if(type==="wall"){
    if(["ax","ay","bx","by"].includes(prop)){
-    const key=prop[0]==="a"?"a":"b",axis=prop[1]==="x"?"x":"y";obj[key][axis]=G.clamp(n,-1000,1000);
-    if(G.length(obj.a,obj.b)<.1){throw new Error("牆長不可少於 0.1 米");}
+    const key=prop[0]==="a"?"a":"b",axis=prop[1]==="x"?"x":"y";
+    const candidate={a:G.point(obj.a.x,obj.a.y),b:G.point(obj.b.x,obj.b.y)};
+    candidate[key][axis]=G.clamp(n,-1000,1000);
+    if(G.length(candidate.a,candidate.b)<.1)throw new Error("牆長不可少於 0.1 米");
+    obj[key][axis]=candidate[key][axis];
    }
    else if(prop==="height")obj.height=G.clamp(n,1.7,6);
    else if(prop==="thickness")obj.thickness=G.clamp(n,.05,.8);
