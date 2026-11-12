@@ -6,6 +6,7 @@ const $=id=>document.getElementById(id);
 const canvas=$("stage"),ctx=canvas.getContext("2d"),STORAGE="easy-home-3d:projects:v1";
 const $num=n=>G.round(n,2).toFixed(2), esc=v=>String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let state,history=[],future=[],saveTimer=null,toastTimer=null,drawRequested=false;
+const touches=new Map();let pinch=null;
 const ui={
  mode:"2d",tool:"select",snap:true,dimensions:true,
  view:{scale:80,panX:0,panY:0},orbit:{azimuth:-.75,elevation:.82,distance:1},
@@ -211,7 +212,13 @@ function changeStart(e){
  const p=position(e);
  if(ui.mode==="3d"){
   const hit=ui.tool==="select"?selected3d(p):null;
-  if(hit){setSelection(hit.kind,hit.id);ui.drag={type:"3dselect",start:p};}
+  if(hit&&hit.kind==="furniture"){
+   setSelection(hit.kind,hit.id);
+   const obj=getObject(),floor=R.screenToFloor(canvas,model(),ui.orbit,p);
+   if(obj&&!obj.locked&&floor){
+    ui.drag={type:"furniture3d",origin:floor,start:p,before:snapshot(),original:JSON.parse(JSON.stringify(obj)),moved:false};
+   }else{ui.drag=null;if(obj?.locked)toast("已鎖定，請先解除鎖定");}
+  }else if(hit){setSelection(hit.kind,hit.id);ui.drag={type:"3dselect",start:p};}
   else{ui.drag={type:"orbit",start:p,az:ui.orbit.azimuth,el:ui.orbit.elevation};}
   canvas.setPointerCapture(e.pointerId);return;
  }
@@ -262,9 +269,18 @@ function changeStart(e){
 function changeMove(e){
  const p=position(e);
  if(ui.mode==="3d"){
-  if(ui.drag&&ui.drag.type==="orbit"){
+  if(ui.drag?.type==="orbit"){
    ui.orbit.azimuth=ui.drag.az+(p.x-ui.drag.start.x)*.008;
    ui.orbit.elevation=G.clamp(ui.drag.el+(p.y-ui.drag.start.y)*.006,.15,1.48);render();
+  }else if(ui.drag?.type==="furniture3d"){
+   const d=ui.drag,at=R.screenToFloor(canvas,model(),ui.orbit,p),obj=getObject();
+   if(!at||!obj)return;
+   if(Math.hypot(p.x-d.start.x,p.y-d.start.y)<4&&!d.moved)return;
+   d.moved=true;
+   const adj=v=>ui.snap?Math.round(v*20)/20:G.round(v,3);
+   obj.x=adj(d.original.x+at.x-d.origin.x);
+   obj.y=adj(d.original.y+at.y-d.origin.y);
+   render();
   }
   return;
  }
@@ -301,7 +317,45 @@ function changeMove(e){
  }
  render();
 }
-function changeEnd(){
+function preparePointer(e){
+ if(e.pointerType!=="touch")return false;
+ touches.set(e.pointerId,position(e));
+ if(touches.size!==2)return false;
+ const vals=[...touches.values()],a=vals[0],b=vals[1];
+ const center={x:(a.x+b.x)/2,y:(a.y+b.y)/2},distance=Math.max(10,Math.hypot(a.x-b.x,a.y-b.y));
+ pinch={distance,scale:ui.view.scale,panX:ui.view.panX,panY:ui.view.panY,center,
+   anchor:R.toWorld(center,ui.view,canvas.clientWidth,canvas.clientHeight),
+   orbitDistance:ui.orbit.distance};
+ // Pinching is view manipulation, never an accidental edit.
+ if(ui.drag?.moved&&ui.drag.before!==snapshot())record(ui.drag.before);
+ ui.drag=null;ui.pending=null;ui.wallStart=null;ui.wallCount=0;
+ canvas.setPointerCapture(e.pointerId);render();
+ return true;
+}
+function updatePinch(e){
+ if(e.pointerType!=="touch"||!touches.has(e.pointerId))return false;
+ touches.set(e.pointerId,position(e));
+ if(!pinch||touches.size!==2)return false;
+ const vals=[...touches.values()],a=vals[0],b=vals[1];
+ const dist=Math.max(10,Math.hypot(a.x-b.x,a.y-b.y));
+ const center={x:(a.x+b.x)/2,y:(a.y+b.y)/2},factor=dist/pinch.distance;
+ if(ui.mode==="3d")ui.orbit.distance=G.clamp(pinch.orbitDistance/factor,.35,4);
+ else{
+  const w=canvas.clientWidth,h=canvas.clientHeight;
+  ui.view.scale=G.clamp(pinch.scale*factor,12,400);
+  ui.view.panX=center.x-w/2-pinch.anchor.x*ui.view.scale;
+  ui.view.panY=center.y-h/2-pinch.anchor.y*ui.view.scale;
+ }
+ render();return true;
+}
+function releasePointer(e){
+ if(e?.pointerType==="touch"){touches.delete(e.pointerId);
+  if(pinch){if(touches.size<2)pinch=null;ui.drag=null;render();return true;}
+ }
+ return false;
+}
+function changeEnd(e){
+ if(releasePointer(e))return;
  if(ui.drag){
   const d=ui.drag;ui.drag=null;
   if(d.moved&&d.before!==snapshot()){record(d.before);}
@@ -528,8 +582,8 @@ function bind(){
   else if(act==="furniture")showDialog("furnitureDialog");
   else if(act==="projects"){renderProjects();showDialog("projectsDialog");}
  });
- canvas.addEventListener("pointerdown",changeStart);
- canvas.addEventListener("pointermove",changeMove);
+ canvas.addEventListener("pointerdown",e=>{if(preparePointer(e))return;changeStart(e);});
+ canvas.addEventListener("pointermove",e=>{if(updatePinch(e))return;changeMove(e);});
  canvas.addEventListener("pointerup",changeEnd);
  canvas.addEventListener("pointercancel",changeEnd);
  canvas.addEventListener("wheel",e=>{e.preventDefault();zoom(e.deltaY<0?1.12:1/1.12,position(e));},{passive:false});
