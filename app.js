@@ -181,6 +181,7 @@ function addOpening(which,p){
  const width=Math.min(which==="door"?.85:1.2,len*.8);
  const opening={id:G.uid(),type:which,wallId:w.id,offset:G.clamp(hit.t*len,width/2,len-width/2),
   width,height:which==="door"?Math.min(2.1,w.height):Math.min(1.1,w.height*.5),sill:which==="door"?0:Math.min(.9,w.height*.35)};
+ if(!G.openingFits(opening,model().openings))return toast("這個位置已有門窗，請移到其他牆段（至少預留 5 cm）");
  commit(()=>model().openings.push(opening));setSelection("opening",opening.id);
 }
 function joinedMove(original,updated,excludeId,originalWalls=null){
@@ -319,7 +320,8 @@ function changeMove(e){
  }else if(d.type==="opening"){
   const wall=model().walls.find(v=>v.id===obj.wallId);if(!wall)return;
   const hit=G.distancePointSegment(w,wall.a,wall.b),len=G.length(wall.a,wall.b);
-  obj.offset=G.round(G.clamp(hit.t*len,obj.width/2,len-obj.width/2),2);
+  const newOffset=G.round(G.clamp(hit.t*len,obj.width/2,len-obj.width/2),2);
+  if(G.openingFits({...obj,offset:newOffset},model().openings))obj.offset=newOffset;
  }
  render();
 }
@@ -405,12 +407,15 @@ function editNumber(prop,value){
    const wall=model().walls.find(v=>v.id===obj.wallId);
    if(!wall)return;
    const len=G.length(wall.a,wall.b);
-   if(prop==="width")obj.width=G.clamp(n,.3,Math.min(3,len*.85));
-   if(prop==="offset")obj.offset=G.clamp(n,obj.width/2,len-obj.width/2);
-   if(prop==="height")obj.height=G.clamp(n,.3,wall.height-(obj.sill||0));
-   if(prop==="sill"&&obj.type==="window")obj.sill=G.clamp(n,.2,wall.height-.3);
-   obj.offset=G.clamp(obj.offset,obj.width/2,len-obj.width/2);
-   obj.height=Math.min(obj.height,wall.height-obj.sill);
+   const candidate={...obj};
+   if(prop==="width")candidate.width=G.clamp(n,.3,Math.min(3,len*.85));
+   if(prop==="offset")candidate.offset=G.clamp(n,candidate.width/2,len-candidate.width/2);
+   if(prop==="height")candidate.height=G.clamp(n,.3,wall.height-(candidate.sill||0));
+   if(prop==="sill"&&candidate.type==="window")candidate.sill=G.clamp(n,.2,wall.height-.3);
+   candidate.offset=G.clamp(candidate.offset,candidate.width/2,len-candidate.width/2);
+   candidate.height=Math.min(candidate.height,wall.height-candidate.sill);
+   if(!G.openingFits(candidate,model().openings))throw new Error("門窗位置重疊，請縮窄或移動至少 5 cm");
+   Object.assign(obj,candidate);
   }else if(type==="furniture"){
    if(["w","d","h"].includes(prop))obj[prop]=G.clamp(n,.1,15);
    else if(["x","y"].includes(prop))obj[prop]=G.clamp(n,-1000,1000);
