@@ -31,7 +31,8 @@
     <div class="tabs"><button id="view2d" class="tab active" aria-pressed="true">▦ 2D 平面圖</button><button id="view3d" class="tab" aria-pressed="false">⬡ 3D 模型</button></div>
     <div class="separator"></div>
     <button data-tool="select" class="tool active" title="選取及移動物件">↖ <span>選取</span></button>
-    <button data-tool="wall" class="tool" title="連續點選兩點畫牆">╱ <span>畫牆</span></button>
+    <button data-tool="room" class="tool" title="點兩個對角快速建立長方形房間">▣ <span>畫房間</span></button>
+    <button data-tool="wall" class="tool" title="連續點選兩點畫牆">╱ <span>逐幅畫牆</span></button>
     <button data-tool="door" class="tool" title="按一下牆身加門">▯ <span>門</span></button>
     <button data-tool="window" class="tool" title="按一下牆身加窗">▤ <span>窗</span></button>
     <button id="addFurnitureButton" class="tool" title="新增傢俬">▣ <span>傢俬</span></button>
@@ -48,12 +49,12 @@
   <main class="workspace">
     <section class="stage-wrap" aria-label="2D／3D 繪圖區">
       <canvas id="stage" tabindex="0" aria-label="可編輯平面圖畫布；使用工具列選擇畫牆、量度、傢俬"></canvas>
-      <div class="viewport-info"><span id="modeHint">畫牆：按第一點，再按第二點；完成後按 Esc。</span><span id="drawingStats">0 幅牆 · 0 件傢俬</span></div>
+      <div class="viewport-info"><span id="modeHint">先畫房間，再加門窗及傢俬。</span><span id="drawingStats">0 幅牆 · 0 件傢俬</span></div>
       <div id="startTip" class="start-tip">
         <div class="start-icon">⌂</div>
-        <h2>由你的屋企開始</h2>
-        <p>建立空白平面圖，再用「畫牆」逐幅畫出房間；所有尺寸以米 (m) 計算。</p>
-        <div class="start-buttons"><button id="startWall" class="primary">＋ 開始畫牆</button><button id="loadDemo" class="ghost">看看示範圖</button></div>
+        <h2>開始設計你的屋企</h2>
+        <p>只需在畫布點兩個角，就可以建立第一間房；之後可以自由畫牆、加門窗和擺傢俬。</p>
+        <div class="start-buttons"><button id="startRoom" class="primary">▣ 畫第一間房</button><button id="startWall" class="ghost">逐幅畫牆</button><button id="loadDemo" class="ghost">示範圖</button></div>
         <small>毋須註冊 · 自動儲存在此瀏覽器 · 資料不會上傳</small>
       </div>
       <div class="viewport-controls"><button id="zoomIn" aria-label="放大">＋</button><button id="zoomOut" aria-label="縮小">－</button><button id="fitBottom" aria-label="顯示全部">⤢</button></div>
@@ -86,10 +87,10 @@
 <dialog id="helpDialog" class="dialog">
   <div class="dialog-head"><h2>30 秒學識用</h2><button class="close-dialog" data-close="helpDialog" aria-label="關閉">✕</button></div>
   <ol class="help-list">
-    <li><b>畫牆：</b>揀「畫牆」後按起點及終點，會顯示實際長度；繼續點下一點可連續畫。</li>
-    <li><b>改尺寸：</b>揀一幅牆，可直接輸入兩端 X／Y 座標、牆厚與高度；一切單位為米。</li>
+    <li><b>新手畫房間：</b>揀「畫房間」，點兩個對角即可建立長方形四面牆。揀「逐幅畫牆」可畫不規則房間，按 Esc 結束。</li>
+    <li><b>改尺寸：</b>選一幅牆可輸入牆長、牆兩端坐標、牆厚與高度；直接拖動牆端點也可調整，相接的牆會跟隨。單位為米。</li>
     <li><b>門窗：</b>選「門」或「窗」，再按在任何牆上；可修改闊度、離牆角距離及窗台高度。</li>
-    <li><b>加傢俬：</b>選家具類型，拖到合適位置，輸入闊／深／高；鎖定後不可誤拖，亦可解除鎖定及刪除。</li>
+    <li><b>加傢俬：</b>揀傢俬 → 調整闊／深／高 → 在平面圖拖到合適位置；可鎖定、解除鎖定、複製及刪除。移動也可直接輸入 X／Y。</li>
     <li><b>量距離：</b>用「量度」選兩點，顯示相距多少米；2D／3D 可隨時切換。</li>
     <li><b>儲存：</b>系統在本機自動儲存。可切換多個專案、用 JSON 匯出或匯入；沒有雲端同步。</li>
   </ol>
