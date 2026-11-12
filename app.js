@@ -49,13 +49,19 @@ function record(before){
 function commit(fn){
  const before=snapshot();fn();return record(before);
 }
+function retainSelection(){
+ if(!ui.selected)return;
+ const m=model(),array=ui.selected.kind==="wall"?m.walls:ui.selected.kind==="opening"?m.openings:
+  ui.selected.kind==="furniture"?m.furniture:m.measurements;
+ if(!array.some(o=>o.id===ui.selected.id))ui.selected=null;
+}
 function undo(){
  if(!history.length)return toast("已經沒有可以復原的操作");
- future.push(snapshot());active().data=G.sanitize(JSON.parse(history.pop()));ui.selected=null;ui.pending=null;scheduleSave();refresh();toast("已復原");
+ future.push(snapshot());active().data=G.sanitize(JSON.parse(history.pop()));retainSelection();ui.pending=null;scheduleSave();refresh();toast("已復原");
 }
 function redo(){
  if(!future.length)return toast("已經沒有可以重做的操作");
- history.push(snapshot());active().data=G.sanitize(JSON.parse(future.pop()));ui.selected=null;ui.pending=null;scheduleSave();refresh();toast("已重做");
+ history.push(snapshot());active().data=G.sanitize(JSON.parse(future.pop()));retainSelection();ui.pending=null;scheduleSave();refresh();toast("已重做");
 }
 function clearUndo(){history=[];future=[];ui.selected=null;ui.pending=null;ui.cursor=null;ui.drag=null;}
 function toast(text){
