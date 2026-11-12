@@ -1,0 +1,61 @@
+name: Validate, bundle and publish Easy Home 3D
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: easy-home-3d-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test-and-bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check JavaScript syntax
+        run: |
+          node --check core.js
+          node --check renderer.js
+          node --check app.js
+      - name: Run geometry and backup tests
+        run: node --test tests/*.test.cjs
+      - name: Build standalone Convika HTML and ZIP
+        run: python3 scripts/build-single.py
+      - name: Upload standalone HTML and ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: easy-home-3d-convika
+          path: |
+            dist/easy-home-3d.html
+            dist/easy-home-3d-convika.zip
+  deploy-pages:
+    if: github.event_name != 'pull_request'
+    needs: test-and-bundle
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload static files
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v4
