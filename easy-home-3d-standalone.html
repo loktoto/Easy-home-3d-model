@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0c1423">
-  <meta name="description" content="Easy Home 3D — 免費開源的 2D 平面圖與 3D 裝修規劃工具。畫牆、加門窗、放傢俬、量尺寸、自動儲存。">
-  <title>Easy Home 3D · 免費開源裝修圖</title>
+  <meta name="description" content="遠展空間Pro — 免 LiDAR、免費的 2D 平面圖＋3D 立體／爆炸圖工具。畫牆、加門窗、放傢俬、量尺寸，匯出 PDF、CAD DXF、3D OBJ／USDZ。建基於開源 Easy Home 3D。">
+  <title>遠展空間Pro · 2D 平面圖＋3D 爆炸圖</title>
   <style>
 :root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color-scheme:dark;--bg:#0b1320;--panel:#121e30;--line:#2a3d52;--ink:#e8f1fb;--sub:#9db0c6;--blue:#77afff;--blue-dark:#2767bf;--mint:#79d8b0;--danger:#ff9a9a}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{background:var(--bg);color:var(--ink)}button,input,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);color:var(--ink);background:#22344b;border-radius:9px}button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}button:disabled{opacity:.35;cursor:not-allowed}a{color:var(--blue)}.app{height:100vh;height:100dvh;display:flex;flex-direction:column;min-height:400px}.top{height:72px;display:flex;align-items:center;gap:17px;padding:10px 17px;background:#101b2b;border-bottom:1px solid var(--line);flex:none}.identity{display:flex;align-items:center;gap:9px;min-width:201px}.mark{background:linear-gradient(135deg,#5b92ea,#3ad5b5);height:40px;width:40px;display:grid;place-items:center;border-radius:12px;font-size:30px;color:#fff}.eyebrow{font-size:9px;letter-spacing:.13em;color:var(--mint);font-weight:800}.identity h1{font-size:22px;letter-spacing:-.05em;line-height:1.1;margin:4px 0 0}.identity h1 b{color:var(--blue)}.project-head{display:flex;flex:1;min-width:110px;max-width:380px;align-items:center;gap:7px}.project-head input{border:1px solid #324860;background:#152235;border-radius:10px;padding:10px 11px;color:var(--ink);font-size:13px;font-weight:650;min-width:0;flex:1}.save-status{flex:none;white-space:nowrap;font-size:11px;color:var(--mint)}.save-status.error{color:var(--danger)}.head-actions{margin-left:auto;display:flex;gap:7px;align-items:center}.subtle,.source-link{border:1px solid #34485f;background:#202f44;font-size:12px;font-weight:650;color:#e1ecfa;text-decoration:none;border-radius:9px;padding:10px 12px;white-space:nowrap}.source-link{background:#194363;border-color:#355f79}.icon-button{width:38px;padding:10px}.toolbar{background:#121f30;border-bottom:1px solid #2c4158;display:flex;align-items:center;gap:5px;padding:8px 12px;overflow-x:auto;flex:none;scrollbar-width:thin}.tabs{display:flex;background:#091321;border-radius:10px;padding:3px;border:1px solid #2d425b;flex:none}.tab{border:0;background:transparent;border-radius:8px;padding:9px 12px;color:var(--sub);font-size:12px;font-weight:800;white-space:nowrap}.tab.active{background:#2a62a5;color:#fff}.tool{border:1px solid transparent;flex:none;background:#1b2d44;color:#c4d6ea;padding:9px 11px;font-size:12px;font-weight:650;white-space:nowrap}.tool.active{background:#284f6e;border-color:#5289be;color:#fff}.tool.small{font-size:11px;padding:9px 10px}.separator{height:27px;border-left:1px solid #3b536a;margin:0 5px;flex:none}.workspace{display:flex;flex:1;min-height:0}.stage-wrap{position:relative;flex:1;min-width:0;overflow:hidden;background:#0a1423}#stage{width:100%;height:100%;display:block;touch-action:none;outline:0;cursor:crosshair}.viewport-info{position:absolute;pointer-events:none;left:14px;top:12px;right:12px;display:flex;justify-content:space-between;gap:12px;align-items:start}.viewport-info span{background:#101f31d9;border:1px solid #36516d;border-radius:9px;padding:8px 11px;font-size:11px;color:#d5e5f6;line-height:1.5}.viewport-info span:last-child{white-space:nowrap}.viewport-controls{position:absolute;right:13px;bottom:47px;display:flex;flex-direction:column;gap:6px}.viewport-controls button{background:#1b2e46e8;width:38px;height:38px;font-size:19px;font-weight:700;box-shadow:0 4px 15px #0005}.view-corner{position:absolute;bottom:14px;left:15px;right:60px;pointer-events:none;display:flex;gap:14px;color:#acc2d8;font-size:11px}.view-corner span{background:#0c1a29db;border-radius:7px;padding:5px 8px}.inspector{width:300px;flex:none;display:flex;flex-direction:column;background:var(--panel);border-left:1px solid var(--line);overflow-y:auto;padding:19px 15px}.panel-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}.panel-title h2{font-size:19px;margin:4px 0 0;letter-spacing:-.02em}#inspectorContent{flex:1}.panel-footer{border-top:1px solid var(--line);padding-top:14px;margin-top:20px;color:#9cb3ca;font-size:11px;line-height:1.7}.panel-footer strong{color:#e2b681;font-size:12px}.panel-footer p{margin:5px 0}.footer{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#101b2b;border-top:1px solid #2b3b50;min-height:32px;flex:none;padding:5px 17px;color:#8da4ba;font-size:10px}.footer a{color:#a9cfff;text-decoration:none}.start-tip{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(155deg,#1b3046f3,#102032f5);border:1px solid #3a5974;box-shadow:0 18px 50px #0006;border-radius:20px;padding:29px 24px;text-align:center;max-width:min(430px,calc(100% - 30px));width:100%;z-index:1}.start-tip[hidden]{display:none}.start-icon{font-size:48px;color:var(--mint)}.start-tip h2{font-size:23px;margin:8px 0}.start-tip p{color:#bbcee2;font-size:13px;line-height:1.8;margin:9px 0 18px}.start-buttons{display:flex;gap:9px;justify-content:center}.start-tip small{display:block;color:#849bb2;margin-top:17px;line-height:1.6}.primary{background:var(--blue-dark);border-color:#4279bb;color:#fff;font-weight:750;padding:11px 13px}.ghost{background:#20344a;border-color:#36546f;color:#d7e8f8;font-weight:700;padding:11px 13px}.inspector h3{font-size:14px;margin:17px 0 9px}.inspector .tip{font-size:12px;color:#9eb4c9;line-height:1.65}.item-summary{border:1px solid #38516d;border-radius:11px;padding:11px;background:#1a2b40;margin-bottom:12px}.item-summary strong{display:block;font-size:15px}.item-summary small{display:block;color:#9db3c9;margin-top:5px}.field{margin-bottom:11px}.field label{display:block;color:#9cb3c8;font-size:11px;font-weight:700;margin-bottom:6px}.field input,.field select{display:block;width:100%;min-width:0;border:1px solid #3a536d;background:#0d1b2b;border-radius:9px;padding:10px 9px;color:#eaf4fc;font-size:15px}.field input[type=color]{height:43px;padding:3px}.fields2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.fields3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.secondary-actions{display:flex;gap:7px;margin-top:14px;flex-wrap:wrap}.secondary-actions button{padding:10px 11px;font-weight:700;font-size:12px;flex:1}.danger{background:#572e38;color:#ffb9b9;border-color:#79505a}.lock{background:#245144;border-color:#447c68}.muted{font-size:12px;color:#a7bbcf;line-height:1.7}.mini-stat{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #2a3d51;padding:10px 0;font-size:12px}.mini-stat strong{font-size:13px;color:#e0ecfb}.aside-action{display:block;width:100%;padding:12px;margin:12px 0;font-size:13px;font-weight:750}.empty-inspector{padding-top:12px;color:#aabed2;font-size:13px;line-height:1.85}.badge{display:inline-flex;padding:5px 7px;color:#8ee8c1;border:1px solid #286c57;background:#163b35;border-radius:6px;font-size:10px;margin:5px 0}.dialog{color:var(--ink);background:#152337;border:1px solid #3f5c77;border-radius:17px;max-width:min(550px,calc(100vw - 24px));width:100%;max-height:85dvh;overflow:auto;padding:20px;box-shadow:0 20px 65px #0009}.dialog::backdrop{background:#040a15ba}.dialog-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.dialog-head h2{margin:0;font-size:21px}.close-dialog,.panel-close{width:33px;height:33px;background:#283d53}.dialog-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}.dialog-actions button{flex:1;min-width:160px}.project-list{margin-top:17px;display:flex;flex-direction:column;gap:8px}.project-item{display:flex;align-items:center;justify-content:space-between;gap:9px;background:#1b2c41;border:1px solid #3a526d;border-radius:10px;padding:10px}.project-item.current{border-color:#70b3fb;background:#23405e}.project-item .project-text{min-width:0}.project-item strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}.project-item small{display:block;color:#9ab3cb;margin-top:4px;font-size:11px}.project-item .buttons{display:flex;gap:5px;flex:none}.project-item button{padding:8px 10px;font-size:11px}.catalog{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:15px}.catalog button{padding:15px 10px;text-align:left;min-height:85px;background:#1b3046;border:1px solid #385774;display:flex;flex-direction:column;gap:6px}.catalog button:hover{background:#25425f}.catalog .f-icon{font-size:25px;color:var(--mint)}.catalog strong{font-size:13px}.catalog small{font-size:11px;color:#9fb5cb}.help-list{line-height:1.75;padding-left:20px;color:#cedeee;font-size:13px}.help-list li{margin-bottom:9px}#toast{position:absolute;left:50%;bottom:25px;transform:translateX(-50%);z-index:5;background:#213e56;box-shadow:0 7px 20px #0008;border:1px solid #527ba0;border-radius:10px;padding:10px 13px;pointer-events:none;color:#eff8ff;font-size:12px;opacity:0;transition:opacity .2s;max-width:90%;text-align:center}#toast.show{opacity:1}.mobile-only{display:none}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 @media(max-width:1040px){.identity{min-width:auto}.identity .eyebrow{display:none}.identity h1{font-size:19px}.mark{width:36px;height:36px;font-size:26px}.top{gap:9px;padding:8px 10px}.project-head{max-width:300px}.head-actions{gap:4px}.subtle,.source-link{padding:9px 8px}.inspector{width:270px}}
@@ -48,6 +48,361 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
  #exportButton::after{content:"⇩";font-size:18px}
 }
 
+
+/* YuanZhan Pro additions: exploded view + pro exports */
+.explode-bar{position:absolute;left:50%;bottom:52px;transform:translateX(-50%);z-index:4;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;background:#101f31e8;border:1px solid #3f6184;border-radius:12px;padding:10px 14px;max-width:calc(100% - 24px);box-shadow:0 10px 30px #0007}
+.explode-bar[hidden]{display:none}
+.explode-bar label{font-size:12px;font-weight:800;color:#ffe1a8;white-space:nowrap}
+.explode-bar small{font-size:11px;color:#9db0c6;width:100%;text-align:center}
+.explode-bar input[type=range]{width:min(300px,52vw);min-height:36px;accent-color:#f2b64f}
+.explode-bar span{font-size:12px;font-weight:800;color:#fff;min-width:42px}
+.export-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.export-grid button{text-align:left;padding:13px 12px;min-height:64px;background:#1b3046;border:1px solid #385774;display:flex;flex-direction:column;gap:4px}
+.export-grid button:hover{background:#25425f}
+.export-grid button strong{font-size:14px;color:#fff}
+.export-grid button small{font-size:11px;color:#9fb5cb;line-height:1.5}
+.export-grid .wide{grid-column:1/-1}
+#exportProButton{background:#7a5310!important;border-color:#c99a3a!important;color:#ffe9bb!important;font-weight:800}
+@media(max-width:780px){.explode-bar{bottom:86px}.export-grid{grid-template-columns:1fr}}
+
+
+/* YuanZhan Pro stage2: rooms, stats, listing, templates */
+@media(max-width:420px){#exportProButton{font-size:0!important;min-width:46px}#exportProButton::after{content:"匯出";font-size:11px}}
+@media(max-width:780px){.viewport-controls{flex-direction:row;left:auto;right:10px;top:58px;bottom:auto}.north-arrow{top:auto;bottom:70px;right:14px}}
+.listing-card{position:absolute;left:14px;bottom:46px;z-index:3;pointer-events:none;background:#0e1e30e6;border:1px solid #c99a3a;border-radius:11px;padding:9px 12px;max-width:min(480px,calc(100% - 110px));display:flex;flex-direction:column;gap:2px}
+.listing-card[hidden]{display:none}.listing-card strong{font-size:13px;color:#ffe9bb}.listing-card span{font-size:11px;color:#d5e5f6;line-height:1.5}
+.north-arrow{position:absolute;right:14px;top:64px;z-index:3;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:1px}
+.na-circle{width:38px;height:38px;border-radius:50%;background:#0e1e30d9;border:1px solid #527ba0;color:#ffd17e;display:grid;place-items:center;font-size:19px;font-weight:900}
+.north-arrow small{font-size:10px;font-weight:800;color:#d5e5f6;background:#0e1e30b8;padding:1px 6px;border-radius:5px}
+.scale-bar{position:absolute;right:66px;bottom:16px;z-index:3;pointer-events:none;text-align:center}
+.scale-bar-fill{height:6px;background:repeating-linear-gradient(90deg,#e8f1fb 0 50%,#3a2c14 50% 100%);background-size:100% 100%;border:1px solid #e8f1fb;min-width:10px}
+.scale-bar small{display:block;font-size:10px;color:#d5e5f6;background:#0c1a29db;border-radius:5px;padding:2px 5px;margin-top:3px}
+.unit-seg{display:flex;background:#091321;border:1px solid #2d425b;border-radius:10px;padding:3px;gap:3px}
+.unit-seg button{flex:1;border:0;background:transparent;color:#9db0c6;font-weight:800;font-size:12px;padding:9px 6px;border-radius:8px;min-height:40px}
+.unit-seg button.active{background:#2a62a5;color:#fff}
+.tpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.tpl-grid button{text-align:left;padding:13px 12px;min-height:70px;background:#1b3046;border:1px solid #385774;display:flex;flex-direction:column;gap:4px}
+.tpl-grid button strong{font-size:14px;color:#fff}.tpl-grid button small{font-size:11px;color:#9fb5cb;line-height:1.5}
+.stat-big{font-size:22px;font-weight:900;color:#ffe9bb}
+.area-dual{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.area-card{text-align:left;border:1px solid #38516d;border-radius:12px;background:#12283e;padding:12px;min-height:64px;color:var(--ink)}
+.area-card small{display:block;color:#9db0c6;font-size:11px;font-weight:700;margin-bottom:4px}
+.area-card .stat-big{display:block}
+.area-card em{display:block;font-style:normal;color:#9db0c6;font-size:11px;margin-top:4px;line-height:1.5}
+@media(max-width:420px){.area-dual{grid-template-columns:1fr 1fr;gap:7px}.area-card{padding:10px 9px}.area-card .stat-big{font-size:19px}}
+.room-chip{display:inline-block;margin:3px 3px 0 0}
+.room-chip button{padding:9px 11px;font-size:12px;min-height:40px}
+.calc-out{background:#12283e;border:1px solid #38516d;border-radius:11px;padding:11px 13px;margin-top:10px}
+.calc-out .mini-stat:last-child{border-bottom:0}
+.dialog.wide{max-width:min(680px,calc(100vw - 24px))}
+@media(max-width:780px){.listing-card{bottom:40px;max-width:calc(100% - 24px)}.north-arrow{top:104px}.tpl-grid{grid-template-columns:1fr}}
+
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
+<style id="ux-polish-v2">
+/* ===== UX Polish v2 — 2026-11-18 : hierarchy, focus, flow ===== */
+:root{
+  --font:"Noto Sans TC","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --amber:#f2b64f; --amber-ink:#1c1503; --surface:#111e31; --surface2:#16273f;
+  --ring:#ffcf7a;
+}
+html,body{font-family:var(--font)}
+body{letter-spacing:.01em}
+button{transition:transform .12s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease}
+button:active{transform:scale(.97)}
+button:focus-visible{outline:3px solid var(--ring)!important;outline-offset:2px}
+
+/* Header — slimmer, clearer primary action */
+.top{height:64px;background:rgba(16,27,43,.96);backdrop-filter:blur(10px);box-shadow:0 1px 0 rgba(255,255,255,.04),0 10px 30px rgba(0,0,0,.18);gap:12px}
+.mark{border-radius:10px;box-shadow:0 6px 16px rgba(58,213,181,.22);font-size:26px}
+.identity h1{font-weight:900;letter-spacing:-.03em}
+.eyebrow{letter-spacing:.14em}
+.project-head input{background:#0d1a2b;border-color:#2e435e;border-radius:999px;padding:9px 14px;font-weight:700}
+.project-head input:focus{border-color:var(--amber);background:#12243c;outline:none;box-shadow:0 0 0 3px rgba(242,182,79,.18)}
+.save-status{display:inline-flex;align-items:center;gap:6px;font-weight:700}
+.save-status::before{content:"";width:7px;height:7px;border-radius:50%;background:#79d8b0;box-shadow:0 0 0 4px rgba(121,216,176,.15);flex:none}
+#exportProButton{background:var(--amber)!important;border-color:#ffd88a!important;color:var(--amber-ink)!important;font-weight:900;box-shadow:0 6px 18px rgba(242,182,79,.25);border-radius:999px;padding:10px 14px}
+#exportProButton:hover{filter:brightness(1.06)}
+.subtle{border-radius:999px}
+
+/* Toolbar — grouped dock, active tool is unmistakable */
+.toolbar{background:#0e1a2b;border-bottom:1px solid #24344c;padding:8px 10px;gap:6px;scrollbar-width:none;position:relative}
+.toolbar::-webkit-scrollbar{display:none}
+.tabs{background:#070f1c;border-radius:999px;padding:3px;box-shadow:inset 0 0 0 1px #2a3f58}
+.tab{border-radius:999px;padding:9px 14px;font-weight:900}
+.tab.active{background:#fff;color:#0e1a2b;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.tool{border-radius:999px;padding:9px 13px;background:transparent;border-color:transparent;color:#c7d8ec;font-weight:700}
+.tool:hover{background:#1e324f;color:#fff}
+.tool.active{background:var(--amber);color:var(--amber-ink);border-color:#ffd88a;box-shadow:0 4px 14px rgba(242,182,79,.28)}
+.tool.active span{font-weight:900}
+.separator{border-color:#2b415e;opacity:.7}
+#snapButton.active,#dimsButton.active{background:#1d3a2f;color:#8ee8c1;border-color:#2f6b52}
+
+/* Canvas chrome */
+.stage-wrap{background:radial-gradient(900px 500px at 50% 0%, #13263f 0%, #0a1423 58%)}
+.viewport-info span{border-radius:999px;padding:7px 12px;font-weight:600;backdrop-filter:blur(8px)}
+.viewport-controls{gap:8px}
+.viewport-controls button{border-radius:50%!important;background:#fff!important;color:#12233a!important;border:none!important;font-weight:900;box-shadow:0 8px 20px rgba(0,0,0,.35)!important}
+.viewport-controls button:hover{transform:scale(1.06)}
+
+/* Progress steps — tells you where you are in the flow */
+.steps-bar{position:absolute;left:50%;top:52px;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:0;background:rgba(13,26,43,.92);border:1px solid #334a66;border-radius:999px;padding:5px;backdrop-filter:blur(10px);box-shadow:0 10px 24px rgba(0,0,0,.28);max-width:calc(100% - 20px)}
+.steps-bar[hidden]{display:none}
+.step{display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;color:#8ea6bf;white-space:nowrap;line-height:1}
+.step i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:#22344d;color:#cfe2f5;font-style:normal;font-size:11px;flex:none}
+.step.done{color:#8ee8c1}.step.done i{background:#1f5c46;color:#fff}
+.step.now{background:#fff;color:#0f1e32}.step.now i{background:var(--amber);color:var(--amber-ink)}
+.step-line{width:14px;height:1px;background:#3a5573;flex:none}
+@media(max-width:780px){.steps-bar{top:46px;padding:4px}.step{padding:5px 7px;font-size:10px}.step span{display:none}.step.now span,.step.done span{display:inline}.step-line{width:8px}}
+
+/* Shortcuts hint — desktop only */
+.shortcuts-bar{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:2;display:flex;gap:6px;pointer-events:none}
+.shortcuts-bar span{background:rgba(10,22,38,.82);border:1px solid #2e475f;border-radius:999px;padding:5px 9px;font-size:10px;color:#9db0c6;white-space:nowrap}
+.shortcuts-bar b{color:#e8f1fb;font-weight:800}
+@media(max-width:900px){.shortcuts-bar{display:none}}
+
+/* Start / onboarding — clearer 1-2-3 */
+.start-tip{text-align:left;border-radius:22px;padding:24px;background:linear-gradient(160deg,#1a2f4a,#0f1e33);border-color:#46617f;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.start-tip h2{font-size:24px;font-weight:900;letter-spacing:-.02em;text-align:left}
+.start-tip p{text-align:left;font-size:13.5px}
+.start-icon{width:52px;height:52px;border-radius:14px;background:var(--amber);color:var(--amber-ink);display:grid;place-items:center;font-size:28px}
+.start-steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:14px 0 16px}
+.start-steps div{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px}
+.start-steps b{display:block;font-size:12px;color:#fff}.start-steps small{color:#9db0c6;font-size:11px;line-height:1.5;display:block;margin-top:3px}
+.start-buttons{justify-content:flex-start}
+.start-buttons .primary{background:var(--amber);color:var(--amber-ink);border-color:#ffd88a;border-radius:999px;flex:1}
+@media(max-width:520px){.start-steps{grid-template-columns:1fr}.start-steps div{display:flex;gap:8px;align-items:baseline}}
+
+/* Inspector — sheet feel on mobile, calmer on desktop */
+.inspector{background:linear-gradient(180deg,#132239,#101d30);scrollbar-width:thin}
+.sheet-handle{display:none}
+.panel-title{position:sticky;top:-19px;background:#132239;padding:14px 0 10px;z-index:2;margin-top:-6px}
+.item-summary{border-radius:14px;background:#1c304a;border-color:#3d5a78}
+.field input,.field select{border-radius:10px;background:#0b1828}
+.field input:focus,.field select:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(242,182,79,.16);outline:none}
+.aside-action,.secondary-actions button{border-radius:999px}
+.inspector-backdrop{position:fixed;inset:0;background:rgba(3,8,16,.55);backdrop-filter:blur(2px);z-index:9;opacity:0;pointer-events:none;transition:opacity .2s}
+.inspector-backdrop.show{opacity:1;pointer-events:auto}
+@media(max-width:780px){
+  .sheet-handle{display:block;width:44px;height:5px;border-radius:99px;background:#5a7696;margin:0 auto 10px}
+  .inspector{border-radius:22px 22px 0 0;padding-top:10px;transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+  .panel-title{top:-10px;background:#132239}
+}
+
+/* Dialogs & toast & listing */
+.dialog{border-radius:20px;padding:22px;animation:dlgIn .18s ease}
+.dialog::backdrop{background:rgba(2,6,12,.68);backdrop-filter:blur(3px)}
+@keyframes dlgIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
+#toast{top:14px;bottom:auto!important;left:50%;transform:translate(-50%,-6px);border-radius:999px;background:#fff;color:#10233c;border:none;font-weight:800;padding:11px 16px;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.listing-card{border-radius:14px;border-color:rgba(242,182,79,.65)}
+.explode-bar{border-radius:999px;padding:8px 8px 8px 16px}
+.explode-bar small{display:none}
+.footer{background:#0d1828}
+.catalog button,.tpl-grid button,.export-grid button{border-radius:14px}
+.catalog button:hover,.tpl-grid button:hover,.export-grid button:hover{transform:translateY(-1px);border-color:#6b93b8}
+@media(prefers-reduced-motion:reduce){.dialog{animation:none}button:active{transform:none}}
+</style>
+<style id="ux-easy-v3">
+/* ===== UX Easy v3 — 2026-11-18 test pass: no control hides off-screen ===== */
+/* Toolbar wraps onto a second row instead of pushing 尺寸／復原／重做／設定 off the right edge */
+.toolbar{flex-wrap:wrap;overflow-x:visible;row-gap:6px}
+#undoButton,#redoButton,#fitButton{min-width:40px}
+/* Start card actions at every width: the primary gets its own full-width row so its label never wraps into an oval; secondary actions share the row below */
+.start-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.start-buttons .primary{grid-column:1/-1;border-radius:14px;min-height:50px}
+.start-buttons .ghost{border-radius:14px;min-height:46px}
+@media(max-width:780px){
+  /* The saved-status pill was resurrected by a later cascade rule and crowded out the project name — hide it on phones as originally intended */
+  .save-status{display:none!important}
+  .project-head{max-width:none}
+  /* Phone toolbar becomes a thumb grid: every tool visible at once, no sideways scrolling */
+  .toolbar{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;padding:7px 8px;overflow:visible}
+  .toolbar .tabs{grid-column:1/-1;display:flex}
+  .toolbar .tabs .tab{flex:1;min-height:42px}
+  .toolbar .separator{display:none}
+  .toolbar .tool{flex-direction:column;gap:1px;min-height:48px;padding:5px 1px;font-size:15px;border-radius:12px;line-height:1.15}
+  .toolbar .tool span{display:block;font-size:10.5px}
+  .toolbar .tool.small{flex-direction:row;font-size:11px;min-height:44px;padding:5px 2px}
+  /* Start card: tidy 2-column actions; the amber primary no longer wraps into a tall oval */
+  .start-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .start-buttons .primary{grid-column:1/-1;border-radius:14px;min-height:50px}
+  .start-buttons .ghost{border-radius:14px;min-height:46px}
+  .start-buttons #loadDemo{grid-column:1/-1}
+}
+@media(max-width:420px){
+  /* The icon-only JSON button read as a mystery download arrow — label it */
+  #exportButton::after{content:"JSON";font-size:11px}
+}
+</style>
+<style id="ux-mobile-v4">
+/* ===== Mobile Easy v4 — 2026-11-18: compact chrome, bigger canvas, no iOS focus-zoom ===== */
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+@media(min-width:781px){#toolbarToggle{display:none}}
+@media(max-width:780px){
+  /* Header: two rows on phones — title + actions on row 1, project name full-width on row 2 —
+     so nothing is squeezed into circles. The export button takes a deliberate short label
+     「匯出」 (it opens the full PDF・CAD・3D export menu). The JSON export also lives inside
+     that dialog, so its header button hides on phones, as does the help icon button. */
+  .top{height:auto;flex-wrap:wrap;padding:8px;gap:6px 8px}
+  .identity{flex:1;min-width:0}
+  .identity h1{font-size:16px}
+  .project-head{order:3;flex:1 1 100%;max-width:none;min-width:0}
+  .project-head input{font-size:16px;padding:8px 12px;width:100%}
+  .head-actions{flex:none;margin-left:auto}
+  .head-actions .subtle{flex:none;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+  .head-actions .icon-button,.head-actions .source-link{display:none}
+  #exportButton{display:none}
+  #exportProButton{padding:10px 18px;font-size:0}
+  #exportProButton::after{content:"匯出";font-size:13px;font-weight:900}
+  #projectsButton{padding:10px 14px;font-size:12px}
+  /* Toolbar: tighter thumb grid so the canvas keeps the screen height */
+  .toolbar{gap:4px;padding:6px}
+  .toolbar .tabs .tab{min-height:40px;padding:7px 6px;font-size:11.5px}
+  .toolbar .tool{min-height:46px;padding:4px 1px;border-radius:11px}
+  .toolbar .tool.small{min-height:44px}
+  /* Canvas overlays: decorative chrome hides on phones so it never covers the start card or the drawing */
+  .north-arrow{display:none}
+  .scale-bar{display:none}
+  .view-corner{display:none}
+  .viewport-info{top:6px}
+  .viewport-info #modeHint{font-size:11px;padding:6px 10px}
+  /* Zoom controls float above the start card (z-index 1) so they stay tappable on an empty canvas */
+  .viewport-controls{top:auto;bottom:12px;right:10px;flex-direction:column;z-index:6}
+  /* Start card: never taller than the stage — it scrolls internally instead of clipping off-screen */
+  .start-tip{max-height:calc(100% - 16px);overflow-y:auto;overscroll-behavior:contain;padding:18px 16px;border-radius:18px}
+  .start-tip h2{font-size:21px}
+  .start-tip p{font-size:12.5px;line-height:1.65;margin:7px 0 10px}
+  .start-icon{width:44px;height:44px;font-size:24px;border-radius:12px}
+  .start-steps{margin:10px 0 12px;gap:6px}
+  .start-steps div{padding:8px}
+  .start-tip small{margin-top:12px}
+  /* Forms: 16px inputs stop iOS Safari auto-zooming on focus; controls stay thumb-sized */
+  .field input,.field select{font-size:16px;min-height:48px}
+  .dialog{padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:88dvh}
+  .dialog-actions button,.export-grid button,.tpl-grid button,.catalog button{min-height:52px}
+  .inspector{padding-bottom:calc(15px + env(safe-area-inset-bottom))}
+  .footer{padding-bottom:calc(4px + env(safe-area-inset-bottom))}
+  /* Collapse toggle (injected by the v4 script): one tap gives the canvas the whole screen back */
+  #toolbarToggle{grid-column:1/-1;min-height:44px;border-radius:10px;background:#16273f;color:#9db0c6;font-size:11.5px;font-weight:800;border:1px solid #2c435f;width:100%}
+  .toolbar.mobile-collapsed .tool{display:none!important}
+}
+@media(max-width:420px){
+  .identity h1{font-size:15px}
+  .head-actions .subtle{font-size:12px;min-height:44px}
+  #projectsButton::after{content:none}
+}
+</style>
+<style id="ux-pro-v5">
+/* ===== Pro v5 — 2026-11-18: wall-length table, annotations, load-bearing/demolition, design QA ===== */
+.wall-row{border:1px solid #2c435f;border-radius:12px;padding:10px 12px;margin:0 0 10px;background:#101f31}
+.wall-row-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.wall-row-head strong{font-size:14px;color:#eaf3ff}
+.wall-row-head span{color:#ffd17e;font-weight:800;font-size:13px;white-space:nowrap}
+.wall-row-ctl{display:flex;align-items:center;gap:8px;margin-top:8px}
+.wall-row-ctl input{flex:1;min-width:0;min-height:48px;font-size:16px;padding:8px 10px;border-radius:10px;border:1px solid #35506f;background:#0b1727;color:#eaf3ff}
+.wall-row-ctl .mm{color:#9db0c6;font-size:12px;flex:none}
+.wall-row-ctl button{flex:none;min-height:48px;padding:8px 18px;border-radius:10px;background:#f5b93f;color:#1c1408;font-weight:900;border:0;font-size:14px}
+.wall-row-flags{display:flex;gap:8px;margin-top:8px}
+.wall-row-flags .chip{flex:1;min-height:44px;border-radius:10px;border:1px solid #35506f;background:#16273f;color:#c9d9ea;font-weight:800;font-size:12.5px}
+.wall-row-flags .chip.on-lb{background:#4a3512;border-color:#e8a33d;color:#ffd98a}
+.wall-row-flags .chip.on-demo{background:#571f1d;border-color:#ff6f66;color:#ffb3ae}
+.qa-item{display:flex;gap:10px;width:100%;text-align:left;align-items:flex-start;border:1px solid #57451c;background:#241d0e;color:#ffe1a1;border-radius:12px;padding:12px;margin:0 0 8px;font-size:13.5px;line-height:1.55;min-height:48px}
+.qa-item b{flex:none}
+.qa-ok{border:1px solid #1f4d3a;background:#0e241b;color:#9fe8c6;border-radius:12px;padding:14px;font-size:14px;line-height:1.6}
+.chip-row{margin:2px 0 4px}
+</style>
+<style id="ux-easy-v6">
+/* ===== UX Easy v6 — 2026-11-18: welcome card stops fighting the canvas chrome; phone card fits without scrolling ===== */
+/* Screen-reader-only labels: modern clip pattern alongside the legacy rect clip */
+.sr-only{clip-path:inset(50%)}
+@media(max-width:780px){
+  /* Welcome card on phones: drop the decorative icon, put the 1-2-3 steps side by side and tighten the copy,
+     so 畫第一間房／港式範本／逐幅畫牆／示範圖 are all on screen at once — no scrolling inside the card.
+     The card also narrows and hugs the left edge, leaving the right-hand rail completely clear for the
+     +/−/fit zoom cluster: the two never overlap, and every control stays visible and tappable. */
+  .start-icon{display:none}
+  .start-tip{left:8px;transform:translateY(-50%);max-width:calc(100% - 76px)}
+  .start-tip>small{display:none}
+  .start-steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:10px 0 12px}
+  .start-steps div{display:block;padding:7px 6px}
+  .start-steps b{font-size:11px}
+  .start-steps small{font-size:10px;line-height:1.45;margin-top:2px}
+  /* Utility row gets words, not mystery glyphs: 復原／重做／置中 can be read at a glance */
+  .toolbar #undoButton,.toolbar #redoButton,.toolbar #fitButton{flex-direction:column;gap:1px;font-size:15px;line-height:1.15}
+  #undoButton::after{content:"復原";font-size:10.5px;font-weight:700}
+  #redoButton::after{content:"重做";font-size:10.5px;font-weight:700}
+  #fitButton::after{content:"置中";font-size:10.5px;font-weight:700}
+}
+</style>
+<style id="ux-pro-v7">
+/* ===== Pro v7 — 2026-11-19: draggable compass, true scale bar, door/window schedule ===== */
+/* Compass: interactive — drag to rotate north; sits in the canvas corner without eating the drawing area */
+.north-arrow{pointer-events:auto;cursor:grab;touch-action:none;z-index:5;-webkit-tap-highlight-color:transparent}
+.north-arrow:active{cursor:grabbing}
+.north-arrow:focus-visible{outline:3px solid #ffcf7a;outline-offset:3px;border-radius:50%}
+.na-circle{position:relative;will-change:transform}
+.na-n{position:absolute;top:0;left:50%;transform:translateX(-50%);font-size:9px;font-weight:900;color:#ffd17e;line-height:1}
+.na-arrow{font-size:19px;line-height:1;transform:translateY(2px)}
+/* Scale bar: two true-length segments with 0 / mid / end labels */
+.scale-bar[hidden]{display:none!important}
+.scale-labels{display:flex;justify-content:space-between;margin-top:3px}
+.scale-labels span{background:#0c1a29db;border-radius:5px;padding:2px 5px;font-size:10px;color:#d5e5f6;line-height:1.3}
+.scale-labels span:nth-child(2){transform:translateX(0)}
+/* Door/window schedule — same card language as the wall-length table */
+.dw-head,.dw-row{display:grid;grid-template-columns:52px 44px 78px minmax(0,1fr);gap:6px;align-items:center;width:100%}
+.dw-head{font-size:11px;color:#9db0c6;font-weight:800;padding:4px 10px}
+.dw-row{text-align:left;border:1px solid #2c435f;background:#101f31;border-radius:10px;padding:9px 10px;margin:0 0 6px;font-size:12.5px;color:#dbe9f7;min-height:44px}
+.dw-row b{color:#ffe9bb;font-size:13px}
+.dw-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:780px){
+  /* Phones: compass returns (draggable, small, in the free right-hand rail below the steps bar) */
+  .north-arrow{display:flex;top:96px;right:10px;bottom:auto}
+  /* Phones: scale bar bottom-left, clear of the zoom cluster (bottom-right) and the toolbar */
+  .scale-bar{display:block;right:auto;left:10px;bottom:12px}
+  .listing-card{bottom:58px}
+  .dw-head,.dw-row{grid-template-columns:44px 34px 68px minmax(0,1fr);font-size:12px;padding-left:8px;padding-right:8px}
+  /* While the welcome card is up on phones, the scale bar steps aside so it never covers the card's buttons */
+  #startTip:not([hidden]) ~ .scale-bar{display:none}
+}
+</style>
+<style id="ux-simple-v8">
+/* ===== Simple-first v8 — 2026-11-19: beginner-first toolbar =====
+   The toolbar opens in 簡單模式: only the tools a first-timer needs are visible
+   （選取／畫房間／逐幅畫牆／門／窗／傢俬／範本／復原／重做／置中／屬性）.
+   Everything advanced — 量度、移動畫布、房間標籤、註解、數據・估價、分享 PNG、
+   牆長表、設計檢查、吸附／尺寸／牆長開關 — lives behind one 「更多工具」 tap.
+   Nothing is removed: the same features also stay reachable from the 屬性 panel. */
+.toolbar.simple .adv{display:none!important}
+#moreToolsButton{border:1px dashed #5b7ea3;color:#ffd98a;font-weight:800;background:#16283f}
+#moreToolsButton:hover{background:#1e324f;color:#ffe9bb}
+#moreToolsButton.open{border-style:solid;background:#284f6e;color:#fff;border-color:#5289be}
+@media(max-width:780px){
+  /* In the phone thumb grid the toggle reads as a full grid cell like every other tool */
+  #moreToolsButton{border-radius:12px}
+}
+</style>
+<style id="ux-pro-v9">
+/* ===== Pro v9 — 2026-11-19: graph paper (25 cm) + snap, furniture cm labels, room wall-area/volume ===== */
+/* The 方格紙 toggle lives OUTSIDE the advanced set on purpose: it is a canvas view control a
+   first-timer may want immediately, so it stays visible in 簡單模式 and keeps a full-size tap target. */
+#gridPaperButton{border:1px dashed #5b7ea3;font-weight:800;background:#16283f;color:#d7e8f8}
+#gridPaperButton.active{background:#1d3a2f;color:#8ee8c1;border-color:#2f6b52;border-style:solid}
+#furnLabelButton.active{background:#1d3a2f;color:#8ee8c1;border-color:#2f6b52}
+</style>
+<style id="ux-fix-v10">
+/* ===== Fix v10 — 2026-11-19 full test pass =====
+   1) Phones: the welcome card was vertically centred and slid up over the
+      「第 1 步／4」 hint pill, clipping its text. The card now sits lower,
+      leaves the top hint row fully visible, and the hint/steps rows render
+      above the card if they ever meet. The card keeps its internal scroll. */
+@media(max-width:780px){
+  .viewport-info{z-index:6}
+  .steps-bar{z-index:6}
+  .start-tip{top:calc(50% + 42px);max-height:calc(100% - 96px)}
+}
 </style>
 </head>
 <body>
@@ -55,22 +410,21 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
   <header class="top">
     <div class="identity">
       <span class="mark" aria-hidden="true">⌂</span>
-      <div><div class="eyebrow">FREE · OPEN SOURCE · LOCAL FIRST</div><h1>Easy Home <b>3D</b></h1></div>
+      <div><div class="eyebrow">遠展空間 · 免 LiDAR · 免費開放</div><h1>遠展空間<b>Pro</b></h1></div>
     </div>
     <div class="project-head">
-      <label class="sr-only" for="projectName">專案名稱</label>
       <input id="projectName" maxlength="80" value="我的平面圖" aria-label="專案名稱" title="編輯專案名稱">
       <span id="saveStatus" class="save-status" aria-live="polite">本機儲存</span>
     </div>
     <div class="head-actions">
       <button id="projectsButton" class="subtle">專案</button>
-      <button id="exportButton" class="subtle">匯出 JSON</button>
+      <button id="exportProButton" class="subtle">匯出 PDF・CAD・3D</button><button id="exportButton" class="subtle">匯出 JSON</button>
       <button id="helpButton" class="subtle icon-button" title="使用教學" aria-label="使用教學">?</button>
       <a class="source-link" href="https://github.com/loktoto/Easy-home-3d-model" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
     </div>
   </header>
-  <nav class="toolbar" aria-label="編輯工具">
-    <div class="tabs"><button id="view2d" class="tab active" aria-pressed="true">▦ 2D 平面圖</button><button id="view3d" class="tab" aria-pressed="false">⬡ 3D 模型</button></div>
+  <nav class="toolbar simple" aria-label="編輯工具">
+    <div class="tabs"><button id="view2d" class="tab active" aria-pressed="true">▦ 2D 平面圖</button><button id="view3d" class="tab" aria-pressed="false">⬡ 3D 模型</button><button id="viewExplode" class="tab" aria-pressed="false">✦ 3D 爆炸圖</button></div>
     <div class="separator"></div>
     <button data-tool="select" class="tool active" title="選取及移動物件">↖ <span>選取</span></button>
     <button data-tool="room" class="tool" title="點兩個對角快速建立長方形房間">▣ <span>畫房間</span></button>
@@ -78,43 +432,145 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
     <button data-tool="door" class="tool" title="按一下牆身加門">▯ <span>門</span></button>
     <button data-tool="window" class="tool" title="按一下牆身加窗">▤ <span>窗</span></button>
     <button id="addFurnitureButton" class="tool" title="新增傢俬">▣ <span>傢俬</span></button>
-    <button data-tool="measure" class="tool" title="點選兩點測量距離">⌁ <span>量度</span></button>
-    <button data-tool="pan" class="tool" title="拖動畫布">✥ <span>移動畫布</span></button>
-    <div class="separator"></div>
-    <button id="snapButton" class="tool active small" aria-pressed="true">吸附：開</button>
-    <button id="dimsButton" class="tool active small" aria-pressed="true">尺寸：開</button>
+    <button data-tool="measure" class="tool adv" title="點選兩點測量距離">⌁ <span>量度</span></button>
+    <button data-tool="pan" class="tool adv" title="拖動畫布">✥ <span>移動畫布</span></button>
+    <button data-tool="label" class="tool adv" title="按一下房間範圍，加房間名稱及自動面積">🏷 <span>房間標籤</span></button>
+    <button data-tool="note" class="tool adv" title="按一下平面圖加文字註解旗（例：拆牆、加插座）">📌 <span>註解</span></button>
+    <div class="separator adv"></div>
+    <button id="templatesButton" class="tool" title="一鍵載入港式範本">▦ <span>範本</span></button>
+    <button id="moreToolsButton" class="tool" aria-expanded="false" title="顯示進階工具：量度、註解、數據・估價、牆長表、設計檢查、吸附／尺寸開關">⋯ <span>更多工具</span></button>
+    <button id="statsButton" class="tool adv" title="面積、樓價、地板及裝修估價">∑ <span>數據・估價</span></button>
+    <button id="pngButton" class="tool adv" title="匯出 2D 平面圖 PNG，可分享去 WhatsApp／LINE">▣ <span>分享 PNG</span></button>
+    <button id="wallsButton" class="tool adv" title="牆長表：逐幅牆輸入精確長度（mm），兼標示主力牆／拆卸">📏 <span>牆長表</span></button>
+    <button id="qaButton" class="tool adv" title="設計檢查：門窗撞傢俬、房間太細、門闊不足、床頭插座">✓ <span>設計檢查</span></button>
+    <div class="separator adv"></div>
+    <button id="gridPaperButton" class="tool small" aria-pressed="false" title="方格紙底圖：1 格 = 25 cm；開咗畫牆同拖傢俬會自動吸合到最近格線">方格紙：關</button>
+    <button id="snapButton" class="tool active small adv" aria-pressed="true">吸附：開</button>
+    <button id="dimsButton" class="tool active small adv" aria-pressed="true">尺寸：開</button>
+    <button id="furnLabelButton" class="tool active small adv" aria-pressed="true" title="喺每件傢俬下方顯示尺寸標籤（cm）；關咗即隱藏">傢俬尺寸：開</button>
+    <button id="wallDimsButton" class="tool active small adv" aria-pressed="true">牆長：開</button>
+    <button id="legendButton" class="tool active small adv" aria-pressed="true" title="平面圖角落自動圖例：只列出呢張圖實際用咗嘅符號（門／窗／外牆／間隔牆／承重牆／拆除牆／傢俬）">圖例：開</button>
+    <button id="swingButton" class="tool active small adv" aria-pressed="true" title="門擺弧：每道門淡淡顯示 90° 開門範圍；設計檢查會自動查擺弧撞傢俬同兩門相撞">門弧：開</button>
     <button id="undoButton" class="tool small" title="復原 (Ctrl/⌘+Z)">↶</button>
     <button id="redoButton" class="tool small" title="重做">↷</button>
     <button id="fitButton" class="tool small" title="全部置中">⊞</button>
-    <button id="propertiesButton" class="tool small mobile-only" title="屬性">設定</button>
+    <button id="propertiesButton" class="tool small mobile-only" title="屬性及尺寸">屬性</button>
   </nav>
   <main class="workspace">
     <section class="stage-wrap" aria-label="2D／3D 繪圖區">
       <canvas id="stage" tabindex="0" aria-label="可編輯平面圖畫布；使用工具列選擇畫牆、量度、傢俬"></canvas>
       <div class="viewport-info"><span id="modeHint">先畫房間，再加門窗及傢俬。</span><span id="drawingStats">0 幅牆 · 0 件傢俬</span></div>
+      <div id="stepsBar" class="steps-bar" aria-label="設計進度">
+        <div class="step now" data-step="1"><i>1</i><span>畫牆／房間</span></div><div class="step-line"></div>
+        <div class="step" data-step="2"><i>2</i><span>加門窗</span></div><div class="step-line"></div>
+        <div class="step" data-step="3"><i>3</i><span>擺傢俬</span></div><div class="step-line"></div>
+        <div class="step" data-step="4"><i>4</i><span>匯出分享</span></div>
+      </div>
+      <div class="shortcuts-bar" aria-hidden="true"><span><b>Ctrl/⌘ Z</b> 復原</span><span><b>Del</b> 刪除</span><span><b>Esc</b> 取消</span><span><b>Shift</b> 鎖橫／直</span><span><b>滾輪</b> 縮放 · <b>拖空白</b> 平移</span></div>
       <div id="startTip" class="start-tip">
         <div class="start-icon">⌂</div>
         <h2>開始設計你的屋企</h2>
-        <p>只需在畫布點兩個角，就可以建立第一間房；之後可以自由畫牆、加門窗和擺傢俬。</p>
-        <div class="start-buttons"><button id="startRoom" class="primary">▣ 畫第一間房</button><button id="startWall" class="ghost">逐幅畫牆</button><button id="loadDemo" class="ghost">示範圖</button></div>
-        <small>毋須註冊 · 自動儲存在此瀏覽器 · 資料不會上傳</small>
+        <p>只需在畫布點兩個角，就可以建立第一間房；之後可以自由畫牆、加門窗和擺傢俬。唔想由零開始？直接用範本最快。</p>
+        <div class="start-steps" aria-hidden="true"><div><b>① 畫房間</b><small>點兩個對角出四面牆</small></div><div><b>② 加門窗＋傢俬</b><small>撳牆加門窗，拖傢俬擺位</small></div><div><b>③ 睇 3D＋匯出</b><small>爆炸圖、PDF／DXF／OBJ</small></div></div>
+        <div class="start-buttons"><button id="startRoom" class="primary">▣ 畫第一間房</button><button id="startTemplate" class="ghost">▦ 港式範本（最快）</button><button id="startWall" class="ghost">逐幅畫牆</button><button id="loadDemo" class="ghost">示範圖</button></div>
+        <small>毋須註冊 · 唔使用 iPhone LiDAR，任何裝置都畫到 · 自動儲存在此瀏覽器</small>
       </div>
+      <div id="explodeBar" class="explode-bar" hidden><label for="explodeRange">💥 爆炸分離程度</label><input id="explodeRange" type="range" min="0" max="100" value="70" aria-label="爆炸分離程度"><span id="explodeVal">70%</span><small>傢俬會升起並向外散開，窗玻璃再升高一層 — 方便睇清每一層結構</small></div>
       <div class="viewport-controls"><button id="zoomIn" aria-label="放大">＋</button><button id="zoomOut" aria-label="縮小">－</button><button id="fitBottom" aria-label="顯示全部">⤢</button></div>
+      <div id="listingCard" class="listing-card" hidden></div>
+      <div class="north-arrow" id="northArrow" role="slider" tabindex="0" aria-label="北方方向：拖動旋轉嚟設定北方，亦可用方向鍵微調" aria-valuemin="0" aria-valuemax="359" aria-valuenow="0" title="拖動旋轉設定北方方向"><span class="na-circle" id="northDial"><span class="na-n">N</span><span class="na-arrow">↑</span></span><small id="northLabel">北 0°</small></div>
+      <div class="scale-bar" id="scaleBar" aria-hidden="true"><div id="scaleBarFill" class="scale-bar-fill" style="width:160px"></div><div class="scale-labels"><span>0</span><span id="scaleMid">1 m</span><span id="scaleEnd">2 m</span></div></div>
       <div class="view-corner"><span id="scaleLabel">1 格 = 0.5 m</span><span id="selectionHint"></span></div>
       <div id="toast" role="status" aria-live="polite"></div>
     </section>
+    <div id="inspectorBackdrop" class="inspector-backdrop" aria-hidden="true"></div>
     <aside id="inspector" class="inspector" aria-label="尺寸及物件屬性">
+      <div class="sheet-handle" aria-hidden="true"></div>
       <div class="panel-title"><div><div class="eyebrow">DESIGN WORKSPACE</div><h2>屬性及尺寸</h2></div><button id="closeInspector" class="mobile-only panel-close" aria-label="關閉">✕</button></div>
       <div id="inspectorContent"></div>
       <div class="panel-footer">
+        <button id="inspectorExport" class="aside-action primary" style="margin:0 0 12px">⬇ 匯出 PDF / DXF / OBJ / USDZ</button>
         <strong>準確尺寸，由你掌握。</strong>
         <p>預設尺寸僅供規劃。訂購傢俬或施工前，必須現場覆尺並核對門窗及牆厚。</p>
       </div>
     </aside>
   </main>
-  <footer class="footer"><span>Easy Home 3D · MIT License</span><span>免費開源 · 無需帳號 · 個人資料預設只存在本機</span><a href="https://convika.com/zh-hant/" target="_blank" rel="noopener noreferrer">如何將 HTML 發佈成連結 ↗</a></footer>
+  <footer class="footer"><span>遠展空間Pro · 建基於 <a href="https://github.com/loktoto/Easy-home-3d-model" target="_blank" rel="noopener noreferrer">Easy Home 3D (MIT)</a></span><span>免費 · 無需帳號 · 免 LiDAR 手動繪圖 · 資料只存本機</span><span>匯出：PDF · DXF · OBJ · USDZ · JSON</span></footer>
 </div>
 
+
+
+<dialog id="templatesDialog" class="dialog">
+  <div class="dialog-head"><h2>港式範本 · 一鍵開始</h2><button class="close-dialog" data-close="templatesDialog" aria-label="關閉">✕</button></div>
+  <p class="muted">全部係真實尺寸（米），載入後會成為一個新專案，牆、門窗、傢俬、房間標籤全部可以再改。</p>
+  <div class="tpl-grid">
+    <button data-template="studio"><strong>開放式 Studio · 24 m²</strong><small>6 × 4 m · 客廳／睡房＋開放式廚房＋廁所 · 約 258 呎</small></button>
+    <button data-template="onebr"><strong>1 房 · 35 m²</strong><small>7 × 5 m · 睡房＋客廳＋廚房飯廳＋廁所 · 約 377 呎</small></button>
+    <button data-template="twobr"><strong>2 房 · 48 m²</strong><small>8 × 6 m · 主人房＋睡房＋客廳＋廚房＋廁所 · 約 517 呎</small></button>
+    <button data-template="threebr"><strong>3 房 · 77 m²</strong><small>11 × 7 m · 3 睡房＋客廳＋廚房＋廁所 · 約 829 呎</small></button>
+    <button data-template="lshape"><strong>L 形開放式 · 39 m²</strong><small>L 形外殼 · 客廳＋睡房／書房 · 約 420 呎</small></button>
+  </div>
+</dialog>
+<dialog id="statsDialog" class="dialog wide">
+  <div class="dialog-head"><h2>數據 · 樓價 · 裝修估價</h2><button class="close-dialog" data-close="statsDialog" aria-label="關閉">✕</button></div>
+  <h3 style="margin:14px 0 8px">顯示單位</h3>
+  <div class="unit-seg" role="group" aria-label="面積單位">
+    <button data-unit="m2">平方米 m²</button><button data-unit="ft">平方呎 呎</button><button data-unit="ping">坪</button>
+  </div>
+  <div id="statsContent"></div>
+  <h3 style="margin:18px 0 8px">門窗表</h3>
+  <div id="openingSchedule"></div>
+  <p class="muted">編號、類型、闊度同所屬房間會隨平面圖自動更新；撳任何一行會跳去嗰道門／窗。</p>
+  <h3 style="margin:18px 0 8px">放盤資料（顯示喺平面圖同 PNG 上）</h3>
+  <div class="fields2">
+    <div class="field"><label for="metaAddress">地址／屋苑</label><input id="metaAddress" maxlength="120" placeholder="例：將軍澳 日出康城 5 座"></div>
+    <div class="field"><label for="metaLayout">間隔</label><input id="metaLayout" maxlength="40" placeholder="例：2 房 1 廳 1 廁"></div>
+    <div class="field"><label for="metaAgent">經紀／聯絡人</label><input id="metaAgent" maxlength="40" placeholder="姓名"></div>
+    <div class="field"><label for="metaPhone">電話</label><input id="metaPhone" maxlength="30" placeholder="例：9XXX XXXX"></div>
+  </div>
+  <h3 style="margin:18px 0 8px">樓價計數機</h3>
+  <div class="fields2">
+    <div class="field"><label for="calcPriceWan">總價（萬 HK$）</label><input id="calcPriceWan" type="number" inputmode="decimal" min="0" step="1" placeholder="例：680"></div>
+    <div class="field"><label for="calcBuildingFt">建築面積（呎）</label><input id="calcBuildingFt" type="number" inputmode="decimal" min="0" step="1" placeholder="例：650"></div>
+  </div>
+  <div id="calcOut" class="calc-out"></div>
+  <h3 style="margin:18px 0 8px">地板（逐間房）＋裝修估價</h3>
+  <div id="floorContent"></div>
+  <div id="tierContent"></div>
+  <p class="muted">地板：面積 × 每呎價 × 1.05（5% 損耗）。裝修級別參考：簡約 HK$700／呎、標準 HK$1,800／呎、高端 HK$3,800／呎（以實用面積計）。以上全部只係<b>初步參考</b>，唔係報價；正式裝修請搵師傅上門度尺報價。</p>
+  <div class="dialog-actions"><button id="statsPng" class="primary">⬇ 匯出 PNG 平面圖</button><button id="statsShare" class="ghost">分享 PNG（WhatsApp／LINE）</button></div>
+</dialog>
+<dialog id="areaInfoDialog" class="dialog">
+  <div class="dialog-head"><h2>面積點計？</h2><button class="close-dialog" data-close="areaInfoDialog" aria-label="關閉">✕</button></div>
+  <h3 style="margin:14px 0 6px">實用面積</h3>
+  <p class="muted" style="margin:0">單位內部嘅面積總和。<b>露台同工作平台計入實用面積</b>；<b>窗台唔計入</b>。呢度嘅數字係按你畫嘅房間標籤合計（未有標籤時以外框估算）。</p>
+  <h3 style="margin:16px 0 6px">內攏面積（可用面積）</h3>
+  <p class="muted" style="margin:0">實用面積減去<b>牆身同柱位佔用嘅面積</b>，即係真正可以行、可以擺傢俬嘅淨空間。呢度按平面圖嘅牆長 × 牆厚估算牆身佔用，所以係參考值；正式數字以測量師報告為準。</p>
+  <p class="muted">兩個數字會一齊印喺 PNG 同 PDF 匯出上面。</p>
+</dialog>
+<dialog id="wallsDialog" class="dialog wide">
+  <div class="dialog-head"><h2>牆長表 · 精確輸入（mm）</h2><button class="close-dialog" data-close="wallsDialog" aria-label="關閉">✕</button></div>
+  <p class="muted">畫嗰陣差少少唔緊要：逐幅牆輸入準確長度（毫米），撳「套用」就會沿住原本方向拉長／縮短嗰幅牆，相接嘅牆會跟隨端點，門窗位置會自動修正。亦可喺呢度標示<b>主力牆</b>（金色）同<b>預計拆卸</b>（紅色虛線）。</p>
+  <div id="wallsTable"></div>
+</dialog>
+<dialog id="qaDialog" class="dialog">
+  <div class="dialog-head"><h2>設計檢查 QA</h2><button class="close-dialog" data-close="qaDialog" aria-label="關閉">✕</button></div>
+  <p class="muted">自動檢查：傢俬有冇入咗門嘅擺弧範圍、兩道門嘅擺弧有冇重疊相撞、傢俬有冇遮窗、房間有冇細過建議最少尺寸、門闊夠唔夠、床頭有冇預留插座註解、主力牆有冇誤標拆卸。撳任何一項會跳去嗰件物件。</p>
+  <div id="qaContent"></div>
+</dialog>
+<dialog id="exportDialog" class="dialog">
+  <div class="dialog-head"><h2>匯出俾設計師／客戶</h2><button class="close-dialog" data-close="exportDialog" aria-label="關閉">✕</button></div>
+  <p class="muted">全部喺你部裝置即時生成，唔經伺服器。PDF 係平面圖紙版；DXF 可入 AutoCAD 等 CAD 軟件；OBJ／USDZ 係 3D 模型（USDZ 可喺 iPhone／iPad 用 AR Quick Look 開）。</p>
+  <div class="export-grid">
+    <button data-export="pdf"><strong>📄 PDF 平面圖</strong><small>白底圖紙版：牆、門窗、傢俬、尺寸標籤，一頁 A4 橫向</small></button>
+    <button data-export="dxf"><strong>📐 CAD · DXF</strong><small>圖層 WALLS／OPENINGS／FURNITURE／MEASURE，單位：米</small></button>
+    <button data-export="obj"><strong>🧊 3D · OBJ</strong><small>牆身（連門窗開口）＋傢俬方塊模型，Blender／SketchUp 可開</small></button>
+    <button data-export="usdz"><strong>🍎 3D · USDZ</strong><small>Apple AR 格式：傳去 iPhone 即可用 Quick Look 睇立體模型</small></button>
+    <button data-export="png"><strong>🖼 PNG 平面圖</strong><small>2D 圖連放盤標題、北箭、比例尺；可直接傳 WhatsApp／LINE／Threads</small></button>
+    <button data-export="json" class="wide"><strong>💾 JSON 備份</strong><small>完整圖則資料，之後可重新匯入還原（同上方「匯出 JSON」一樣）</small></button>
+  </div>
+  <p class="muted">提示：本工具係規劃預覽，唔係正式施工圖；落單或施工前請現場覆尺。</p>
+</dialog>
 <dialog id="projectsDialog" class="dialog">
   <div class="dialog-head"><h2>我的專案</h2><button class="close-dialog" data-close="projectsDialog" aria-label="關閉">✕</button></div>
   <p class="muted">每個專案獨立保存在此瀏覽器。清除瀏覽資料可能導致資料消失，請定期匯出 JSON 備份。</p>
@@ -129,16 +585,97 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
 <dialog id="helpDialog" class="dialog">
   <div class="dialog-head"><h2>30 秒學識用</h2><button class="close-dialog" data-close="helpDialog" aria-label="關閉">✕</button></div>
   <ol class="help-list">
+    <li><b>簡單模式（預設）：</b>工具列只顯示最常用嘅工具 — 畫房間、門、窗、傢俬、範本 — 第一次用都唔會嚇親。量度、註解、數據・估價、牆長表、設計檢查等進階工具收喺工具列嘅「更多工具」入面，撳一下即展開；數據、牆長表同設計檢查亦可喺右邊「屬性」面板開。</li>
     <li><b>新手畫房間：</b>揀「畫房間」，點兩個對角即可建立長方形四面牆。揀「逐幅畫牆」可畫不規則房間，按 Esc 結束。</li>
     <li><b>改尺寸：</b>選一幅牆可輸入牆長、牆兩端坐標、牆厚與高度；直接拖動牆端點也可調整，相接的牆會跟隨。單位為米。</li>
     <li><b>門窗：</b>選「門」或「窗」，再按在任何牆上；可修改闊度、離牆角距離及窗台高度。</li>
     <li><b>加傢俬：</b>揀傢俬 → 調整闊／深／高 → 在平面圖拖到合適位置；可鎖定、解除鎖定、複製及刪除。移動也可直接輸入 X／Y。</li>
     <li><b>量距離：</b>用「量度」選兩點，顯示相距多少米；2D／3D 可隨時切換。</li>
     <li><b>儲存：</b>系統在本機自動儲存。可切換多個專案、用 JSON 匯出或匯入；沒有雲端同步。</li>
+    <li><b>3D 爆炸圖：</b>撳「✦ 3D 爆炸圖」，傢俬會升起並向外分離、窗玻璃再升高；用畫面下方滑桿調節分離程度，拖動可旋轉視角。</li>
+    <li><b>房間標籤：</b>揀「房間標籤」再按一下房間範圍，會自動偵測四邊牆、計面積（m²／呎／坪可切換）；撳標籤可改名（客廳／睡房／廚房／廁所等）、拖動標籤位置、揀地板物料。</li>
+    <li><b>數據・估價：</b>工具列「數據・估價」有總實用面積、逐間房面積、總牆長、門窗傢俬數、樓價計數機（$/呎、$/坪、實用率）、地板同裝修初步估價。</li>
+    <li><b>量度小貼士：</b>量度會吸附牆端同格線；撳住 Shift 再點第二點，可鎖定橫向或直向。</li>
+    <li><b>範本：</b>工具列「範本」有一鍵 Studio／1房／2房／3房／L形真實尺寸圖則，載入後自由修改。</li>
+    <li><b>專業匯出：</b>撳右上「匯出 PDF・CAD・3D」，可下載 PDF 平面圖、CAD DXF、3D OBJ 及 iPhone AR 用 USDZ，全部即時喺本機生成。</li>
+    <li><b>唔使用 LiDAR：</b>本網頁版唔需要 iPhone Pro 光達，任何手機／電腦用手畫尺寸一樣做到 2D＋3D。</li>
+    <li><b>牆長表（精確 mm）：</b>工具列「牆長表」列出全部牆身，逐幅輸入準確長度（毫米）撳套用即拉正；畫嗰陣差少少，喺呢度修正最快。</li>
+    <li><b>註解旗：</b>揀「註解」再按平面圖任何位置，放低文字旗（例：拆牆、加插座、留電位）；撳住支旗可拖動，註解會跟埋 PNG 一齊匯出。工具列「牆長」掣可獨立開／關牆身長度標籤。</li>
+    <li><b>主力牆／拆卸：</b>選一幅牆，喺屬性標示「主力牆」（金色芯線）或「預計拆卸」（2D 紅色虛線、3D 紅色）；牆長表亦可逐幅標示。主力牆唔可以自行拆，要工程師核准。</li>
+    <li><b>設計檢查：</b>工具列「設計檢查」一撳即查：傢俬擋門弧線／遮窗、房間細過建議尺寸、門闊不足 700 mm、床頭未標插座、主力牆誤標拆卸；撳問題會跳去嗰件物件。</li>
+    <li><b>指北針：</b>畫布角落嘅圓形指北針可以撳住拖動旋轉，設定大廈座向嘅北方；設定會自動記住，PNG 分享圖同 PDF 都會跟呢個角度印出指北針。</li>
+    <li><b>比例尺：</b>2D 畫布底部常駐比例尺會隨縮放自動更新（0—1m—2m 格式），隨時對照真實尺寸。</li>
+    <li><b>門窗表：</b>「數據・估價」底部自動列出每道門窗嘅編號（D1／W1…）、闊度（mm）同所屬房間，加／刪／改門窗即時更新；撳一行會跳去嗰道門窗。</li>
+    <li><b>方格紙：</b>工具列「方格紙」一撳即開，畫布顯示 1 格 = 25 cm 嘅方格底圖，畫牆同拖傢俬會自動吸合到最近格線，對位齊整好多；再撳即關，方格底圖即時消失，回復淨畫布。</li>
+    <li><b>傢俬尺寸標籤：</b>每件傢俬下方自動顯示細字尺寸（例如「120 × 60 cm」），拖動、旋轉、改尺寸即時更新，PNG 同 PDF 都會一齊印出；想隱藏就喺「更多工具」入面撳「傢俬尺寸」關咗佢。</li>
+    <li><b>牆面積同體積：</b>「數據・估價」逐間房除咗面積，仲有周長、牆面積同體積（以樓底高 2.8 m 計），全屋亦有總牆面積同總體積；畫牆或改房即時更新，方便預油漆、牆紙同冷氣匹數。</li>
+    <li><b>實用＋內攏面積：</b>「數據・估價」會並列兩個數字 — 實用面積（露台／工作平台計入、窗台唔計）同內攏面積（實用減去牆身／柱位佔用，即真正可用嘅淨空間）；撳任何一個數字有簡單說明，PNG 同 PDF 都會一齊印出兩個數字。</li>
+    <li><b>自動圖例：</b>平面圖左下角自動有個細圖例框，只列出呢張圖實際用咗嘅符號（門、窗、外牆、間隔牆、承重牆、拆除牆、傢俬），冇用過嘅唔會出現；PNG／PDF 會一齊印。想隱藏就喺「更多工具」撳「圖例」關咗佢。</li>
+    <li><b>門擺弧：</b>每道門自動淡淡畫出 90° 開門範圍；「設計檢查」會警告擺弧入面有傢俬、以及兩道門擺弧重疊相撞。想隱藏擺弧就喺「更多工具」撳「門弧」（檢查照樣會行）。</li>
   </ol>
   <p class="muted">手機雙指可以縮放及移動畫布；3D 可以旋轉視角，也可直接拖動未鎖定的傢俬。電腦滑鼠滾輪可縮放、拖空白畫布可平移；選定傢俬後方向鍵每次微調 5 cm，Shift＋方向鍵 25 cm。Esc 取消畫牆；Delete 刪除；Ctrl/⌘＋Z 復原。</p>
 </dialog>
 <input id="importFile" type="file" accept=".json,application/json" hidden>
+<script>
+/* UX polish v2 behaviour: progress steps + mobile inspector backdrop (no core logic changes) */
+(function(){
+  var bar=document.getElementById('stepsBar'), stats=document.getElementById('drawingStats'), startTip=document.getElementById('startTip');
+  var inspector=document.getElementById('inspector'), backdrop=document.getElementById('inspectorBackdrop');
+  function parseNums(t){var m=(t||'').match(/\d+/g);return m?m.map(Number):[0,0,0];}
+  function update(){
+    if(!bar||!stats) return;
+    var nums=parseNums(stats.textContent); var walls=nums[0]||0, openings=nums[1]||0, furn=nums[2]||0;
+    var hasContent=walls>0||furn>0;
+    bar.hidden=!hasContent && startTip && !startTip.hidden ? true : false;
+    // If start tip is showing (empty canvas), hide steps to avoid duplication
+    if(startTip && !startTip.hidden) bar.hidden=true; else bar.hidden=false;
+    var steps=bar.querySelectorAll('.step');
+    var done=[walls>0, openings>0, furn>0, false];
+    var nowIdx=done.indexOf(false); if(nowIdx===-1) nowIdx=3;
+    // step 4 becomes "now" when first 3 done
+    steps.forEach(function(el,i){
+      el.classList.toggle('done', !!done[i]);
+      el.classList.toggle('now', i===nowIdx);
+      var icon=el.querySelector('i'); if(icon) icon.textContent=done[i]?'✓':String(i+1);
+    });
+  }
+  if(stats){ new MutationObserver(update).observe(stats,{childList:true,characterData:true,subtree:true}); }
+  if(startTip){ new MutationObserver(update).observe(startTip,{attributes:true,attributeFilter:['hidden']}); }
+  setInterval(update,900); update();
+  function syncBackdrop(){ if(!backdrop||!inspector) return; var open=inspector.classList.contains('open'); backdrop.classList.toggle('show', open && window.matchMedia('(max-width:780px)').matches); }
+  if(inspector){ new MutationObserver(syncBackdrop).observe(inspector,{attributes:true,attributeFilter:['class']}); }
+  if(backdrop){ backdrop.addEventListener('click',function(){ inspector.classList.remove('open'); syncBackdrop(); }); }
+  window.addEventListener('resize',syncBackdrop);
+  // Swipe-down hint: tapping handle closes sheet on mobile
+  var handle=document.querySelector('.sheet-handle');
+  if(handle && inspector){ handle.addEventListener('click',function(){ inspector.classList.remove('open'); }); handle.style.cursor='pointer'; }
+})();
+</script>
+<script>
+/* UX Easy v3 behaviour: start-card template shortcut opens the existing templates dialog */
+(function(){
+  var b=document.getElementById('startTemplate'); if(!b) return;
+  b.addEventListener('click',function(){ var t=document.getElementById('templatesButton'); if(t) t.click(); });
+})();
+</script>
+<script>
+/* UX Mobile v4 behaviour: collapsible phone toolbar — one tap hands the screen back to the canvas.
+   The 2D/3D tabs and the toggle itself always stay visible; only the tool buttons collapse. */
+(function(){
+  var nav=document.querySelector('nav.toolbar'); if(!nav) return;
+  var btn=document.createElement('button');
+  btn.id='toolbarToggle'; btn.type='button'; btn.setAttribute('aria-expanded','true');
+  btn.setAttribute('aria-label','收起工具列，畀畫布多啲位');
+  btn.textContent='▴ 收起工具列 · 畀畫布多啲位';
+  btn.addEventListener('click',function(){
+    var collapsed=nav.classList.toggle('mobile-collapsed');
+    btn.setAttribute('aria-expanded',String(!collapsed));
+    btn.setAttribute('aria-label',collapsed?'展開工具列':'收起工具列，畀畫布多啲位');
+    btn.textContent=collapsed?'▾ 展開工具列':'▴ 收起工具列 · 畀畫布多啲位';
+  });
+  nav.appendChild(btn);
+})();
+</script>
 
 
 
@@ -218,13 +755,13 @@ function inPoly(pt,poly){
  return inside;
 }
 function empty(name){
- return {schema:SCHEMA,version:VERSION,name:name||"我的平面圖",wallHeight:2.7,wallThickness:0.13,walls:[],openings:[],furniture:[],measurements:[]};
+ return {schema:SCHEMA,version:VERSION,name:name||"我的平面圖",wallHeight:2.7,wallThickness:0.13,walls:[],openings:[],furniture:[],measurements:[],annotations:[],rooms:[],meta:{address:"",layout:"",agent:"",phone:"",totalPriceWan:"",buildingAreaFt:""}};
 }
 function wall(a,b,extra){return Object.assign({id:uid(),a:point(a[0],a[1]),b:point(b[0],b[1]),height:2.7,thickness:0.13},extra||{});}
 function demo(name){
  const m=empty(name||"示範：6 × 4.5 米");
  const coords=[[[0,0],[6,0]],[[6,0],[6,4.5]],[[6,4.5],[0,4.5]],[[0,4.5],[0,0]],[[2.5,0],[2.5,2.4]],[[0,2.4],[2.5,2.4]]];
- m.walls=coords.map(c=>wall(c[0],c[1]));
+ m.walls=coords.map((c,i)=>wall(c[0],c[1],i<4?{loadBearing:true}:null));
  m.openings=[
   {id:uid(),wallId:m.walls[0].id,type:"door",offset:4.65,width:0.9,height:2.1,sill:0},
   {id:uid(),wallId:m.walls[1].id,type:"window",offset:2.3,width:1.5,height:1.15,sill:0.9},
@@ -232,6 +769,8 @@ function demo(name){
  ];
  const furniture=(type,x,y,rot=0)=>{const c=catalog.find(v=>v.type===type);return {id:uid(),type:c.type,name:c.name,x,y,w:c.w,d:c.d,h:c.h,rotation:rot,locked:false,color:c.color};};
  m.furniture=[furniture("sofa",4.3,3.7),furniture("table",4.3,1.4),furniture("bed",1.1,1.2),furniture("wardrobe",0.35,3.55)];
+ const room=(name,x,y,w,d,floor,price)=>({id:uid(),name,x,y,w,d,labelX:x,labelY:y,floor:floor||"木地板",floorPrice:price||85});
+ m.rooms=[room("睡房",1.25,1.2,2.5,2.4),room("客廳",4.25,2.25,3.5,4.5),room("廚房",1.25,3.45,2.5,2.1,"瓷磚",120)];
  return m;
 }
 function sanitize(raw){
@@ -246,7 +785,7 @@ function sanitize(raw){
  m.wallThickness=clamp(num(raw.wallThickness,.13),.05,.8);
  const seen=new Set();
  function id(v){const key=typeof v==="string"&&v.length<100?v:uid();if(seen.has(key)){const next=uid();seen.add(next);return next;}seen.add(key);return key;}
- m.walls=raw.walls.map(w=>({id:id(w.id),a:safePoint(w.a),b:safePoint(w.b),height:clamp(num(w.height,2.7),1.7,6),thickness:clamp(num(w.thickness,.13),.05,.8)})).filter(w=>length(w.a,w.b)>=.1);
+ m.walls=raw.walls.map(w=>({id:id(w.id),a:safePoint(w.a),b:safePoint(w.b),height:clamp(num(w.height,2.7),1.7,6),thickness:clamp(num(w.thickness,.13),.05,.8),loadBearing:w.loadBearing===true,demolish:w.demolish===true})).filter(w=>length(w.a,w.b)>=.1);
  const wallIds=new Set(m.walls.map(w=>w.id));
  m.openings=raw.openings.filter(o=>wallIds.has(o.wallId)&&["door","window"].includes(o.type)).map(o=>{
    const w=m.walls.find(v=>v.id===o.wallId),len=length(w.a,w.b);
@@ -258,6 +797,10 @@ function sanitize(raw){
    return {id:id(f.id),type:c.type,name:safeName(f.name,c.name),x:safePos(f.x),y:safePos(f.y),w:clamp(num(f.w,c.w),.1,15),d:clamp(num(f.d,c.d),.1,15),h:clamp(num(f.h,c.h),.1,6),rotation:clamp(num(f.rotation),-Math.PI*100,Math.PI*100),locked:f.locked===true,color:/^#[0-9a-f]{6}$/i.test(f.color||"")?f.color:c.color};
  });
  m.measurements=raw.measurements.map(q=>({id:id(q.id),a:safePoint(q.a),b:safePoint(q.b)}));
+ m.rooms=Array.isArray(raw.rooms)?raw.rooms.slice(0,100).map(r=>({id:id(r.id),name:safeName(r.name,"房間"),x:safePos(r.x),y:safePos(r.y),w:clamp(num(r.w,3),.4,60),d:clamp(num(r.d,3),.4,60),labelX:safePos(num(r.labelX,r.x)),labelY:safePos(num(r.labelY,r.y)),floor:typeof r.floor==="string"?r.floor.slice(0,20):"木地板",floorPrice:clamp(num(r.floorPrice,85),0,100000)})):[];
+ m.annotations=Array.isArray(raw.annotations)?raw.annotations.slice(0,200).map(a=>({id:id(a.id),text:typeof a.text==="string"?a.text.slice(0,60):"註解",x:safePos(a.x),y:safePos(a.y)})):[];
+ const mm=raw.meta&&typeof raw.meta==="object"?raw.meta:{};const ms=v=>typeof v==="string"?v.slice(0,120):(v!=null?String(v).slice(0,120):"");
+ m.meta={address:ms(mm.address),layout:ms(mm.layout).slice(0,40),agent:ms(mm.agent).slice(0,40),phone:ms(mm.phone).slice(0,30),totalPriceWan:ms(mm.totalPriceWan).slice(0,20),buildingAreaFt:ms(mm.buildingAreaFt).slice(0,20)};
  return m;
 }
 function getBounds(model){
@@ -293,21 +836,30 @@ function pill(ctx,text,x,y,fg="#e9f2ff",bg="#173049"){
  ctx.fillStyle=bg;ctx.beginPath();ctx.roundRect(x-w/2,y-10,w,19,5);ctx.fill();
  ctx.fillStyle=fg;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(text,x,y);
 }
-function grid(ctx,w,h,view,toScreen){
+function grid(ctx,w,h,view,toScreen,paper){
  const s=view.scale;let step=s>105?.25:s>48?.5:s>24?1:2;
  const min=toWorld({x:0,y:0},view,w,h),max=toWorld({x:w,y:h},view,w,h);
- const a=Math.floor(min.x/step)*step,b=Math.ceil(max.x/step)*step,c=Math.floor(min.y/step)*step,d=Math.ceil(max.y/step)*step;
- ctx.strokeStyle="#203249";ctx.lineWidth=1;ctx.beginPath();
- for(let x=a;x<=b+.00001;x+=step){const p=toScreen({x,y:0});ctx.moveTo(Math.round(p.x)+.5,0);ctx.lineTo(Math.round(p.x)+.5,h);}
- for(let y=c;y<=d+.00001;y+=step){const p=toScreen({x:0,y});ctx.moveTo(0,Math.round(p.y)+.5);ctx.lineTo(w,Math.round(p.y)+.5);}
- ctx.stroke();
- const origin=toScreen({x:0,y:0});line(ctx,{x:origin.x,y:0},{x:origin.x,y:h},"#2a4761",1);line(ctx,{x:0,y:origin.y},{x:w,y:origin.y},"#2a4761",1);
+ if(paper){
+  /* Graph paper: fixed 25 cm cells (faint), with a stronger line every 1 m.
+     At very low zoom the 25 cm lines would merge into mush, so only the 1 m set draws. */
+  const set=(stp,color)=>{ctx.strokeStyle=color;ctx.lineWidth=1;ctx.beginPath();
+   for(let x=Math.floor(min.x/stp)*stp;x<=max.x+.00001;x+=stp){const p=toScreen({x,y:0});ctx.moveTo(Math.round(p.x)+.5,0);ctx.lineTo(Math.round(p.x)+.5,h);}
+   for(let y=Math.floor(min.y/stp)*stp;y<=max.y+.00001;y+=stp){const p=toScreen({x:0,y});ctx.moveTo(0,Math.round(p.y)+.5);ctx.lineTo(w,Math.round(p.y)+.5);}
+   ctx.stroke();};
+  if(s*.25>=5)set(.25,"#1e3049");
+  set(1,"#33567e");
+  const o2=toScreen({x:0,y:0});line(ctx,{x:o2.x,y:0},{x:o2.x,y:h},"#2a4761",1);line(ctx,{x:0,y:o2.y},{x:w,y:o2.y},"#2a4761",1);
+  return;
+ }
+ /* Graph paper OFF: no grid at all — a clean canvas, so the toggle's on/off state is
+    unmistakable at a glance. Only a faint origin cross remains for orientation. */
+ const origin=toScreen({x:0,y:0});line(ctx,{x:origin.x,y:0},{x:origin.x,y:h},"#1b2c44",1);line(ctx,{x:0,y:origin.y},{x:w,y:origin.y},"#1b2c44",1);
 }
 function toWorld(p,view,w,h){return G.point((p.x-w/2-view.panX)/view.scale,(p.y-h/2-view.panY)/view.scale);}
 function paint2D(ctx,w,h,model,opts){
  const view=opts.view,sc=view.scale;
  const S=p=>({x:w/2+view.panX+p.x*sc,y:h/2+view.panY+p.y*sc});
- grid(ctx,w,h,view,S);
+ grid(ctx,w,h,view,S,opts.gridPaper);
  const chosen=opts.selected||{}, dims=opts.dimensions!==false;
  const wallOpening=new Map();
  for(const o of model.openings){const list=wallOpening.get(o.wallId)||[];list.push(o);wallOpening.set(o.wallId,list);}
@@ -316,10 +868,12 @@ function paint2D(ctx,w,h,model,opts){
   if(len<.01)continue;
   const intervals=(wallOpening.get(wall.id)||[]).map(o=>({start:G.clamp((o.offset-o.width/2)/len,0,1),end:G.clamp((o.offset+o.width/2)/len,0,1)})).sort((a,b)=>a.start-b.start);
   let cursor=0;const col=chosen.kind==="wall"&&chosen.id===wall.id?"#ffcb7f":"#ddebf4";
-  for(const interval of intervals){if(interval.start>cursor){line(ctx,S(G.lerp(wall.a,wall.b,cursor)),S(G.lerp(wall.a,wall.b,interval.start)),col,Math.max(4,wall.thickness*sc));}cursor=Math.max(cursor,interval.end);}
-  if(cursor<1)line(ctx,S(G.lerp(wall.a,wall.b,cursor)),b,col,Math.max(4,wall.thickness*sc));
+  const seg=(t0,t1)=>{line(ctx,S(G.lerp(wall.a,wall.b,t0)),S(G.lerp(wall.a,wall.b,t1)),col,Math.max(4,wall.thickness*sc));if(wall.loadBearing)line(ctx,S(G.lerp(wall.a,wall.b,t0)),S(G.lerp(wall.a,wall.b,t1)),"rgba(232,163,61,.9)",Math.max(1.5,wall.thickness*sc*.36));};
+  for(const interval of intervals){if(interval.start>cursor)seg(cursor,interval.start);cursor=Math.max(cursor,interval.end);}
+  if(cursor<1)seg(cursor,1);
+  if(wall.demolish)line(ctx,a,b,"#ff5f57",Math.max(2.5,wall.thickness*sc*.55),[10,6]);
   if(chosen.kind==="wall"&&chosen.id===wall.id){for(const p of [a,b]){ctx.fillStyle="#ffcb7f";ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fill();}}
-  if(dims){const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2,nx=-(b.y-a.y)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y)),ny=(b.x-a.x)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y));pill(ctx,G.round(len,2).toFixed(2)+" m",cx+nx*18,cy+ny*18);}
+  if(dims&&opts.wallLengths!==false){const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2,nx=-(b.y-a.y)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y)),ny=(b.x-a.x)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y));pill(ctx,G.round(len,2).toFixed(2)+" m",cx+nx*18,cy+ny*18);}
  }
  for(const o of model.openings){
   const wall=model.walls.find(v=>v.id===o.wallId);if(!wall)continue;
@@ -330,12 +884,28 @@ function paint2D(ctx,w,h,model,opts){
    line(ctx,a,b,c,6);line(ctx,a,b,"#18314d",2);
   }else{
    line(ctx,a,b,c,2,[4,4]);
+   if(opts.doorSwing!==false){
    const dx=b.x-a.x,dy=b.y-a.y;const sign=dx*dy>=0?1:1;
    const hinge=a,edge={x:a.x-dy*sign,y:a.y+dx*sign};
+   /* Faint 90° swing sector: filled very lightly so it never hides the plan,
+      with the leaf line and arc on top. Toggleable via opts.doorSwing （門弧）. */
+   ctx.beginPath();ctx.moveTo(hinge.x,hinge.y);ctx.lineTo(edge.x,edge.y);
+   ctx.arc(hinge.x,hinge.y,Math.hypot(dx,dy),Math.atan2(edge.y-hinge.y,edge.x-hinge.x),Math.atan2(b.y-hinge.y,b.x-hinge.x),true);
+   ctx.closePath();ctx.fillStyle=rgba("#ebad68",.07);ctx.fill();
    line(ctx,hinge,edge,c,1);
-   ctx.beginPath();ctx.arc(hinge.x,hinge.y,Math.hypot(dx,dy),Math.atan2(edge.y-hinge.y,edge.x-hinge.x),Math.atan2(b.y-hinge.y,b.x-hinge.x),true);ctx.strokeStyle=rgba("#ebad68",.5);ctx.lineWidth=1;ctx.stroke();
+   ctx.beginPath();ctx.arc(hinge.x,hinge.y,Math.hypot(dx,dy),Math.atan2(edge.y-hinge.y,edge.x-hinge.x),Math.atan2(b.y-hinge.y,b.x-hinge.x),true);ctx.strokeStyle=rgba("#ebad68",.45);ctx.lineWidth=1;ctx.stroke();
+   }
   }
   if(dims&&sc>35)pill(ctx,G.round(o.width,2).toFixed(2)+" m",mid.x,mid.y-12,c);
+ }
+ const FLOORC={"木地板":"#c89b6a","瓷磚":"#7fb3c8","地毯":"#a58bc0","水泥":"#9aa0a3","石材":"#8fae94","膠地板":"#c8b06a"};
+ for(const r of (model.rooms||[])){
+  const p1=S({x:r.x-r.w/2,y:r.y-r.d/2}),p2=S({x:r.x+r.w/2,y:r.y+r.d/2});
+  ctx.fillStyle=rgba(FLOORC[r.floor]||"#c89b6a",.15);ctx.fillRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
+  ctx.strokeStyle=chosen.kind==="room"&&chosen.id===r.id?"#ffcb7f":"rgba(255,255,255,.30)";ctx.lineWidth=chosen.kind==="room"&&chosen.id===r.id?2:1;ctx.setLineDash([5,4]);ctx.strokeRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);ctx.setLineDash([]);
+  const lp=S({x:typeof r.labelX==="number"?r.labelX:r.x,y:typeof r.labelY==="number"?r.labelY:r.y});
+  const area=r.w*r.d,aTxt=opts.unit==="ft"?G.round(area*10.7639,0)+" 呎":opts.unit==="ping"?G.round(area/3.3058,2)+" 坪":G.round(area,1)+" m²";
+  pill(ctx,r.name+" · "+aTxt,lp.x,lp.y,"#ffe9bb","#3a2c14");
  }
  for(const f of model.furniture){
   const corners=G.furnitureCorners(f).map(S);
@@ -344,12 +914,68 @@ function paint2D(ctx,w,h,model,opts){
   const center=S(f);ctx.font="700 12px system-ui,sans-serif";ctx.textBaseline="middle";ctx.textAlign="center";ctx.fillStyle="#f5f9ff";
   if(Math.min(f.w,f.d)*sc>39){ctx.fillText((f.locked?"🔒 ":"")+f.name.slice(0,10),center.x,center.y-6);if(dims)ctx.fillText(G.round(f.w,2)+" × "+G.round(f.d,2)+" m",center.x,center.y+11);}
   else ctx.fillText(f.locked?"🔒":"▣",center.x,center.y);
+  if(opts.furnLabels!==false){
+   /* Small cm size label just below the footprint — follows move/rotate/resize because it is
+      recomputed from the live corners every frame; drawn in paint2D so PNG export includes it. */
+   const rt=f.rotation||0,ca=Math.abs(Math.cos(rt)),sa=Math.abs(Math.sin(rt));
+   const ex=f.w*ca+f.d*sa,ey=f.w*sa+f.d*ca;
+   const lt=Math.round(ex*100)+" × "+Math.round(ey*100)+" cm";
+   let by=-Infinity;for(const p of corners)if(p.y>by)by=p.y;
+   ctx.font="600 10px system-ui,sans-serif";const tw=ctx.measureText(lt).width;
+   ctx.fillStyle="rgba(8,18,30,.82)";ctx.beginPath();ctx.roundRect(center.x-tw/2-5,by+4,tw+10,15,4);ctx.fill();
+   ctx.fillStyle="#cfe3f7";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(lt,center.x,by+12);
+  }
  }
  for(const q of model.measurements){
   const a=S(q.a),b=S(q.b),active=chosen.kind==="measurement"&&chosen.id===q.id;
   line(ctx,a,b,active?"#ffd17e":"#7ee5bb",1.6,[4,4]);
   for(const p of [a,b]){ctx.fillStyle=active?"#ffd17e":"#8fe7c8";ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();}
   pill(ctx,G.round(G.length(q.a,q.b),2).toFixed(2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-12,"#92e4ca");
+ }
+ for(const an of (model.annotations||[])){
+  const p=S(an);const selA=chosen.kind==="note"&&chosen.id===an.id;
+  ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x,p.y-15);ctx.strokeStyle=selA?"#ffd17e":"#ffb3ae";ctx.lineWidth=1.6;ctx.stroke();
+  ctx.beginPath();ctx.arc(p.x,p.y,3.4,0,Math.PI*2);ctx.fillStyle=selA?"#ffd17e":"#ff6f66";ctx.fill();
+  pill(ctx,"📌 "+(an.text||"註解"),p.x,p.y-25,selA?"#1c1408":"#ffe3e0",selA?"#ffd17e":"#5a2320");
+ }
+ if(opts.legend!==false){
+  /* Auto legend: only the symbols this plan actually uses, drawn in screen
+     coordinates at the plan's bottom-left corner. Lives in paint2D, so the
+     PNG export (a canvas snapshot) carries it automatically. */
+  const used=[];
+  let mnx=Infinity,mxx=-Infinity,mny=Infinity,mxy=-Infinity;
+  for(const wl of model.walls){for(const p of [wl.a,wl.b]){if(p.x<mnx)mnx=p.x;if(p.x>mxx)mxx=p.x;if(p.y<mny)mny=p.y;if(p.y>mxy)mxy=p.y;}}
+  let hasExt=false,hasPart=false;
+  for(const wl of model.walls){
+   const ex=(Math.abs(wl.a.x-mnx)<.07&&Math.abs(wl.b.x-mnx)<.07)||(Math.abs(wl.a.x-mxx)<.07&&Math.abs(wl.b.x-mxx)<.07)||(Math.abs(wl.a.y-mny)<.07&&Math.abs(wl.b.y-mny)<.07)||(Math.abs(wl.a.y-mxy)<.07&&Math.abs(wl.b.y-mxy)<.07);
+   if(ex)hasExt=true;else hasPart=true;
+  }
+  if(model.openings.some(o=>o.type==="door"))used.push(["door","門"]);
+  if(model.openings.some(o=>o.type==="window"))used.push(["window","窗"]);
+  if(hasExt)used.push(["ext","外牆"]);
+  if(hasPart)used.push(["part","間隔牆"]);
+  if(model.walls.some(wl=>wl.loadBearing))used.push(["lb","承重牆"]);
+  if(model.walls.some(wl=>wl.demolish))used.push(["demo","拆除牆"]);
+  if(model.furniture.length)used.push(["furn","傢俬"]);
+  if(used.length){
+   const rowH=17,boxW=106,boxH=used.length*rowH+25,lx=10,ly=h-boxH-10;
+   ctx.save();
+   ctx.fillStyle="rgba(10,22,38,.88)";ctx.strokeStyle="#3f6184";ctx.lineWidth=1;
+   ctx.beginPath();ctx.roundRect(lx,ly,boxW,boxH,8);ctx.fill();ctx.stroke();
+   ctx.font="800 10px system-ui,sans-serif";ctx.fillStyle="#9db0c6";ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText("圖例",lx+9,ly+11);
+   used.forEach((u,i)=>{
+    const cy=ly+25+i*rowH+3,sx=lx+9,ex=sx+22;
+    if(u[0]==="door"){line(ctx,{x:sx,y:cy},{x:ex,y:cy},"#ebad68",1.6,[3,2]);ctx.beginPath();ctx.arc(sx,cy,9,-Math.PI/2,0);ctx.strokeStyle="rgba(235,173,104,.7)";ctx.lineWidth=1;ctx.stroke();}
+    else if(u[0]==="window"){line(ctx,{x:sx,y:cy},{x:ex,y:cy},"#6ee6ec",4);line(ctx,{x:sx,y:cy},{x:ex,y:cy},"#18314d",1.4);}
+    else if(u[0]==="ext"){line(ctx,{x:sx,y:cy},{x:ex,y:cy},"#ddebf4",6);}
+    else if(u[0]==="part"){line(ctx,{x:sx,y:cy},{x:ex,y:cy},"#ddebf4",2.6);}
+    else if(u[0]==="lb"){line(ctx,{x:sx,y:cy},{x:ex,y:cy},"#ddebf4",5);line(ctx,{x:sx,y:cy},{x:ex,y:cy},"rgba(232,163,61,.95)",2);}
+    else if(u[0]==="demo"){line(ctx,{x:sx,y:cy},{x:ex,y:cy},"#ff5f57",2.6,[5,3]);}
+    else if(u[0]==="furn"){ctx.fillStyle="rgba(121,216,176,.55)";ctx.strokeStyle="#b9dbea";ctx.lineWidth=1;ctx.fillRect(sx+3,cy-5,16,10);ctx.strokeRect(sx+3,cy-5,16,10);}
+    ctx.font="600 11px system-ui,sans-serif";ctx.fillStyle="#e8f1fb";ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText(u[1],lx+38,cy);
+   });
+   ctx.restore();
+  }
  }
  if(opts.pending&&opts.cursor){
   const a=S(opts.pending),b=S(opts.cursor);
@@ -421,10 +1047,10 @@ function boxFaces(model,project,items,box){
 function boxOnWall(model,proj,faces,wall,t0,t1,z,h){
  if(t1<=t0+.0001||h<=.01)return;
  const a=G.lerp(wall.a,wall.b,t0),b=G.lerp(wall.a,wall.b,t1);
- boxFaces(model,proj,faces,{x:(a.x+b.x)/2,y:(a.y+b.y)/2,z,w:G.length(a,b),d:wall.thickness,h,rot:Math.atan2(b.y-a.y,b.x-a.x),color:"#c0d2e2",kind:"wall",id:wall.id});
+ boxFaces(model,proj,faces,{x:(a.x+b.x)/2,y:(a.y+b.y)/2,z,w:G.length(a,b),d:wall.thickness,h,rot:Math.atan2(b.y-a.y,b.x-a.x),color:wall.demolish?"#c94f4f":wall.loadBearing?"#d9a94f":"#c0d2e2",kind:"wall",id:wall.id});
 }
 function paint3D(ctx,w,h,model,opts){
- const bounds=G.getBounds(model),project=projectFactory(w,h,bounds,opts),hits=[],faces=[];
+ const bounds=G.getBounds(model),project=projectFactory(w,h,bounds,opts),hits=[],faces=[];const ex=opts.mode==="explode"?(typeof opts.explode==="number"?opts.explode:.7):0;
  const pad=1.5,minX=bounds.minX-pad,maxX=bounds.maxX+pad,minY=bounds.minY-pad,maxY=bounds.maxY+pad;
  polygon(ctx,[[minX,minY,0],[maxX,minY,0],[maxX,maxY,0],[minX,maxY,0]].map(project),"#172c3d","#365267");
  const step=Math.max(bounds.width,bounds.height)>18?2:.5;
@@ -446,13 +1072,13 @@ function paint3D(ctx,w,h,model,opts){
    if(o.type==="window"){
     const a=G.lerp(wall.a,wall.b,ta),b=G.lerp(wall.a,wall.b,tb);
     const mid=G.midpoint(a,b);
-    boxFaces(model,project,faces,{x:mid.x,y:mid.y,z:o.sill,w:G.length(a,b),d:.018,h:Math.min(o.height,wall.height-o.sill),rot:Math.atan2(b.y-a.y,b.x-a.x),color:"#68b7d8",kind:"opening",id:o.id});
+    boxFaces(model,project,faces,{x:mid.x,y:mid.y,z:o.sill+ex*1.9,w:G.length(a,b),d:.018,h:Math.min(o.height,wall.height-o.sill),rot:Math.atan2(b.y-a.y,b.x-a.x),color:"#68b7d8",kind:"opening",id:o.id});
    }
    t=Math.max(t,tb);
   }
   boxOnWall(model,project,faces,wall,t,1,0,wall.height);
  }
- for(const f of model.furniture)boxFaces(model,project,faces,{x:f.x,y:f.y,z:0,w:f.w,d:f.d,h:f.h,rot:f.rotation,color:f.color,kind:"furniture",id:f.id});
+ model.furniture.forEach((f,fi)=>{const _dx=f.x-bounds.cx,_dy=f.y-bounds.cy;boxFaces(model,project,faces,{x:bounds.cx+_dx*(1+ex*.45),y:bounds.cy+_dy*(1+ex*.45),z:ex*(1.05+(fi%4)*.3),w:f.w,d:f.d,h:f.h,rot:f.rotation,color:f.color,kind:"furniture",id:f.id});});
  faces.sort((a,b)=>b.depth-a.depth);
  for(const f of faces){
   const active=opts.selected&&opts.selected.kind===f.kind&&opts.selected.id===f.id;
@@ -468,7 +1094,7 @@ function paint3D(ctx,w,h,model,opts){
 function draw(canvas,ctx,model,opts){
  const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return [];
  ctx.clearRect(0,0,w,h);ctx.fillStyle="#0b1727";ctx.fillRect(0,0,w,h);
- if(opts.mode==="3d")return paint3D(ctx,w,h,model,opts);
+ if(opts.mode==="3d"||opts.mode==="explode")return paint3D(ctx,w,h,model,opts);
  paint2D(ctx,w,h,model,opts);return [];
 }
 function projectPoint(canvas,model,orbit,xyz){
@@ -488,9 +1114,12 @@ const $num=n=>G.round(n,2).toFixed(2), esc=v=>String(v).replace(/[&<>"']/g,c=>({
 let state,history=[],future=[],saveTimer=null,toastTimer=null,drawRequested=false;
 const touches=new Map();let pinch=null;
 const ui={
- mode:"2d",tool:"select",snap:true,dimensions:true,
+ mode:"2d",tool:"select",snap:true,dimensions:true,wallLengths:true,gridPaper:false,furnLabels:true,
+ legend:(function(){try{return localStorage.getItem("yuanzhan-legend")!=="0";}catch(e){return true;}})(),
+ doorSwing:(function(){try{return localStorage.getItem("yuanzhan-swing")!=="0";}catch(e){return true;}})(),
  view:{scale:80,panX:0,panY:0},orbit:{azimuth:-.75,elevation:.82,distance:1},
- selected:null,pending:null,cursor:null,drag:null,hits:[],wallStart:null,wallCount:0
+ selected:null,pending:null,cursor:null,drag:null,hits:[],wallStart:null,wallCount:0,explode:.7,unit:(function(){try{return localStorage.getItem("yuanzhan-unit")||"m2";}catch(e){return "m2";}})(),
+ north:(function(){try{var v=parseFloat(localStorage.getItem("yuanzhan-north-deg"));return isFinite(v)?((Math.round(v)%360)+360)%360:0;}catch(e){return 0;}})()
 };
 function newProject(data){return {id:G.uid(),name:data.name,data,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};}
 function readStore(){
@@ -532,7 +1161,7 @@ function commit(fn){
 function retainSelection(){
  if(!ui.selected)return;
  const m=model(),array=ui.selected.kind==="wall"?m.walls:ui.selected.kind==="opening"?m.openings:
-  ui.selected.kind==="furniture"?m.furniture:m.measurements;
+  ui.selected.kind==="furniture"?m.furniture:ui.selected.kind==="room"?(m.rooms||[]):ui.selected.kind==="note"?(m.annotations||[]):m.measurements;
  if(!array.some(o=>o.id===ui.selected.id))ui.selected=null;
 }
 function undo(){
@@ -553,6 +1182,8 @@ function getObject(){
  return ui.selected.kind==="wall"?m.walls.find(o=>o.id===ui.selected.id):
  ui.selected.kind==="opening"?m.openings.find(o=>o.id===ui.selected.id):
  ui.selected.kind==="furniture"?m.furniture.find(o=>o.id===ui.selected.id):
+ ui.selected.kind==="room"?(m.rooms||[]).find(o=>o.id===ui.selected.id):
+ ui.selected.kind==="note"?(m.annotations||[]).find(o=>o.id===ui.selected.id):
  m.measurements.find(o=>o.id===ui.selected.id);
 }
 function setSelection(kind,id){
@@ -571,6 +1202,7 @@ function render(){
   }
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ui.hits=R.draw(canvas,ctx,model(),ui);
+  try{updateScaleBar();}catch(e){}
  });
 }
 function refresh(){
@@ -579,26 +1211,34 @@ function refresh(){
  $("view3d").classList.toggle("active",ui.mode==="3d");
  $("view2d").setAttribute("aria-pressed",ui.mode==="2d");
  $("view3d").setAttribute("aria-pressed",ui.mode==="3d");
+ const _ve=$("viewExplode");if(_ve){_ve.classList.toggle("active",ui.mode==="explode");_ve.setAttribute("aria-pressed",String(ui.mode==="explode"));}const _eb=$("explodeBar");if(_eb)_eb.hidden=ui.mode!=="explode";
  document.querySelectorAll("[data-tool]").forEach(b=>{const selected=b.dataset.tool===ui.tool;b.classList.toggle("active",selected);b.setAttribute("aria-pressed",String(selected));});
  $("snapButton").textContent="吸附："+(ui.snap?"開":"關");$("snapButton").classList.toggle("active",ui.snap);
  $("snapButton").setAttribute("aria-pressed",String(ui.snap));
  $("dimsButton").textContent="尺寸："+(ui.dimensions?"開":"關");$("dimsButton").classList.toggle("active",ui.dimensions);
  $("dimsButton").setAttribute("aria-pressed",String(ui.dimensions));
+ const _wd=$("wallDimsButton");if(_wd){_wd.textContent="牆長："+(ui.wallLengths?"開":"關");_wd.classList.toggle("active",ui.wallLengths);_wd.setAttribute("aria-pressed",String(ui.wallLengths));}
+ const _gp=$("gridPaperButton");if(_gp){_gp.textContent="方格紙："+(ui.gridPaper?"開":"關");_gp.classList.toggle("active",ui.gridPaper);_gp.setAttribute("aria-pressed",String(ui.gridPaper));}
+ const _fl=$("furnLabelButton");if(_fl){_fl.textContent="傢俬尺寸："+(ui.furnLabels?"開":"關");_fl.classList.toggle("active",ui.furnLabels);_fl.setAttribute("aria-pressed",String(ui.furnLabels));}
+ const _lg=$("legendButton");if(_lg){_lg.textContent="圖例："+(ui.legend?"開":"關");_lg.classList.toggle("active",ui.legend);_lg.setAttribute("aria-pressed",String(ui.legend));}
+ const _sw=$("swingButton");if(_sw){_sw.textContent="門弧："+(ui.doorSwing?"開":"關");_sw.classList.toggle("active",ui.doorSwing);_sw.setAttribute("aria-pressed",String(ui.doorSwing));}
  $("undoButton").disabled=!history.length;$("redoButton").disabled=!future.length;
  const m=model();$("drawingStats").textContent=m.walls.length+" 幅牆 · "+m.openings.length+" 個門窗 · "+m.furniture.length+" 件傢俬";
  $("startTip").hidden=!!(m.walls.length||m.furniture.length||m.openings.length||m.measurements.length||ui.tool!=="select"||ui.mode!=="2d");
- $("modeHint").textContent=ui.mode==="3d"?"3D 模式：拖動旋轉，滾輪縮放，按 2D 可返回編輯。":
+ $("modeHint").textContent=(ui.mode==="3d"||ui.mode==="explode")?(ui.mode==="explode"?"爆炸圖：傢俬升起並向外分離，用下方滑桿調節；拖動旋轉視角，按 2D 返回編輯。":"3D 模式：拖動旋轉，滾輪縮放，按 2D 可返回編輯。"):
  ui.tool==="room"?"畫房間：依次點選兩個對角，立即建立四幅牆。點 Esc 可以取消。":
  ui.tool==="wall"?"逐幅畫牆：點起點及終點；連續畫牆，回到第一點可結束，亦可按 Esc。":
  ui.tool==="door"?"加入門：按一下牆身，再於右側輸入實際門闊。":
  ui.tool==="window"?"加入窗：按一下牆身，再調整窗闊、窗高及窗台高度。":
- ui.tool==="measure"?"量度：先按起點，再按終點，顯示兩點距離。":
+ ui.tool==="measure"?"量度：先按起點，再按終點即時顯示距離；會吸附牆端／格線，按住 Shift 鎖定橫／直。":
+ ui.tool==="note"?"註解：按一下平面圖任何位置放低文字旗（例如：拆牆、加插座）；撳住支旗可以拖去其他位。":
  ui.tool==="pan"?"移動畫布：拖動畫面；滑鼠滾輪縮放。":
- m.walls.length===0?"第 1 步／3：揀「畫房間」點兩個對角，或者逐幅畫牆。":
- m.openings.length===0?"第 2 步／3：已畫出牆身；下一步加入門窗，或直接放傢俬。":
- m.furniture.length===0?"第 3 步／3：加傢俬、修改闊深高並移動到正確位置。":
- "完成基本擺位：可選取物件微調尺寸、轉 3D、匯出 JSON 備份。";
- $("scaleLabel").textContent=ui.mode==="2d"?"單位：米 (m) · 格線按縮放顯示":"透視 3D · 模型尺寸以米 (m) 計";
+ m.walls.length===0?"第 1 步／4：揀「畫房間」點兩個對角，或者逐幅畫牆。":
+ m.openings.length===0?"第 2 步／4：已畫出牆身；下一步加入門窗，或直接放傢俬。":
+ m.furniture.length===0?"第 3 步／4：加傢俬、修改闊深高並移動到正確位置。":
+ "第 4 步／4：微調尺寸、轉 3D 睇效果，再撳右上「匯出」出 PDF／DXF／3D 檔。";
+ $("scaleLabel").textContent=ui.mode==="2d"?(ui.gridPaper?"方格紙：1 格 = 25 cm · 自動吸合到格線":"單位：米 (m) · 方格紙已關"):"透視 3D · 模型尺寸以米 (m) 計";
+ try{updateListingCard();updateScaleBar();if($("statsDialog").open)renderOpeningSchedule();document.querySelectorAll("[data-unit]").forEach(b=>b.classList.toggle("active",b.dataset.unit===ui.unit));}catch(e){}
  $("selectionHint").textContent=ui.selected?"已選取："+(getObject()?.name||(ui.selected.kind==="wall"?"牆身":ui.selected.kind==="opening"?"門窗":"量度")):"";
  renderInspector();render();
 }
@@ -609,16 +1249,26 @@ function fit(){
  ui.orbit.distance=1;render();
 }
 function mode(next){
- ui.mode=next;ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.drag=null;if(next==="3d")ui.tool="select";
+ ui.mode=next;ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.drag=null;if(next==="3d"||next==="explode")ui.tool="select";
  $("inspector").classList.remove("open");refresh();
 }
 function tool(next){
- if(ui.mode==="3d"&&next!=="select"&&next!=="pan")ui.mode="2d";
+ if((ui.mode==="3d"||ui.mode==="explode")&&next!=="select"&&next!=="pan")ui.mode="2d";
  ui.tool=next;ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.drag=null;refresh();
 }
 const position=e=>{const r=canvas.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};};
 const world=e=>R.toWorld(position(e),ui.view,canvas.clientWidth,canvas.clientHeight);
 function snapped(p,original=null){
+ if(ui.gridPaper){
+  /* Graph paper on: everything lands on the nearest 25 cm grid line. */
+  let q=G.point(Math.round(p.x*4)/4,Math.round(p.y*4)/4);
+  if(original){
+   const dx=Math.abs(q.x-original.x),dy=Math.abs(q.y-original.y);
+   if(dx>dy*2.3)q.y=original.y;
+   else if(dy>dx*2.3)q.x=original.x;
+  }
+  return q;
+ }
  if(!ui.snap)return G.point(G.round(p.x,3),G.round(p.y,3));
  let q=G.point(Math.round(p.x*10)/10,Math.round(p.y*10)/10);
  let d=.24;
@@ -642,6 +1292,7 @@ function nearestWall(p){
 }
 function hit2d(p){
  const m=model();
+ for(let i=(m.annotations||[]).length-1;i>=0;i--){const an=m.annotations[i];if(Math.hypot(p.x-an.x,p.y-an.y)<Math.max(.3,26/ui.view.scale))return {kind:"note",id:an.id};}
  for(let i=m.furniture.length-1;i>=0;i--)if(G.inPoly(p,G.furnitureCorners(m.furniture[i])))return {kind:"furniture",id:m.furniture[i].id};
  for(let i=m.measurements.length-1;i>=0;i--)if(G.distancePointSegment(p,m.measurements[i].a,m.measurements[i].b).distance<Math.max(.09,9/ui.view.scale))return {kind:"measurement",id:m.measurements[i].id};
  for(let i=m.openings.length-1;i>=0;i--){
@@ -649,7 +1300,9 @@ function hit2d(p){
   const len=G.length(wall.a,wall.b),hit=G.distancePointSegment(p,wall.a,wall.b);
   if(hit.distance<Math.max(.18,14/ui.view.scale)&&Math.abs(hit.t*len-o.offset)<=o.width/2+.08)return {kind:"opening",id:o.id};
  }
- const w=nearestWall(p);return w?{kind:"wall",id:w.wall.id}:null;
+ const w=nearestWall(p);if(w)return {kind:"wall",id:w.wall.id};
+ const rms=m.rooms||[];for(let i=rms.length-1;i>=0;i--){const r=rms[i];if(Math.abs(p.x-r.x)<=r.w/2&&Math.abs(p.y-r.y)<=r.d/2)return {kind:"room",id:r.id};}
+ return null;
 }
 function selected3d(pos){
  for(let i=ui.hits.length-1;i>=0;i--){
@@ -700,7 +1353,7 @@ function rectangleWalls(a,b){
 function changeStart(e){
  e.preventDefault();canvas.focus({preventScroll:true});
  const p=position(e);
- if(ui.mode==="3d"){
+ if(ui.mode==="3d"||ui.mode==="explode"){
   const hit=ui.tool==="select"?selected3d(p):null;
   if(hit&&hit.kind==="furniture"){
    setSelection(hit.kind,hit.id);
@@ -720,7 +1373,7 @@ function changeStart(e){
   if(Math.abs(b.x-a.x)<.4||Math.abs(b.y-a.y)<.4){toast("房間長及闊最少 0.4 米；請選較遠的對角");return;}
   const walls=rectangleWalls(a,b);
   if(!walls.length){toast("這個房間已有四面牆");ui.pending=null;tool("select");return;}
-  commit(()=>model().walls.push(...walls));
+  commit(()=>{model().walls.push(...walls);if(!model().rooms)model().rooms=[];const cx=G.round((a.x+b.x)/2,2),cy=G.round((a.y+b.y)/2,2);model().rooms.push({id:G.uid(),name:"房間",x:cx,y:cy,w:G.round(Math.abs(a.x-b.x),2),d:G.round(Math.abs(a.y-b.y),2),labelX:cx,labelY:cy,floor:"木地板",floorPrice:85});});
   ui.pending=null;ui.cursor=null;ui.tool="select";refresh();
   toast("已建立 "+$num(Math.abs(a.x-b.x))+" × "+$num(Math.abs(a.y-b.y))+" 米房間；下一步加門窗");
   return;
@@ -743,6 +1396,8 @@ function changeStart(e){
   const measurement={id:G.uid(),a:ui.pending,b:q};
   commit(()=>model().measurements.push(measurement));ui.pending=null;setSelection("measurement",measurement.id);return;
  }
+ if(ui.tool==="note"){addAnnotation(w);return;}
+ if(ui.tool==="label"){addRoomLabel(w);return;}
  if(ui.tool==="door"||ui.tool==="window"){addOpening(ui.tool,w);return;}
  if(ui.tool==="pan"){ui.drag={type:"pan",start:p,panX:ui.view.panX,panY:ui.view.panY};canvas.setPointerCapture(e.pointerId);return;}
  const endKey=hitWallHandle(w);
@@ -758,7 +1413,7 @@ function changeStart(e){
 }
 function changeMove(e){
  const p=position(e);
- if(ui.mode==="3d"){
+ if(ui.mode==="3d"||ui.mode==="explode"){
   if(ui.drag?.type==="orbit"){
    ui.orbit.azimuth=ui.drag.az+(p.x-ui.drag.start.x)*.008;
    ui.orbit.elevation=G.clamp(ui.drag.el+(p.y-ui.drag.start.y)*.006,.15,1.48);render();
@@ -767,7 +1422,7 @@ function changeMove(e){
    if(!at||!obj)return;
    if(Math.hypot(p.x-d.start.x,p.y-d.start.y)<4&&!d.moved)return;
    d.moved=true;
-   const adj=v=>ui.snap?Math.round(v*20)/20:G.round(v,3);
+   const adj=v=>ui.gridPaper?Math.round(v*4)/4:(ui.snap?Math.round(v*20)/20:G.round(v,3));
    obj.x=adj(d.original.x+at.x-d.origin.x);
    obj.y=adj(d.original.y+at.y-d.origin.y);
    render();
@@ -784,7 +1439,7 @@ function changeMove(e){
  if(Math.hypot(p.x-d.start.x,p.y-d.start.y)<3&&!d.moved)return;
  d.moved=true;
  const dx=w.x-d.origin.x,dy=w.y-d.origin.y;
- const adj=v=>ui.snap?Math.round(v*20)/20:G.round(v,3);
+ const adj=v=>ui.gridPaper?Math.round(v*4)/4:(ui.snap?Math.round(v*20)/20:G.round(v,3));
  const obj=getObject();if(!obj)return;
  if(d.type==="furniture"){
   obj.x=adj(d.original.x+dx);obj.y=adj(d.original.y+dy);
@@ -800,6 +1455,10 @@ function changeMove(e){
   if(G.length(next,other)<.1)return;
   joinedMove(d.original[d.endpoint],next,obj.id,d.originalWalls);
   obj[d.endpoint]=next;
+ }else if(d.type==="room"){
+  obj.labelX=adj((d.original.labelX!=null?d.original.labelX:d.original.x)+dx);obj.labelY=adj((d.original.labelY!=null?d.original.labelY:d.original.y)+dy);
+ }else if(d.type==="note"){
+  obj.x=adj(d.original.x+dx);obj.y=adj(d.original.y+dy);
  }else if(d.type==="opening"){
   const wall=model().walls.find(v=>v.id===obj.wallId);if(!wall)return;
   const hit=G.distancePointSegment(w,wall.a,wall.b),len=G.length(wall.a,wall.b);
@@ -830,7 +1489,7 @@ function updatePinch(e){
  const vals=[...touches.values()],a=vals[0],b=vals[1];
  const dist=Math.max(10,Math.hypot(a.x-b.x,a.y-b.y));
  const center={x:(a.x+b.x)/2,y:(a.y+b.y)/2},factor=dist/pinch.distance;
- if(ui.mode==="3d")ui.orbit.distance=G.clamp(pinch.orbitDistance/factor,.35,4);
+ if(ui.mode==="3d"||ui.mode==="explode")ui.orbit.distance=G.clamp(pinch.orbitDistance/factor,.35,4);
  else{
   const w=canvas.clientWidth,h=canvas.clientHeight;
   ui.view.scale=G.clamp(pinch.scale*factor,12,400);
@@ -903,6 +1562,10 @@ function editNumber(prop,value){
    if(["w","d","h"].includes(prop))obj[prop]=G.clamp(n,.1,15);
    else if(["x","y"].includes(prop))obj[prop]=G.clamp(n,-1000,1000);
    else if(prop==="rotation")obj.rotation=G.round(n*Math.PI/180,7);
+  }else if(type==="room"){
+   if(prop==="w")obj.w=G.clamp(n,.4,60);else if(prop==="d")obj.d=G.clamp(n,.4,60);else if(prop==="floorPrice")obj.floorPrice=G.clamp(n,0,100000);
+  }else if(type==="note"){
+   if(prop==="x"||prop==="y")obj[prop]=G.clamp(n,-1000,1000);
   }else if(type==="measurement"){
    if(["ax","ay","bx","by"].includes(prop)){const key=prop[0]==="a"?"a":"b",axis=prop[1]==="x"?"x":"y";obj[key][axis]=G.clamp(n,-1000,1000);}
   }
@@ -911,7 +1574,7 @@ function editNumber(prop,value){
 function deleteSelected(){
  if(!ui.selected)return;const id=ui.selected.id,kind=ui.selected.kind;
  commit(()=>{
-  const m=model(),arr=kind==="wall"?m.walls:kind==="opening"?m.openings:kind==="furniture"?m.furniture:m.measurements;
+  const m=model(),arr=kind==="wall"?m.walls:kind==="opening"?m.openings:kind==="furniture"?m.furniture:kind==="room"?(m.rooms||[]):kind==="note"?(m.annotations||[]):m.measurements;
   const i=arr.findIndex(v=>v.id===id);if(i>=0)arr.splice(i,1);
   if(kind==="wall")m.openings=m.openings.filter(o=>o.wallId!==id);
  });
@@ -930,7 +1593,7 @@ function addFurniture(type){
  const c=G.catalog.find(v=>v.type===type);if(!c)return;
  const center=R.toWorld({x:canvas.clientWidth/2,y:canvas.clientHeight/2},ui.view,canvas.clientWidth,canvas.clientHeight);
  const b=G.getBounds(model());
- const where=ui.mode==="3d"?{x:b.cx,y:b.cy}:center;
+ const where=(ui.mode==="3d"||ui.mode==="explode")?{x:b.cx,y:b.cy}:center;
  const f={id:G.uid(),type:c.type,name:c.name,x:G.round(where.x,2),y:G.round(where.y,2),w:c.w,d:c.d,h:c.h,rotation:0,locked:false,color:c.color};
  commit(()=>model().furniture.push(f));ui.mode="2d";ui.tool="select";ui.pending=null;ui.wallStart=null;ui.drag=null;$("furnitureDialog").close();refresh();setSelection("furniture",f.id);toast("已加入"+c.name+"；現在可直接拖動，或於屬性修改尺寸");
 }
@@ -946,7 +1609,8 @@ function renderInspector(){
  if(!s||!o){
   box.innerHTML='<div class="empty-inspector"><div class="badge">100% 本機運行</div><p>按一下牆、門窗、傢俬或量度線，即可在此修改尺寸。</p><p>新增牆壁後，可在右邊直接輸入精確座標；所有尺寸標籤以 <b>米 (m)</b> 顯示。</p></div>'+
    '<h3>圖則概覽</h3>'+row("牆身",m.walls.length+" 幅")+row("門窗",m.openings.length+" 個")+row("傢俬",m.furniture.length+" 件")+row("量度線",m.measurements.length+" 條")+
-   '<button class="aside-action primary" data-act="furniture">＋ 新增傢俬</button><button class="aside-action ghost" data-act="projects">開啟／管理專案</button>';
+   (function(){try{const st=computeStats();return row("實用面積",formatArea(st.usable))+row("內攏面積（可用）",formatArea(st.inner));}catch(e){return "";}})()+
+   '<button class="aside-action primary" data-act="furniture">＋ 新增傢俬</button><button class="aside-action ghost" data-act="stats">∑ 數據・樓價・估價</button><button class="aside-action ghost" data-act="templates">▦ 載入港式範本</button><button class="aside-action ghost" data-act="png">🖼 匯出／分享 PNG 平面圖</button><button class="aside-action ghost" data-act="walls">📏 牆長表（mm 精確輸入）</button><button class="aside-action ghost" data-act="qa">✓ 設計檢查 QA</button><button class="aside-action ghost" data-act="projects">開啟／管理專案</button>';
   return;
  }
  let html="";
@@ -956,7 +1620,10 @@ function renderInspector(){
     '<h3>準確端點座標（米）</h3><div class="fields2">'+field("起點 X","ax",o.a.x)+field("起點 Y","ay",o.a.y)+field("終點 X","bx",o.b.x)+field("終點 Y","by",o.b.y)+'</div>'+
     '<h3>牆身規格</h3><div class="fields2">'+field("牆高 (m)","height",o.height)+field("牆厚 (m)","thickness",o.thickness)+'</div>'+
     row("牆長", $num(G.length(o.a,o.b))+" m")+row("已放門窗",m.openings.filter(v=>v.wallId===o.id).length+" 個")+
-    '<p class="tip">直接修改牆長，或拖動兩端黃色控制點。相接牆身會跟隨端點；移動整幅牆時也會保留連接。</p>'+inspectorActions();
+    '<p class="tip">直接修改牆長，或拖動兩端黃色控制點。相接牆身會跟隨端點；移動整幅牆時也會保留連接。</p>'+
+    '<h3>牆身性質</h3><div class="secondary-actions"><button data-act="lb" class="'+(o.loadBearing?"lock":"ghost")+'">'+(o.loadBearing?"🧱 主力牆（已標示）":"標示為主力牆")+'</button><button data-act="demo" class="'+(o.demolish?"danger":"ghost")+'">'+(o.demolish?"✖ 預計拆卸（已標示）":"標示預計拆卸")+'</button></div>'+
+    (o.demolish&&o.loadBearing?'<p class="tip" style="color:#ff9d9d">⚠ 主力牆唔可以自行拆卸，必須經註冊工程師核准。</p>':'<p class="tip">主力牆喺 2D 會顯示金色芯線、3D 變金色；預計拆卸嘅牆喺 2D 會以紅色虛線顯示、3D 變紅色。</p>')+
+    '<button class="aside-action ghost" data-act="walls">📏 牆長表：逐幅輸入精確長度（mm）</button>'+inspectorActions();
  }else if(s.kind==="opening"){
   const w=m.walls.find(v=>v.id===o.wallId);
   html='<div class="item-summary"><strong>'+(o.type==="door"?"門":"窗")+'</strong><small>附在 '+$num(w?G.length(w.a,w.b):0)+' m 牆上</small></div>'+
@@ -975,6 +1642,25 @@ function renderInspector(){
     (m.walls.length?G.furnitureClearances(o,m.walls).slice(0,4).map(g=>row("第 "+g.index+" 幅牆", $num(g.distance)+" m")).join(""):'<p class="tip">先畫牆，才可計算與牆身的距離。</p>')+
     '<p class="tip">顯示傢俬外邊緣與牆面的最短平面距離（包括牆厚），不包括門扇開啟及實際施工誤差。</p>'+
     '<div class="secondary-actions"><button class="primary" data-act="move">✥ 在圖則上移動</button><button class="'+(o.locked?"lock":"ghost")+'" data-act="lock">'+(o.locked?"🔓 解除鎖定":"🔒 鎖定傢俬")+'</button><button data-act="rotate">⟳ 旋轉 90°</button><button data-act="duplicate">複製</button></div>'+inspectorActions();
+ }else if(s.kind==="room"){
+  const area=o.w*o.d,areaFt=area*10.7639,floorCost=areaFt*(o.floorPrice||0)*1.05;
+  const chips=["客廳","主人房","睡房","廚房","廁所","飯廳","書房","玄關","露台","開放式"].map(n=>'<span class="room-chip"><button data-roomname="'+n+'">'+n+'</button></span>').join("");
+  const floors=["木地板","瓷磚","地毯","水泥","石材","膠地板"].map(f=>'<option value="'+f+'"'+(o.floor===f?" selected":"")+'>'+f+'</option>').join("");
+  html='<div class="item-summary"><strong>🏷 '+esc(o.name)+'</strong><small>房間標籤 · 面積自動計算</small></div>'+
+   '<div class="field"><label for="objName">房間名稱</label><input id="objName" data-prop="name" maxlength="80" value="'+esc(o.name)+'"></div>'+
+   '<div>'+chips+'</div>'+
+   '<h3>房間範圍（米）</h3><div class="fields2">'+field("闊 (m)","w",o.w)+field("深 (m)","d",o.d)+'</div>'+
+   row("面積",G.round(area,2)+" m²")+row("面積（呎）",G.round(areaFt,0)+" 呎")+row("面積（坪）",G.round(area/3.3058,2)+" 坪")+
+   '<h3>地板</h3><div class="field"><label for="floorSel">地板物料</label><select id="floorSel" data-prop="floor">'+floors+'</select></div>'+
+   '<div class="fields2">'+field("地板價 HK$／呎","floorPrice",o.floorPrice,"1",0)+'</div>'+
+   row("地板估算（連 5% 損耗）",fmtHK(floorCost))+
+   '<p class="tip">拖動標籤可移動名稱位置（唔影響範圍）；改闊／深即時重算面積。地板估算只係初步參考。</p>'+inspectorActions();
+ }else if(s.kind==="note"){
+  html='<div class="item-summary"><strong>📌 註解</strong><small>平面圖上嘅文字旗 · 會跟埋 PNG 一齊出</small></div>'+
+   '<div class="field"><label for="noteText">註解文字</label><input id="noteText" data-prop="notetext" maxlength="60" value="'+esc(o.text||"")+'" placeholder="例：拆牆／加插座／留電位"></div>'+
+   '<div class="chip-row"><span class="room-chip"><button data-notepick="拆牆">拆牆</button></span><span class="room-chip"><button data-notepick="加插座">加插座</button></span><span class="room-chip"><button data-notepick="留電位">留電位</button></span><span class="room-chip"><button data-notepick="做櫃">做櫃</button></span><span class="room-chip"><button data-notepick="改門位">改門位</button></span></div>'+
+   '<h3>位置（米）</h3><div class="fields2">'+field("位置 X","x",o.x)+field("位置 Y","y",o.y)+'</div>'+
+   '<p class="tip">撳住支旗可以直接拖去其他位。床頭附近加返「加插座」註解，「設計檢查」就唔會再提你缺床頭電位。</p>'+inspectorActions();
  }else{
   html='<div class="item-summary"><strong>量度線</strong><small>兩點直線距離</small></div>'+row("量度結果",$num(G.length(o.a,o.b))+" m")+
     '<div class="fields2">'+field("起點 X","ax",o.a.x)+field("起點 Y","ay",o.a.y)+field("終點 X","bx",o.b.x)+field("終點 Y","by",o.b.y)+'</div>'+inspectorActions();
@@ -991,7 +1677,7 @@ function renderProjects(){
   txt.append(name,sub);const buttons=document.createElement("div");buttons.className="buttons";
   if(p.id!==state.activeId){const b=document.createElement("button");b.textContent="開啟";b.onclick=()=>switchProject(p.id);buttons.append(b);}
   const remove=document.createElement("button");remove.textContent="刪除";remove.className="danger";remove.disabled=state.projects.length===1;
-  remove.onclick=()=>{if(!confirm("永久刪除「"+p.name+"」？此操作無法復原，建議先匯出 JSON。"))return;
+  remove.onclick=()=>{if(remove.dataset.armed!=="1"){remove.dataset.armed="1";remove.textContent="再撳確認刪除";setTimeout(()=>{remove.dataset.armed="";remove.textContent="刪除";},3000);return;}
    state.projects=state.projects.filter(v=>v.id!==p.id);if(p.id===state.activeId){state.activeId=state.projects[0].id;clearUndo();fit();}
    saveNow();renderProjects();refresh();
   };
@@ -1023,13 +1709,16 @@ async function importJSON(e){
   const data=G.fileImport(await file.text());
   const p=newProject(data);state.projects.push(p);state.activeId=p.id;clearUndo();
   saveNow();$("projectsDialog").close();fit();refresh();toast("成功匯入："+p.name);
- }catch(err){alert("匯入失敗："+err.message+"\n\n只接受 Easy Home 3D 匯出的 JSON。");}
+ }catch(err){toast("匯入失敗："+err.message+"（只接受 Easy Home 3D 匯出的 JSON）");}
 }
 function bind(){
- $("view2d").onclick=()=>mode("2d");$("view3d").onclick=()=>mode("3d");
+ $("view2d").onclick=()=>mode("2d");$("view3d").onclick=()=>mode("3d");$("viewExplode").onclick=()=>mode("explode");
  document.querySelectorAll("[data-tool]").forEach(b=>b.onclick=()=>tool(b.dataset.tool));
  $("snapButton").onclick=()=>{ui.snap=!ui.snap;refresh();};
  $("dimsButton").onclick=()=>{ui.dimensions=!ui.dimensions;refresh();};
+ $("gridPaperButton").onclick=()=>{ui.gridPaper=!ui.gridPaper;refresh();toast(ui.gridPaper?"方格紙已開：1 格 = 25 cm，畫牆同拖傢俬會自動吸合到最近格線":"方格紙已關，方格底圖已隱藏");};
+ $("furnLabelButton").onclick=()=>{ui.furnLabels=!ui.furnLabels;refresh();toast("傢俬下方尺寸標籤："+(ui.furnLabels?"顯示":"隱藏"));};
+
  $("undoButton").onclick=undo;$("redoButton").onclick=redo;
  $("fitButton").onclick=fit;$("fitBottom").onclick=fit;
  $("zoomIn").onclick=()=>zoom(1.25);$("zoomOut").onclick=()=>zoom(.8);
@@ -1040,7 +1729,6 @@ function bind(){
  $("startWall").onclick=()=>tool("wall");
  $("startRoom").onclick=()=>tool("room");
  $("loadDemo").onclick=()=>{if(model().walls.length||model().furniture.length)return createProject(true);
-  if(!confirm("載入一般示範平面圖？目前空白圖則會被示範取代。"))return;
   const before=snapshot();active().data=G.demo(active().name);record(before);fit();
  };
  $("propertiesButton").onclick=()=>$("inspector").classList.toggle("open");
@@ -1062,10 +1750,12 @@ function bind(){
   const p=e.target.dataset.prop;if(!p)return;
   if(p==="name"){const o=getObject();if(!o)return;commit(()=>o.name=e.target.value.slice(0,80)||"傢俬");}
   else if(p==="color"){const o=getObject();if(!o)return;commit(()=>o.color=e.target.value);}
+  else if(p==="floor"){const o=getObject();if(!o)return;commit(()=>o.floor=e.target.value);refresh();}
   else{try{editNumber(p,e.target.value);}catch(err){toast(err.message);}}
   refresh();
  });
  $("inspectorContent").addEventListener("click",e=>{
+  const rn=e.target.closest("[data-roomname]");if(rn){const o=getObject();if(o)commit(()=>o.name=rn.dataset.roomname);refresh();return;}
   const b=e.target.closest("[data-act]");if(!b)return;
   const act=b.dataset.act;
   if(act==="delete")deleteSelected();
@@ -1075,6 +1765,9 @@ function bind(){
   else if(act==="duplicate")duplicateSelected();
   else if(act==="furniture")showDialog("furnitureDialog");
   else if(act==="projects"){renderProjects();showDialog("projectsDialog");}
+  else if(act==="stats")openStats();
+  else if(act==="templates")showDialog("templatesDialog");
+  else if(act==="png")exportPNG(true);
  });
  canvas.addEventListener("pointerdown",e=>{if(preparePointer(e))return;changeStart(e);});
  canvas.addEventListener("pointermove",e=>{if(updatePinch(e))return;changeMove(e);});
@@ -1104,7 +1797,7 @@ function bind(){
  if(window.ResizeObserver)new ResizeObserver(render).observe(canvas.parentElement);
 }
 function zoom(factor,at){
- if(ui.mode==="3d"){ui.orbit.distance=G.clamp(ui.orbit.distance/factor,.35,4);render();return;}
+ if(ui.mode==="3d"||ui.mode==="explode"){ui.orbit.distance=G.clamp(ui.orbit.distance/factor,.35,4);render();return;}
  const w=canvas.clientWidth,h=canvas.clientHeight;
  const loc=at||{x:w/2,y:h/2},before=R.toWorld(loc,ui.view,w,h);
  ui.view.scale=G.clamp(ui.view.scale*factor,12,400);
@@ -1112,9 +1805,533 @@ function zoom(factor,at){
  ui.view.panY=loc.y-h/2-before.y*ui.view.scale;
  render();
 }
+
+/* ===== YuanZhan Pro additions: rooms, stats, templates, pro exports ===== */
+function dlBlob(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}
+function proBase(){return (active().name||"floorplan").replace(/[^\w\u3400-\u9fff-]/g,"_").slice(0,45)||"floorplan";}
+function fmtHK(n){if(!isFinite(n))return "—";if(n>=10000)return "HK$"+G.round(n/10000,1)+" 萬";return "HK$"+Math.round(n).toLocaleString("en-HK");}
+function formatArea(m2){if(ui.unit==="ft")return G.round(m2*10.7639,0)+" 呎";if(ui.unit==="ping")return G.round(m2/3.3058,2)+" 坪";return G.round(m2,2)+" m²";}
+function formatAreaAll(m2){return G.round(m2,2)+" m² · "+G.round(m2*10.7639,0)+" 呎 · "+G.round(m2/3.3058,2)+" 坪";}
+function computeStats(){const m=model(),rooms=m.rooms||[];let usable=0,estimated=false;
+ if(rooms.length)usable=rooms.reduce((s,r)=>s+r.w*r.d,0);else{const b=G.getBounds(m);usable=b.empty?0:b.width*b.height;estimated=true;}
+ const wallLen=m.walls.reduce((s,w)=>s+G.length(w.a,w.b),0);
+ /* Wall/column footprint: sum of wall length × thickness, minus one thickness²
+    per shared corner so T/L junctions are not double-counted. Inner （內攏）
+    area = usable − that footprint: the floor you can actually walk on and fill. */
+ let wallFoot=m.walls.reduce((s,w)=>s+G.length(w.a,w.b)*(w.thickness||m.wallThickness||.13),0);
+ const epCount={};for(const w of m.walls)for(const p of [w.a,w.b]){const k=Math.round(p.x*33)+","+Math.round(p.y*33);epCount[k]=(epCount[k]||0)+1;}
+ let joints=0;for(const k in epCount){const c=epCount[k];if(c>1)joints+=c*(c-1)/2;}
+ wallFoot=Math.max(0,wallFoot-joints*Math.pow(m.wallThickness||.13,2));
+ const inner=Math.max(0,usable-wallFoot);
+ return {rooms,usable,inner,wallFoot,estimated,wallLen,doors:m.openings.filter(o=>o.type==="door").length,windows:m.openings.filter(o=>o.type==="window").length,walls:m.walls.length,furniture:m.furniture.length,measures:m.measurements.length};}
+function updateListingCard(){const el=$("listingCard");if(!el)return;const mt=model().meta||{},st=computeStats();const parts=[];
+ if(mt.address)parts.push("📍 "+mt.address);if(mt.layout)parts.push(mt.layout);if(st.rooms.length)parts.push("實用 "+formatArea(st.usable));if(mt.agent)parts.push(mt.agent+(mt.phone?" · "+mt.phone:""));
+ el.innerHTML="<strong>"+esc(active().name)+"</strong><span>"+esc(parts.join("　·　"))+"</span>";el.hidden=!(mt.address||mt.layout||mt.agent);}
+function findRoomRect(p){let L=null,R=null,U=null,D=null;
+ for(const wall of model().walls){const dx=wall.b.x-wall.a.x,dy=wall.b.y-wall.a.y;
+  if(Math.abs(dx)<.02){const x=wall.a.x,ymin=Math.min(wall.a.y,wall.b.y),ymax=Math.max(wall.a.y,wall.b.y);if(p.y>=ymin-.02&&p.y<=ymax+.02){if(x<p.x-.05&&(L===null||x>L))L=x;if(x>p.x+.05&&(R===null||x<R))R=x;}}
+  else if(Math.abs(dy)<.02){const y=wall.a.y,xmin=Math.min(wall.a.x,wall.b.x),xmax=Math.max(wall.a.x,wall.b.x);if(p.x>=xmin-.02&&p.x<=xmax+.02){if(y<p.y-.05&&(U===null||y>U))U=y;if(y>p.y+.05&&(D===null||y<D))D=y;}}}
+ if(L===null||R===null||U===null||D===null||R-L<.4||D-U<.4)return null;return {x:(L+R)/2,y:(U+D)/2,w:R-L,d:D-U};}
+function addRoomLabel(p){if(!model().rooms)model().rooms=[];const rect=findRoomRect(p);
+ const r=rect?{id:G.uid(),name:"房間",x:G.round(rect.x,2),y:G.round(rect.y,2),w:G.round(rect.w,2),d:G.round(rect.d,2),labelX:G.round(rect.x,2),labelY:G.round(rect.y,2),floor:"木地板",floorPrice:85}
+ :{id:G.uid(),name:"房間",x:G.round(p.x,2),y:G.round(p.y,2),w:3,d:3,labelX:G.round(p.x,2),labelY:G.round(p.y,2),floor:"木地板",floorPrice:85};
+ commit(()=>model().rooms.push(r));ui.tool="select";setSelection("room",r.id);
+ toast(rect?"已偵測房間 "+$num(r.w)+" × "+$num(r.d)+" m（"+formatArea(r.w*r.d)+"）；可改名同揀地板":"未偵測到封閉牆身，先放一個 3 × 3 m 標籤，可喺屬性改尺寸");}
+function wallSegments(){const segs=[],m=model();
+ for(const wall of m.walls){const len=G.length(wall.a,wall.b);if(len<.1)continue;
+  const ops=m.openings.filter(o=>o.wallId===wall.id).sort((x,y)=>x.offset-y.offset);let t=0;
+  for(const o of ops){const ta=G.clamp((o.offset-o.width/2)/len,0,1),tb=G.clamp((o.offset+o.width/2)/len,0,1);
+   if(ta>t+.001)segs.push({a:G.lerp(wall.a,wall.b,t),b:G.lerp(wall.a,wall.b,ta),z:0,h:wall.height,wall});
+   if(o.sill>.02)segs.push({a:G.lerp(wall.a,wall.b,ta),b:G.lerp(wall.a,wall.b,tb),z:0,h:Math.min(o.sill,wall.height),wall});
+   const top=o.sill+o.height;if(top<wall.height-.02)segs.push({a:G.lerp(wall.a,wall.b,ta),b:G.lerp(wall.a,wall.b,tb),z:top,h:wall.height-top,wall});
+   t=Math.max(t,tb);}
+  if(t<.999)segs.push({a:G.lerp(wall.a,wall.b,t),b:wall.b,z:0,h:wall.height,wall});}
+ return segs;}
+function exportDXF(){const m=model();if(!m.walls.length&&!m.furniture.length)return toast("圖則係空嘅，未有內容可匯出");
+ const L=[];const P=(c,v)=>{L.push(String(c),String(v));};
+ P(0,"SECTION");P(2,"HEADER");P(9,"$ACADVER");P(1,"AC1021");P(9,"$INSUNITS");P(70,6);P(0,"ENDSEC");
+ P(0,"SECTION");P(2,"TABLES");P(0,"TABLE");P(2,"LAYER");P(70,4);
+ for(const ln of ["WALLS","OPENINGS","FURNITURE","MEASURE"]){P(0,"LAYER");P(2,ln);P(70,0);P(62,7);P(6,"CONTINUOUS");}
+ P(0,"ENDTAB");P(0,"ENDSEC");P(0,"SECTION");P(2,"ENTITIES");
+ const line=(layer,x1,y1,x2,y2)=>{P(0,"LINE");P(8,layer);P(10,x1.toFixed(3));P(20,y1.toFixed(3));P(30,0);P(11,x2.toFixed(3));P(21,y2.toFixed(3));P(31,0);};
+ const text=(layer,x,y,h,txt)=>{P(0,"TEXT");P(8,layer);P(10,x.toFixed(3));P(20,y.toFixed(3));P(30,0);P(40,h);P(1,txt);};
+ for(const w of m.walls){line("WALLS",w.a.x,-w.a.y,w.b.x,-w.b.y);const mid=G.midpoint(w.a,w.b);text("WALLS",mid.x,-mid.y,.18,G.round(G.length(w.a,w.b),2)+"m");}
+ for(const o of m.openings){const w=m.walls.find(v=>v.id===o.wallId);if(!w)continue;const len=G.length(w.a,w.b);const a=G.lerp(w.a,w.b,(o.offset-o.width/2)/len),b=G.lerp(w.a,w.b,(o.offset+o.width/2)/len);line("OPENINGS",a.x,-a.y,b.x,-b.y);}
+ for(const f of m.furniture){const cs=G.furnitureCorners(f);for(let i=0;i<4;i++){const a=cs[i],b=cs[(i+1)%4];line("FURNITURE",a.x,-a.y,b.x,-b.y);}text("FURNITURE",f.x,-f.y,.16,f.name);}
+ (m.rooms||[]).forEach(r=>text("FURNITURE",r.x,-r.y,.2,r.name+" "+G.round(r.w*r.d,1)+"m2"));
+ for(const q of m.measurements)line("MEASURE",q.a.x,-q.a.y,q.b.x,-q.b.y);
+ P(0,"ENDSEC");P(0,"EOF");
+ dlBlob(new Blob([L.join("\n")],{type:"application/dxf;charset=utf-8"}),proBase()+".dxf");toast("已匯出 DXF（圖層 WALLS／OPENINGS／FURNITURE／MEASURE，單位：米）");}
+function exportOBJ(){const m=model();if(!m.walls.length&&!m.furniture.length)return toast("圖則係空嘅，未有內容可匯出");
+ const V=[],F=[];let vi=1;
+ function box(name,cx,cy,z,w,d,h,rot){const c=Math.cos(rot||0),s=Math.sin(rot||0),hw=w/2,hd=d/2;
+  const pts=[[-hw,-hd],[hw,-hd],[hw,hd],[-hw,hd]].map(v=>[cx+v[0]*c-v[1]*s,cy+v[0]*s+v[1]*c]);
+  const idx=[];for(const p of pts){V.push("v "+p[0].toFixed(3)+" "+z.toFixed(3)+" "+(-p[1]).toFixed(3));idx.push(vi++);}
+  for(const p of pts){V.push("v "+p[0].toFixed(3)+" "+(z+h).toFixed(3)+" "+(-p[1]).toFixed(3));idx.push(vi++);}
+  F.push("o "+name);const q=[[0,3,2,1],[4,5,6,7],[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7]];for(const f of q)F.push("f "+f.map(i=>idx[i]).join(" "));}
+ wallSegments().forEach((sg,i)=>{const cx=(sg.a.x+sg.b.x)/2,cy=(sg.a.y+sg.b.y)/2;box("Wall_"+(i+1),cx,cy,sg.z,G.length(sg.a,sg.b),sg.wall.thickness,sg.h,Math.atan2(sg.b.y-sg.a.y,sg.b.x-sg.a.x));});
+ m.furniture.forEach((f,i)=>box("Furniture_"+(i+1)+"_"+f.type,f.x,f.y,0,f.w,f.d,f.h,f.rotation));
+ m.openings.filter(o=>o.type==="window").forEach((o,i)=>{const w=m.walls.find(v=>v.id===o.wallId);if(!w)return;const len=G.length(w.a,w.b);const a=G.lerp(w.a,w.b,(o.offset-o.width/2)/len),b=G.lerp(w.a,w.b,(o.offset+o.width/2)/len);box("WindowGlass_"+(i+1),(a.x+b.x)/2,(a.y+b.y)/2,o.sill,G.length(a,b),.02,Math.min(o.height,w.height-o.sill),Math.atan2(b.y-a.y,b.x-a.x));});
+ const head="# YuanZhan Pro OBJ export\n# Project: "+proBase()+"\n# Units: meters. Walls include door/window openings.\n";
+ dlBlob(new Blob([head+V.join("\n")+"\n"+F.join("\n")+"\n"],{type:"text/plain;charset=utf-8"}),proBase()+".obj");toast("已匯出 OBJ 3D 模型（牆身連門窗開口＋傢俬）");}
+function hexRGB(hex){const v=parseInt((hex||"#888888").replace("#",""),16);return [((v>>16)&255)/255,((v>>8)&255)/255,(v&255)/255];}
+function buildUSDA(){const m=model();const lines=["#usda 1.0","( defaultPrim = \"Scene\" metersPerUnit = 1 upAxis = \"Y\" )","","def Xform \"Scene\"","{"];
+ function prim(name,cx,cy,z,w,d,h,rot,hex){const rgb=hexRGB(hex);const deg=G.round((rot||0)*180/Math.PI,2);
+  lines.push("    def Xform \""+name+"\"","    {","        double3 xformOp:translate = ("+cx.toFixed(3)+", "+(z+h/2).toFixed(3)+", "+(-cy).toFixed(3)+")",
+  "        float3 xformOp:rotateXYZ = (0, "+(-deg)+", 0)","        float3 xformOp:scale = ("+w.toFixed(3)+", "+h.toFixed(3)+", "+d.toFixed(3)+")",
+  "        uniform token[] xformOpOrder = [\"xformOp:translate\", \"xformOp:rotateXYZ\", \"xformOp:scale\"]",
+  "        def Cube \"Geom\"","        {","            double size = 1","            color3f[] primvars:displayColor = [("+rgb.map(v=>v.toFixed(3)).join(", ")+")]","        }","    }");}
+ wallSegments().forEach((sg,i)=>prim("Wall_"+(i+1),(sg.a.x+sg.b.x)/2,(sg.a.y+sg.b.y)/2,sg.z,G.length(sg.a,sg.b),sg.wall.thickness,sg.h,Math.atan2(sg.b.y-sg.a.y,sg.b.x-sg.a.x),"#c0d2e2"));
+ m.furniture.forEach((f,i)=>prim("Furniture_"+(i+1)+"_"+f.type,f.x,f.y,0,f.w,f.d,f.h,f.rotation,f.color));
+ lines.push("}","");return lines.join("\n");}
+const CRC_TABLE=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+function crc32(bytes){let c=0xFFFFFFFF;for(let i=0;i<bytes.length;i++)c=CRC_TABLE[(c^bytes[i])&0xFF]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function zipStore(files){const enc=new TextEncoder();const chunks=[];const central=[];let offset=0;
+ for(const f of files){const nameB=enc.encode(f.name),data=typeof f.data==="string"?enc.encode(f.data):f.data;const crc=crc32(data);
+  const lh=new DataView(new ArrayBuffer(30));lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(8,0,true);lh.setUint32(14,crc,true);lh.setUint32(18,data.length,true);lh.setUint32(22,data.length,true);lh.setUint16(26,nameB.length,true);
+  chunks.push(new Uint8Array(lh.buffer),nameB,data);
+  const ch=new DataView(new ArrayBuffer(46));ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(10,0,true);ch.setUint32(16,crc,true);ch.setUint32(20,data.length,true);ch.setUint32(24,data.length,true);ch.setUint16(28,nameB.length,true);ch.setUint32(42,offset,true);
+  central.push(new Uint8Array(ch.buffer),nameB);offset+=30+nameB.length+data.length;}
+ let cenSize=0;for(const c of central)cenSize+=c.length;
+ const end=new DataView(new ArrayBuffer(22));end.setUint32(0,0x06054b50,true);end.setUint16(8,files.length,true);end.setUint16(10,files.length,true);end.setUint32(12,cenSize,true);end.setUint32(16,offset,true);
+ return new Blob([...chunks,...central,new Uint8Array(end.buffer)],{type:"model/vnd.usdz+zip"});}
+function exportUSDZ(){const m=model();if(!m.walls.length&&!m.furniture.length)return toast("圖則係空嘅，未有內容可匯出");
+ dlBlob(zipStore([{name:"model.usda",data:buildUSDA()}]),proBase()+".usdz");toast("已匯出 USDZ — 傳去 iPhone 用檔案 App／Quick Look 即可睇 AR 立體模型");}
+function exportPDF(){const m=model();if(!m.walls.length&&!m.furniture.length)return toast("圖則係空嘅，未有內容可匯出");
+ const st=computeStats(),b=G.getBounds(m);const PW=842,PH=595,MG=42,TOP=86,BOT=52;
+ const sc=Math.min((PW-MG*2)/Math.max(b.width,.5),(PH-TOP-BOT)/Math.max(b.height,.5));
+ const X=x=>MG+(x-b.minX)*sc, Y=y=>PH-TOP-(y-b.minY)*sc;const C=[];
+ const escT=s=>String(s).replace(/[^\x20-\x7E]/g,"?").replace(/\\/g,"\\\\").replace(/\(/g,"\\(").replace(/\)/g,"\\)");
+ const txt=(x,y,size,font,str)=>C.push("BT /"+font+" "+size+" Tf 0.12 0.14 0.2 rg "+x.toFixed(1)+" "+y.toFixed(1)+" Td ("+escT(str)+") Tj ET");
+ const line=(x1,y1,x2,y2,w2,r,g,bl)=>C.push(r+" "+g+" "+bl+" RG "+w2+" w "+x1.toFixed(1)+" "+y1.toFixed(1)+" m "+x2.toFixed(1)+" "+y2.toFixed(1)+" l S");
+ C.push("1 1 1 rg 0 0 "+PW+" "+PH+" re f");
+ txt(MG,PH-38,17,"F2","YuanZhan Space Pro - Floor Plan");
+ txt(MG,PH-56,10,"F1","Project: "+proBase()+"   Date: "+new Date().toISOString().slice(0,10)+"   Usable area: "+G.round(st.usable,1)+" m2 ("+G.round(st.usable*10.7639,0)+" ft2)   Inner usable area: "+G.round(st.inner,1)+" m2 ("+G.round(st.inner*10.7639,0)+" ft2)   Walls: "+st.walls+"   Doors: "+st.doors+"   Windows: "+st.windows+"   Furniture: "+st.furniture);
+ const mt=m.meta||{};if(mt.address||mt.layout||mt.agent)txt(MG,PH-70,10,"F1",(mt.address?mt.address+"  ":"")+(mt.layout?mt.layout+"  ":"")+(mt.agent?mt.agent+(mt.phone?" "+mt.phone:""):""));
+ for(const r of (m.rooms||[])){const x1=X(r.x-r.w/2),x2=X(r.x+r.w/2),y1=Y(r.y+r.d/2),y2=Y(r.y-r.d/2);C.push("0.93 0.90 0.84 rg "+x1.toFixed(1)+" "+y1.toFixed(1)+" "+(x2-x1).toFixed(1)+" "+(y2-y1).toFixed(1)+" re f");}
+ for(const f of m.furniture){const cs=G.furnitureCorners(f);C.push("0.75 0.82 0.88 rg");C.push(cs.map((p,i)=>(i?" ":"")+X(p.x).toFixed(1)+" "+Y(p.y).toFixed(1)+(i?" l":" m")).join("")+" h f");
+  txt(X(f.x)-14,Y(f.y)-3,6,"F1",f.type+" "+G.round(f.w,1)+"x"+G.round(f.d,1));
+  if(ui.furnLabels){const rt=f.rotation||0,ca=Math.abs(Math.cos(rt)),sa=Math.abs(Math.sin(rt));const ex=f.w*ca+f.d*sa,ey=f.w*sa+f.d*ca;txt(X(f.x)-15,Y(f.y+ey/2)-9,6,"F1",Math.round(ex*100)+" x "+Math.round(ey*100)+" cm");}}
+ for(const wall of m.walls){line(X(wall.a.x),Y(wall.a.y),X(wall.b.x),Y(wall.b.y),Math.max(2,wall.thickness*sc),0.05,0.08,0.12);}
+ for(const o of m.openings){const w=m.walls.find(v=>v.id===o.wallId);if(!w)continue;const len=G.length(w.a,w.b);const a=G.lerp(w.a,w.b,(o.offset-o.width/2)/len),bb=G.lerp(w.a,w.b,(o.offset+o.width/2)/len);
+  if(o.type==="window")line(X(a.x),Y(a.y),X(bb.x),Y(bb.y),3,.1,.55,.7);else line(X(a.x),Y(a.y),X(bb.x),Y(bb.y),2,.85,.55,.15);}
+ for(const wall of m.walls){const mid=G.midpoint(wall.a,wall.b);txt(X(mid.x)-12,Y(mid.y)+5,7,"F1",G.round(G.length(wall.a,wall.b),2)+" m");}
+ for(const r of (m.rooms||[]))txt(X(r.x)-20,Y(r.y)-4,8,"F2",r.type||"");
+ const nth=ui.north*Math.PI/180,nsx=Math.sin(nth),nsy=Math.cos(nth),ncx=PW-66,ncy=PH-54;
+ line(ncx-nsx*13,ncy-nsy*13,ncx+nsx*13,ncy+nsy*13,1.8,.85,.62,.2);
+ line(ncx+nsx*13,ncy+nsy*13,ncx+nsx*7-nsy*5,ncy+nsy*7+nsx*5,1.4,.85,.62,.2);
+ line(ncx+nsx*13,ncy+nsy*13,ncx+nsx*7+nsy*5,ncy+nsy*7-nsx*5,1.4,.85,.62,.2);
+ txt(ncx+nsx*22-3,ncy+nsy*22-3,11,"F2","N");txt(ncx-16,ncy-31,8,"F1","N "+ui.north+" deg");
+ const sbSteps=[0.5,1,2,5];let sbStep=sbSteps[0];for(const s of sbSteps){if(s*sc<=110)sbStep=s;}
+ const seg=sbStep*sc,barX=PW-MG-2*seg,barY=20,sbLbl=v=>v>=1?v+" m":Math.round(v*100)+" cm";
+ C.push("0.9 0.93 0.97 rg "+barX.toFixed(1)+" "+barY+" "+seg.toFixed(1)+" 5 re f");
+ C.push("0.15 0.2 0.28 rg "+(barX+seg).toFixed(1)+" "+barY+" "+seg.toFixed(1)+" 5 re f");
+ C.push("0.05 0.08 0.12 RG 0.7 w "+barX.toFixed(1)+" "+barY+" "+(2*seg).toFixed(1)+" 5 re S");
+ txt(barX-2,barY-9,7,"F1","0");txt(barX+seg-6,barY-9,7,"F1",sbLbl(sbStep));txt(barX+2*seg-10,barY-9,7,"F1",sbLbl(sbStep*2));
+ /* Legend (PDF): only symbols actually used in this plan, bottom-left of the sheet. */
+ if(ui.legend){const lgRows=[];
+  let hasExtP=false,hasPartP=false;
+  for(const wl of m.walls){const ex=(Math.abs(wl.a.x-b.minX)<.07&&Math.abs(wl.b.x-b.minX)<.07)||(Math.abs(wl.a.x-b.maxX)<.07&&Math.abs(wl.b.x-b.maxX)<.07)||(Math.abs(wl.a.y-b.minY)<.07&&Math.abs(wl.b.y-b.minY)<.07)||(Math.abs(wl.a.y-b.maxY)<.07&&Math.abs(wl.b.y-b.maxY)<.07);if(ex)hasExtP=true;else hasPartP=true;}
+  if(st.doors)lgRows.push(["door","Door"]);if(st.windows)lgRows.push(["window","Window"]);if(hasExtP)lgRows.push(["ext","External wall"]);if(hasPartP)lgRows.push(["part","Partition wall"]);if(m.walls.some(wl=>wl.loadBearing))lgRows.push(["lb","Load-bearing"]);if(m.walls.some(wl=>wl.demolish))lgRows.push(["demo","To demolish"]);if(m.furniture.length)lgRows.push(["furn","Furniture"]);
+  if(lgRows.length){const lgH=lgRows.length*13+20,lgX=MG,lgY=BOT+2,lgW=118;
+   C.push("1 1 1 rg "+lgX+" "+lgY+" "+lgW+" "+lgH+" re f");
+   C.push("0.25 0.38 0.52 RG 0.8 w "+lgX+" "+lgY+" "+lgW+" "+lgH+" re S");
+   txt(lgX+7,lgY+lgH-12,8,"F2","LEGEND");
+   lgRows.forEach((r,i)=>{const cy=lgY+lgH-26-i*13;
+    if(r[0]==="door")line(lgX+7,cy+2,lgX+25,cy+2,1.4,.85,.55,.15);
+    else if(r[0]==="window")line(lgX+7,cy+2,lgX+25,cy+2,3,.1,.55,.7);
+    else if(r[0]==="ext")line(lgX+7,cy+2,lgX+25,cy+2,4,.05,.08,.12);
+    else if(r[0]==="part")line(lgX+7,cy+2,lgX+25,cy+2,1.8,.05,.08,.12);
+    else if(r[0]==="lb"){line(lgX+7,cy+2,lgX+25,cy+2,3.4,.05,.08,.12);line(lgX+7,cy+2,lgX+25,cy+2,1.4,.85,.62,.2);}
+    else if(r[0]==="demo")line(lgX+7,cy+2,lgX+25,cy+2,2,.85,.2,.18);
+    else if(r[0]==="furn")C.push("0.75 0.82 0.88 rg "+(lgX+10)+" "+cy+" 12 5 re f");
+    txt(lgX+30,cy,7.5,"F1",r[1]);});
+  }}
+ txt(MG,34,8,"F1","Scale: grid 0.5 m. Planning preview only - verify measurements on site before construction. Generated by YuanZhan Space Pro (Easy Home 3D base, MIT).");
+ const content=C.join("\n");
+ const objs=["<< /Type /Catalog /Pages 2 0 R >>","<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+ "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+PW+" "+PH+"] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>",
+ "<< /Length "+content.length+" >>\nstream\n"+content+"\nendstream","<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>","<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>"];
+ let pdf="%PDF-1.4\n";const offs=[0];objs.forEach((o,i)=>{offs.push(pdf.length);pdf+=(i+1)+" 0 obj\n"+o+"\nendobj\n";});
+ const xref=pdf.length;pdf+="xref\n0 "+(objs.length+1)+"\n0000000000 65535 f \n";for(let i=1;i<=objs.length;i++)pdf+=String(offs[i]).padStart(10,"0")+" 00000 n \n";
+ pdf+="trailer\n<< /Size "+(objs.length+1)+" /Root 1 0 R >>\nstartxref\n"+xref+"\n%%EOF";
+ dlBlob(new Blob([pdf],{type:"application/pdf"}),proBase()+".pdf");toast("已匯出 PDF 平面圖（A4 橫向，連尺寸標籤）");}
+async function exportPNG(share){const prevMode=ui.mode,prevView={scale:ui.view.scale,panX:ui.view.panX,panY:ui.view.panY};
+ ui.mode="2d";refresh();fit();await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));await new Promise(r=>setTimeout(r,80));
+ const Wd=1440,header=200,footer=118,planH=Math.min(1020,Math.round(Wd*canvas.clientHeight/Math.max(1,canvas.clientWidth)));
+ const outC=document.createElement("canvas");outC.width=Wd;outC.height=header+planH+footer;const c=outC.getContext("2d");
+ c.fillStyle="#0c1423";c.fillRect(0,0,Wd,header+planH+footer);c.drawImage(canvas,0,header,Wd,planH);
+ const mt=model().meta||{},st=computeStats();
+ c.fillStyle="#ffe9bb";c.font="900 46px system-ui,sans-serif";c.fillText(active().name.slice(0,26),44,66);
+ c.fillStyle="#d5e5f6";c.font="26px system-ui,sans-serif";
+ const line2=[mt.address,mt.layout,"實用面積 "+formatAreaAll(st.usable),"內攏面積 "+formatArea(st.inner)].filter(Boolean).join(" · ");c.fillText(line2.slice(0,64),44,112);
+ const line3=[mt.agent?("聯絡："+mt.agent+(mt.phone?" "+mt.phone:"")):"",new Date().toLocaleDateString("zh-HK"),st.rooms.length?st.rooms.map(r=>r.name+" "+formatArea(r.w*r.d)).join(" · "):""].filter(Boolean).join("　·　");
+ c.font="23px system-ui,sans-serif";c.fillText(line3.slice(0,68),44,152);
+ const nRad=ui.north*Math.PI/180,nSin=Math.sin(nRad),nCos=Math.cos(nRad);
+ c.strokeStyle="#ffd17e";c.lineWidth=3;c.beginPath();c.arc(Wd-92,84,44,0,Math.PI*2);c.stroke();
+ c.save();c.translate(Wd-92,84);c.rotate(nRad);c.fillStyle="#ffd17e";c.font="900 40px system-ui";c.textAlign="center";c.fillText("↑",0,14);c.restore();
+ c.fillStyle="#ffd17e";c.font="700 22px system-ui";c.textAlign="center";c.fillText("N",Wd-92+nSin*64,84-nCos*64+8);c.font="700 20px system-ui";c.fillText("北 "+ui.north+"°",Wd-92,152);c.textAlign="left";
+ c.fillStyle="#0c1a29";c.fillRect(0,header+planH,Wd,footer);c.fillStyle="#9db0c6";c.font="22px system-ui,sans-serif";
+ c.fillText("比例：格線 0.5 m · 牆長已標示（米） · 遠展空間Pro · 規劃預覽，施工前請覆尺",44,header+planH+48);
+ c.fillStyle="#d5e5f6";c.fillText("牆 "+st.walls+" 幅 · 門 "+st.doors+" · 窗 "+st.windows+" · 傢俬 "+st.furniture+" 件 · 總牆長 "+G.round(st.wallLen,1)+" m",44,header+planH+86);
+ const ppm=ui.view.scale*(Wd/Math.max(1,canvas.clientWidth));const sbSteps=[0.5,1,2,5];let sbStep=sbSteps[0];for(const s of sbSteps){if(s*ppm<=170)sbStep=s;}
+ const segPx=Math.max(10,Math.round(sbStep*ppm)),barW=segPx*2,barX=Wd-44-barW,barY=header+planH+26;
+ c.fillStyle="#e8f1fb";c.fillRect(barX,barY,segPx,10);c.fillStyle="#8a6a25";c.fillRect(barX+segPx,barY,segPx,10);c.strokeStyle="#e8f1fb";c.lineWidth=1.5;c.strokeRect(barX,barY,barW,10);
+ c.fillStyle="#d5e5f6";c.font="700 18px system-ui,sans-serif";c.textAlign="left";c.fillText("0",barX,barY+34);c.textAlign="center";c.fillText(scaleFmt(sbStep),barX+segPx,barY+34);c.textAlign="right";c.fillText(scaleFmt(sbStep*2),barX+barW,barY+34);c.textAlign="left";
+ const blob=await new Promise(r=>outC.toBlob(r,"image/png"));
+ ui.mode=prevMode;ui.view.scale=prevView.scale;ui.view.panX=prevView.panX;ui.view.panY=prevView.panY;refresh();
+ if(!blob)return toast("PNG 生成失敗，請再試");
+ const file=new File([blob],proBase()+".png",{type:"image/png"});
+ if(share&&navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:active().name,text:"平面圖："+active().name+"（實用 "+formatAreaAll(st.usable)+" · 內攏 "+formatArea(st.inner)+"）"});toast("已開啟分享");return;}catch(e){if(e&&e.name==="AbortError")return;}}
+ dlBlob(blob,proBase()+".png");toast("已下載 PNG 平面圖 — 可直接傳 WhatsApp／LINE／Threads");}
+function templateModel(key){const mk=(name)=>{const m=G.empty(name);m.rooms=[];m.meta={address:"",layout:"",agent:"",phone:"",totalPriceWan:"",buildingAreaFt:""};return m;};
+ const W=(m,x1,y1,x2,y2)=>m.walls.push(G.wall([x1,y1],[x2,y2],{height:m.wallHeight,thickness:m.wallThickness}));
+ const rect=(m,x,y,w,d)=>{W(m,x,y,x+w,y);W(m,x+w,y,x+w,y+d);W(m,x+w,y+d,x,y+d);W(m,x,y+d,x,y);};
+ const room=(m,name,x,y,w,d,floor,price)=>m.rooms.push({id:G.uid(),name,x:x+w/2,y:y+d/2,w,d,labelX:x+w/2,labelY:y+d/2,floor:floor||"木地板",floorPrice:price||85});
+ const F=(m,type,x,y,rot)=>{const c=G.catalog.find(v=>v.type===type);m.furniture.push({id:G.uid(),type:c.type,name:c.name,x,y,w:c.w,d:c.d,h:c.h,rotation:rot||0,locked:false,color:c.color});};
+ const door=(m,wi,off,wd)=>m.openings.push({id:G.uid(),wallId:m.walls[wi].id,type:"door",offset:off,width:wd||.85,height:2.1,sill:0});
+ const win=(m,wi,off,wd)=>m.openings.push({id:G.uid(),wallId:m.walls[wi].id,type:"window",offset:off,width:wd||1.5,height:1.15,sill:.9});
+ let m;
+ if(key==="studio"){m=mk("範本：開放式 Studio 24 m²");rect(m,0,0,6,4);W(m,2,2.2,2,4);W(m,0,2.2,2,2.2);
+  room(m,"客廳／睡房",2,0,4,4);room(m,"開放式廚房",0,0,2,2.2,"瓷磚",120);room(m,"廁所",0,2.2,2,1.8,"瓷磚",120);
+  door(m,2,5,.9);door(m,5,.9,.75);win(m,0,4,1.8);F(m,"bed",5.1,1);F(m,"sofa",3.2,3.5);F(m,"kitchen",1,.3);F(m,"washer",.4,3.6);F(m,"desk",5.4,3.6);}
+ else if(key==="onebr"){m=mk("範本：1 房 35 m²");rect(m,0,0,7,5);W(m,3,0,3,5);W(m,0,3.2,3,3.2);W(m,3,2.6,7,2.6);
+  room(m,"睡房",0,0,3,3.2);room(m,"廁所",0,3.2,3,1.8,"瓷磚",120);room(m,"客廳",3,0,4,2.6);room(m,"廚房／飯廳",3,2.6,4,2.4,"瓷磚",120);
+  door(m,3,6.2,.9);door(m,4,1.5,.8);win(m,0,5,1.6);win(m,1,2.5,1.4);F(m,"bed",1.2,1.1);F(m,"wardrobe",.4,3);F(m,"sofa",5.2,1);F(m,"table",5,3.8);F(m,"kitchen",3.4,4.6);}
+ else if(key==="twobr"){m=mk("範本：2 房 48 m²");rect(m,0,0,8,6);W(m,4.6,0,4.6,6);W(m,0,3.6,8,3.6);W(m,2.4,3.6,2.4,6);
+  room(m,"客廳",0,0,4.6,3.6);room(m,"主人房",4.6,0,3.4,3.6);room(m,"廚房",0,3.6,2.4,2.4,"瓷磚",120);room(m,"廁所",2.4,3.6,2.2,2.4,"瓷磚",120);room(m,"睡房",4.6,3.6,3.4,2.4);
+  door(m,3,7,.9);door(m,4,1.8,.85);door(m,5,6.5,.8);win(m,0,2.4,1.8);win(m,1,6.5,1.6);F(m,"sofa",2.2,2.9);F(m,"table",2,1.2);F(m,"bed",6.9,.9);F(m,"bed",6.9,4.6);F(m,"wardrobe",5,3.3);F(m,"kitchen",1.2,5.6);}
+ else if(key==="threebr"){m=mk("範本：3 房 77 m²");rect(m,0,0,11,7);W(m,0,3.8,11,3.8);W(m,5,0,5,3.8);W(m,8.2,0,8.2,7);W(m,3,3.8,3,7);W(m,5,3.8,5,7);
+  room(m,"客廳",0,0,5,3.8);room(m,"主人房",5,0,3.2,3.8);room(m,"睡房",8.2,0,2.8,3.8);room(m,"廚房",0,3.8,3,3.2,"瓷磚",120);room(m,"廁所",3,3.8,2,3.2,"瓷磚",120);room(m,"睡房",5,3.8,3.2,3.2);room(m,"書房",8.2,3.8,2.8,3.2);
+  door(m,3,9.5,.95);door(m,4,2.5,.85);door(m,5,6.6,.85);win(m,0,2.5,2);win(m,1,9.5,1.6);F(m,"sofa",2.5,3);F(m,"table",2.2,1.3);F(m,"bed",6.5,1);F(m,"bed",9.5,1);F(m,"bed",6.5,5.4);F(m,"desk",9.5,5.6);F(m,"kitchen",1.5,6.6);}
+ else if(key==="lshape"){m=mk("範本：L 形開放式 39 m²");W(m,0,0,8,0);W(m,8,0,8,3);W(m,8,3,5,3);W(m,5,3,5,6);W(m,5,6,0,6);W(m,0,6,0,0);
+  room(m,"客廳",0,0,8,3);room(m,"睡房／書房",0,3,5,3);
+  door(m,4,2.5,.9);win(m,0,5.5,1.8);win(m,5,2.5,1.4);F(m,"sofa",6.5,1.2);F(m,"bed",1.2,4.8);F(m,"table",3.5,1.4);}
+ return m;}
+function applyTemplate(key){let data=templateModel(key);if(!data)return;try{data=G.sanitize(data);}catch(e){}const p=newProject(data);state.projects.push(p);state.activeId=p.id;clearUndo();saveNow();const d=$("templatesDialog");if(d.open)d.close();fit();refresh();toast("已載入範本："+data.name+"（新專案，全部可再改）");}
+function rowHTML(l,v){return '<div class="mini-stat"><span>'+l+'</span><strong>'+v+'</strong></div>';}
+function renderStatsDynamic(){const st=computeStats(),m=model(),mt=m.meta||{};
+ const sc=$("statsContent");if(!sc)return;
+ let h='<div class="area-dual"><button type="button" class="area-card" data-area-info aria-label="實用面積說明"><small>實用面積'+(st.estimated?"（外框估算）":"")+'</small><span class="stat-big">'+formatArea(st.usable)+'</span><em>'+formatAreaAll(st.usable)+'</em></button><button type="button" class="area-card" data-area-info aria-label="內攏面積說明"><small>內攏面積（可用面積）</small><span class="stat-big">'+formatArea(st.inner)+'</span><em>'+formatAreaAll(st.inner)+'</em></button></div><p class="muted" style="margin:8px 0 0">撳任何一個面積數字，會彈出點計嘅簡單說明（露台計、窗台唔計）。</p>';
+ h+=rowHTML("牆身／柱位佔用（實用 − 內攏）",formatArea(st.wallFoot));
+ if(st.rooms.length)h+=st.rooms.map(r=>{const ra=r.w*r.d,rp=2*(r.w+r.d);return rowHTML("· "+esc(r.name)+"（"+esc(r.floor||"")+"）",formatArea(ra))+rowHTML("　周長",G.round(rp,2)+" m")+rowHTML("　牆面積（周長 × 樓底 2.8 m）",G.round(rp*2.8,2)+" m²")+rowHTML("　體積（面積 × 樓底 2.8 m）",G.round(ra*2.8,2)+" m³");}).join("");
+ h+=rowHTML("房間數",st.rooms.length+" 間")+rowHTML("總牆長",G.round(st.wallLen,1)+" m（"+st.walls+" 幅牆）");
+ if(st.rooms.length){const twa=st.rooms.reduce((s,r)=>s+2*(r.w+r.d)*2.8,0);h+=rowHTML("總牆面積（各房合計）",G.round(twa,2)+" m²")+rowHTML("總體積（樓底 2.8 m）",G.round(st.usable*2.8,2)+" m³");}
+ h+=rowHTML("門／窗",st.doors+" 度門 · "+st.windows+" 個窗")+rowHTML("傢俬",st.furniture+" 件");
+ sc.innerHTML=h;renderOpeningSchedule();
+ const wan=parseFloat(($("calcPriceWan")||{}).value),bft=parseFloat(($("calcBuildingFt")||{}).value),co=$("calcOut");
+ if(co){let o="";const uFt=st.usable*10.7639;
+  if(isFinite(wan)&&wan>0&&st.usable>0){const total=wan*10000;o+=rowHTML("總價",fmtHK(total))+rowHTML("每實用呎","HK$"+Math.round(total/uFt).toLocaleString("en-HK")+"／呎")+rowHTML("每坪","HK$"+Math.round(total/(st.usable/3.3058)).toLocaleString("en-HK")+"／坪");}
+  if(isFinite(bft)&&bft>0&&st.usable>0)o+=rowHTML("實用率",G.round(uFt/bft*100,1)+"%（實用 "+Math.round(uFt)+" 呎／建築 "+Math.round(bft)+" 呎）");
+  co.innerHTML=o||'<p class="muted" style="margin:0">輸入總價同建築面積，即時計出 $／實用呎、$／坪同實用率。</p>';}
+ const fc=$("floorContent");if(fc){if(!st.rooms.length)fc.innerHTML='<p class="muted">未有房間標籤：用「房間標籤」工具或載入範本後，可逐間房計地板。</p>';
+  else{let tot=0;fc.innerHTML=st.rooms.map(r=>{const cost=r.w*r.d*10.7639*(r.floorPrice||0)*1.05;tot+=cost;return rowHTML(esc(r.name)+" · "+esc(r.floor||"木地板")+" · "+G.round(r.w*r.d*10.7639,0)+" 呎 × HK$"+(r.floorPrice||0)+"／呎 ×1.05",fmtHK(cost));}).join("")+rowHTML("<b>地板總計（含 5% 損耗）</b>","<b>"+fmtHK(tot)+"</b>");}}
+ const tc=$("tierContent");if(tc){const uFt=st.usable*10.7639;tc.innerHTML='<h3 style="margin:16px 0 6px">裝修估價（初步參考）</h3>'+[["簡約",700],["標準",1800],["高端",3800]].map(t=>rowHTML(t[0]+" · HK$"+t[1]+"／呎 × "+Math.round(uFt)+" 呎",fmtHK(uFt*t[1]))).join("");}}
+function fillMetaInputs(){const mt=model().meta||{};$("metaAddress").value=mt.address||"";$("metaLayout").value=mt.layout||"";$("metaAgent").value=mt.agent||"";$("metaPhone").value=mt.phone||"";$("calcPriceWan").value=mt.totalPriceWan||"";$("calcBuildingFt").value=mt.buildingAreaFt||"";}
+function openStats(){fillMetaInputs();renderStatsDynamic();showDialog("statsDialog");}
+function bindPro(){
+ $("exportProButton").onclick=()=>showDialog("exportDialog");
+ const ie=$("inspectorExport");if(ie)ie.onclick=()=>showDialog("exportDialog");
+ document.querySelectorAll("[data-export]").forEach(b=>b.onclick=()=>{const k=b.dataset.export;const d=$("exportDialog");if(d.open)d.close();
+  if(k==="pdf")exportPDF();else if(k==="dxf")exportDXF();else if(k==="obj")exportOBJ();else if(k==="usdz")exportUSDZ();else if(k==="png")exportPNG(false);else if(k==="json")exportJSON();});
+ const er=$("explodeRange");if(er)er.addEventListener("input",e=>{ui.explode=e.target.value/100;$("explodeVal").textContent=e.target.value+"%";render();});
+ $("templatesButton").onclick=()=>showDialog("templatesDialog");
+ $("statsButton").onclick=openStats;
+ $("pngButton").onclick=()=>exportPNG(true);
+ document.querySelectorAll("[data-template]").forEach(b=>b.onclick=()=>applyTemplate(b.dataset.template));
+ document.querySelectorAll("[data-unit]").forEach(b=>b.onclick=()=>{ui.unit=b.dataset.unit;try{localStorage.setItem("yuanzhan-unit",ui.unit);}catch(e){}refresh();if($("statsDialog").open)renderStatsDynamic();toast("面積單位："+(ui.unit==="ft"?"平方呎":ui.unit==="ping"?"坪":"平方米"));});
+ const metaBind=(id,key)=>{const el=$(id);if(el)el.addEventListener("input",()=>{if(!model().meta)model().meta={};model().meta[key]=el.value;scheduleSave();updateListingCard();});};
+ metaBind("metaAddress","address");metaBind("metaLayout","layout");metaBind("metaAgent","agent");metaBind("metaPhone","phone");
+ const calcBind=(id,key)=>{const el=$(id);if(el)el.addEventListener("input",()=>{if(!model().meta)model().meta={};model().meta[key]=el.value;scheduleSave();renderStatsDynamic();});};
+ calcBind("calcPriceWan","totalPriceWan");calcBind("calcBuildingFt","buildingAreaFt");
+ $("statsPng").onclick=()=>{$("statsDialog").close();exportPNG(false);};
+ $("statsShare").onclick=()=>{$("statsDialog").close();exportPNG(true);};
+}
+/* ===== Pro v5 additions: wall-length table (mm), annotations, load-bearing/demolition, design QA ===== */
+function addAnnotation(p){
+ if(!model().annotations)model().annotations=[];
+ const an={id:G.uid(),text:"新註解",x:G.round(p.x,2),y:G.round(p.y,2)};
+ commit(()=>model().annotations.push(an));
+ ui.tool="select";setSelection("note",an.id);
+ toast("已加註解：喺右邊屬性輸入文字（例如：拆牆、加插座）");
+}
+function wallDirLabel(w){
+ const dx=Math.abs(w.b.x-w.a.x),dy=Math.abs(w.b.y-w.a.y);
+ return dx>dy*3?"橫牆":dy>dx*3?"直牆":"斜牆";
+}
+function renderWallsTable(){
+ const box=$("wallsTable");if(!box)return;const m=model();
+ if(!m.walls.length){box.innerHTML='<p class="muted">未有牆身。先畫房間或載入範本，再返嚟逐幅輸入精確長度。</p>';return;}
+ box.innerHTML=m.walls.map((w,i)=>{
+  const mm=Math.round(G.length(w.a,w.b)*1000);
+  return '<div class="wall-row"><div class="wall-row-head"><strong>牆 '+(i+1)+' · '+wallDirLabel(w)+'</strong><span>'+mm+' mm</span></div>'+
+  '<div class="wall-row-ctl"><input type="number" inputmode="numeric" min="100" step="10" value="'+mm+'" data-wall-input="'+w.id+'" aria-label="牆 '+(i+1)+' 長度（毫米）"><span class="mm">mm</span><button data-wall-apply="'+w.id+'">套用</button></div>'+
+  '<div class="wall-row-flags"><button data-wall-lb="'+w.id+'" class="chip'+(w.loadBearing?" on-lb":"")+'" aria-pressed="'+String(!!w.loadBearing)+'">🧱 主力牆</button><button data-wall-demo="'+w.id+'" class="chip'+(w.demolish?" on-demo":"")+'" aria-pressed="'+String(!!w.demolish)+'">✖ 預計拆卸</button></div></div>';
+ }).join("");
+}
+function setWallLengthMm(id,mmRaw){
+ const m=model(),w=m.walls.find(v=>v.id===id);if(!w)return;
+ const L=Number(mmRaw)/1000;
+ if(!Number.isFinite(L)||L<.1||L>1000)return toast("牆長要喺 100 mm 至 1000 m 之間");
+ commit(()=>{
+  const len=G.length(w.a,w.b);if(len<.01)return;
+  const next=G.point(w.a.x+(w.b.x-w.a.x)*L/len,w.a.y+(w.b.y-w.a.y)*L/len);
+  joinedMove(w.b,next,w.id);w.b=next;
+  for(const o of m.openings.filter(o=>o.wallId===w.id)){
+   const nl=G.length(w.a,w.b);o.width=Math.min(o.width,nl*.85);o.offset=G.clamp(o.offset,o.width/2,Math.max(o.width/2,nl-o.width/2));
+  }
+ });
+ renderWallsTable();toast("牆長已改為 "+Math.round(L*1000)+" mm");
+}
+function toggleWallFlag(id,key){
+ const m=model(),w=m.walls.find(v=>v.id===id);if(!w)return;
+ commit(()=>{w[key]=!w[key];});
+ renderWallsTable();refresh();
+ if(key==="demolish"&&w.demolish&&w.loadBearing)toast("⚠ 呢幅係主力牆：拆卸前必須經註冊工程師核准");
+}
+function qaChecks(){
+ const m=model(),issues=[];
+ const push=(msg,kind,id)=>issues.push({msg,kind,id});
+ m.walls.forEach((w,i)=>{if(w.demolish&&w.loadBearing)push("牆 "+(i+1)+" 係主力牆但標咗「預計拆卸」— 主力牆唔可以自行拆，必須經註冊工程師核准。","wall",w.id);});
+ for(const o of m.openings){
+  const w=m.walls.find(v=>v.id===o.wallId);if(!w)continue;
+  const len=G.length(w.a,w.b);if(len<.1)continue;
+  const a=G.lerp(w.a,w.b,(o.offset-o.width/2)/len),b=G.lerp(w.a,w.b,(o.offset+o.width/2)/len);
+  if(o.type==="door"){
+   if(o.width<.7)push("門闊只有 "+Math.round(o.width*1000)+" mm，少於建議 700 mm — 大型傢俬同輪椅會難通過。","opening",o.id);
+   const u={x:(b.x-a.x)/o.width,y:(b.y-a.y)/o.width},n={x:-u.y,y:u.x};
+   for(const f of m.furniture){
+    const fc=G.furnitureCorners(f);
+    const pts=fc.concat(fc.map((p,k)=>({x:(p.x+fc[(k+1)%4].x)/2,y:(p.y+fc[(k+1)%4].y)/2})),[{x:f.x,y:f.y}]);
+    const hit=pts.some(p=>{const dx=p.x-a.x,dy=p.y-a.y;const s=dx*u.x+dy*u.y,t=dx*n.x+dy*n.y;return s>=-0.03&&t>=-0.03&&(s*s+t*t)<=(o.width+0.04)*(o.width+0.04);});
+    if(hit)push("傢俬「"+f.name+"」擋住門嘅開啟弧線 — 開門會撞到佢，建議移開至少門闊範圍。","furniture",f.id);
+   }
+  }else{
+   for(const f of m.furniture){
+    if(f.h<(o.sill||0)+0.3)continue;
+    const poly=G.furnitureCorners(f);let d=Infinity;
+    for(let k=0;k<4;k++)d=Math.min(d,G.segmentDistance(poly[k],poly[(k+1)%4],a,b));
+    if(d<0.08)push("高身傢俬「"+f.name+"」貼住窗 — 會擋光擋風，開窗同清潔都唔方便。","furniture",f.id);
+   }
+  }
+ }
+ /* Door swing vs door swing: every sector is DIRECTED — built from the door's
+    hinge plus the normal of the side it actually opens to (hinge + u along the
+    wall + n on the swing side), exactly the sector paint2D draws. Two doors on
+    opposite faces of the same wall open to opposite sides: the wall body itself
+    stands between their swings, so such a pair is rejected up front. Sampling
+    alone cannot see that — a point hugging one door's wall line lands a few cm
+    inside the other door's disc, within the wall-thickness strip, and reads as
+    a false overlap. */
+ const doorSecs=[];
+ m.openings.filter(o=>o.type==="door").forEach((o,di)=>{
+  const w=m.walls.find(v=>v.id===o.wallId);if(!w)return;const len=G.length(w.a,w.b);if(len<.1)return;
+  const a=G.lerp(w.a,w.b,(o.offset-o.width/2)/len);
+  const u={x:(w.b.x-w.a.x)/len,y:(w.b.y-w.a.y)/len};
+  doorSecs.push({o,di,hinge:a,u,n:{x:-u.y,y:u.x},r:o.width,thick:w.thickness||0.13});
+ });
+ /* Opposite faces of one wall: (near-)parallel walls whose swing normals point
+    away from each other, with centrelines no further apart than the two wall
+    bodies together — the swings lie on opposite sides of the wall. */
+ const oppositeFaces=(A,B)=>{
+  if(Math.abs(A.u.x*B.u.x+A.u.y*B.u.y)<0.999)return false;
+  if(A.n.x*B.n.x+A.n.y*B.n.y>=0)return false;
+  const d=Math.abs((B.hinge.x-A.hinge.x)*A.n.x+(B.hinge.y-A.hinge.y)*A.n.y);
+  return d<=A.thick+B.thick+0.02;
+ };
+ /* Strict interior test: a witness point must sit strictly inside BOTH directed
+    sectors — clear of both wall lines and both closed-leaf lines — so sectors
+    that only touch along a wall line, or meet only inside the wall-thickness
+    strip, share a boundary but no area: not a collision. */
+ const inSec=(p,s)=>{const dx=p.x-s.hinge.x,dy=p.y-s.hinge.y;const ss=dx*s.u.x+dy*s.u.y,tt=dx*s.n.x+dy*s.n.y;return ss>0.04&&tt>0.04&&(ss*ss+tt*tt)<(s.r-0.03)*(s.r-0.03);};
+ for(let i=0;i<doorSecs.length;i++)for(let j=i+1;j<doorSecs.length;j++){
+  const A=doorSecs[i],B=doorSecs[j];
+  if(oppositeFaces(A,B))continue;
+  let overlap=inSec(A.hinge,B)||inSec(B.hinge,A);
+  if(!overlap){
+   outer: for(const S of [A,B]){const O=S===A?B:A;
+    for(let ri=1;ri<=4&&!overlap;ri++)for(let ai=0;ai<=8;ai++){
+     const ang=ai/8*Math.PI/2,rr=S.r*ri/4;
+     /* Skip samples on S's own boundary (its wall line / closed-leaf line):
+        only a point strictly inside S's directed sector can witness a real
+        overlap with O's directed sector. */
+     if(rr*Math.cos(ang)<=0.04||rr*Math.sin(ang)<=0.04)continue;
+     const p={x:S.hinge.x+(S.u.x*Math.cos(ang)+S.n.x*Math.sin(ang))*rr,y:S.hinge.y+(S.u.y*Math.cos(ang)+S.n.y*Math.sin(ang))*rr};
+     if(inSec(p,O)){overlap=true;break outer;}
+    }
+    if(overlap)break;
+   }
+  }
+  if(overlap)push("門 "+(A.di+1)+" 同門 "+(B.di+1)+" 嘅擺弧重疊 — 兩道門同時開會相撞，建議改門位、改開門方向或改用趟門。","opening",B.o.id);
+ }
+ for(const r of (m.rooms||[])){
+  const area=r.w*r.d,nm=r.name||"房間",minSide=Math.min(r.w,r.d);
+  if(minSide<1.5)push("「"+nm+"」最窄得 "+G.round(minSide,2)+" m，低於 1.5 m — 擺傢俬會好迫，行路都窄。","room",r.id);
+  else if((nm.includes("睡房")||nm.includes("主人房"))&&area<5)push("「"+nm+"」面積 "+G.round(area,1)+" m²，低於睡房建議最少 5 m² — 放雙人床加衣櫃會好勉強。","room",r.id);
+  else if(nm.includes("廚房")&&area<2.5)push("「"+nm+"」面積 "+G.round(area,1)+" m²，低於廚房建議最少 2.5 m² — 廚櫃同電器位可能唔夠。","room",r.id);
+  else if(nm.includes("廁所")&&area<1.2)push("「"+nm+"」面積 "+G.round(area,1)+" m²，低於廁所建議最少 1.2 m² — 坐廁同洗手盆會好迫。","room",r.id);
+  else if(area<3)push("「"+nm+"」面積只有 "+G.round(area,1)+" m²，偏細 — 留意實際可用空間。","room",r.id);
+ }
+ const beds=m.furniture.filter(f=>f.type==="bed"||(f.name||"").includes("床"));
+ for(const f of beds){
+  const ok=(m.annotations||[]).some(an=>(an.text||"").includes("插座")&&Math.hypot(an.x-f.x,an.y-f.y)<=Math.max(f.w,f.d)/2+0.9);
+  if(!ok)push("睡床「"+f.name+"」附近未標示床頭插座 — 用「註解」工具喺床頭加返「加插座」，裝修先唔會漏電位。","furniture",f.id);
+ }
+ return issues;
+}
+function openQA(){
+ const box=$("qaContent");if(!box)return;const m=model();
+ if(!m.walls.length){box.innerHTML='<p class="muted">未有牆身，未有嘢可以檢查。先畫房間或載入範本，再返嚟檢查。</p>';}
+ else{
+  const issues=qaChecks();
+  box.innerHTML=issues.length?issues.map((it,i)=>'<button class="qa-item" data-qa="'+i+'"><b>⚠</b><span>'+esc(it.msg)+'</span></button>').join("")
+   :'<div class="qa-ok">✓ 全部通過：門窗冇俾傢俬擋住、門擺弧冇入傢俬、兩道門擺弧冇重疊、房間尺寸達建議最少、門闊足夠、床頭有插座標示、冇主力牆誤標拆卸。</div>';
+  box._issues=issues;
+ }
+ showDialog("qaDialog");
+}
+function bindV5(){
+ const wd=$("wallDimsButton");if(wd)wd.onclick=()=>{ui.wallLengths=!ui.wallLengths;refresh();toast("牆身長度標籤："+(ui.wallLengths?"顯示":"隱藏"));};
+ const wb=$("wallsButton");if(wb)wb.onclick=()=>{renderWallsTable();showDialog("wallsDialog");};
+ const qb=$("qaButton");if(qb)qb.onclick=openQA;
+ const wt=$("wallsTable");
+ if(wt){
+  wt.addEventListener("click",e=>{
+   const ap=e.target.closest("[data-wall-apply]");if(ap){const inp=wt.querySelector('[data-wall-input="'+ap.dataset.wallApply+'"]');if(inp)setWallLengthMm(ap.dataset.wallApply,inp.value);return;}
+   const lb=e.target.closest("[data-wall-lb]");if(lb){toggleWallFlag(lb.dataset.wallLb,"loadBearing");return;}
+   const dm=e.target.closest("[data-wall-demo]");if(dm){toggleWallFlag(dm.dataset.wallDemo,"demolish");return;}
+  });
+  wt.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.dataset&&e.target.dataset.wallInput){e.preventDefault();setWallLengthMm(e.target.dataset.wallInput,e.target.value);}});
+ }
+ const ic=$("inspectorContent");
+ ic.addEventListener("click",e=>{
+  const np=e.target.closest("[data-notepick]");if(np){const o=getObject();if(o&&ui.selected&&ui.selected.kind==="note"){commit(()=>o.text=np.dataset.notepick);refresh();}return;}
+  const b=e.target.closest("[data-act]");if(!b)return;const act=b.dataset.act,o=getObject();
+  if(act==="lb"&&o&&ui.selected.kind==="wall"){commit(()=>o.loadBearing=!o.loadBearing);refresh();toast(o.loadBearing?"已標示為主力牆（金色）":"已取消主力牆標示");}
+  else if(act==="demo"&&o&&ui.selected.kind==="wall"){commit(()=>o.demolish=!o.demolish);refresh();if(o.demolish&&o.loadBearing)toast("⚠ 主力牆唔可以自行拆，必須工程師核准");else toast(o.demolish?"已標示預計拆卸（紅色虛線）":"已取消拆卸標示");}
+  else if(act==="walls"){renderWallsTable();showDialog("wallsDialog");}
+  else if(act==="qa")openQA();
+ });
+ ic.addEventListener("change",e=>{
+  if(e.target.dataset&&e.target.dataset.prop==="notetext"){const o=getObject();if(o)commit(()=>o.text=e.target.value.slice(0,60)||"註解");refresh();}
+ });
+ const qc=$("qaContent");
+ if(qc)qc.addEventListener("click",e=>{
+  const b=e.target.closest("[data-qa]");if(!b)return;const it=(qc._issues||[])[Number(b.dataset.qa)];if(!it)return;
+  const d=$("qaDialog");if(d.open)d.close();
+  if(ui.mode!=="2d")mode("2d");
+  setSelection(it.kind,it.id);fit();
+  toast("已跳去問題位置");
+ });
+}
+/* ===== Pro v7 additions: draggable compass (persisted), true scale bar, door/window schedule ===== */
+let _sbCache="";
+function scaleFmt(m){return m>=1?G.round(m,2)+" m":Math.round(m*100)+" cm";}
+function updateScaleBar(){
+ const bar=$("scaleBar");if(!bar)return;
+ if(ui.mode!=="2d"){bar.hidden=true;_sbCache="";return;}
+ bar.hidden=false;
+ const sc=ui.view.scale,steps=[0.1,0.25,0.5,1,2,5,10];let step=steps[0];
+ for(const s of steps){if(s*sc<=92)step=s;}
+ const px=Math.max(8,Math.round(step*sc)),key=px+"|"+step;
+ if(key===_sbCache)return;_sbCache=key;
+ $("scaleBarFill").style.width=(px*2)+"px";
+ const mid=$("scaleMid"),end=$("scaleEnd");
+ if(mid)mid.textContent=scaleFmt(step);
+ if(end)end.textContent=scaleFmt(step*2);
+}
+function setNorthDeg(deg,saveIt){
+ ui.north=((Math.round(deg)%360)+360)%360;
+ const dial=$("northDial");if(dial)dial.style.transform="rotate("+ui.north+"deg)";
+ const lb=$("northLabel");if(lb)lb.textContent="北 "+ui.north+"°";
+ const na=$("northArrow");if(na)na.setAttribute("aria-valuenow",String(ui.north));
+ if(saveIt){try{localStorage.setItem("yuanzhan-north-deg",String(ui.north));}catch(e){}}
+}
+function openingRoomName(o){
+ const m=model(),w=m.walls.find(v=>v.id===o.wallId);if(!w)return "—";
+ const len=G.length(w.a,w.b);if(len<.01)return "—";
+ const p=G.lerp(w.a,w.b,o.offset/len);
+ let best=null;
+ for(const r of (m.rooms||[])){
+  if(Math.abs(p.x-r.x)<=r.w/2+.06&&Math.abs(p.y-r.y)<=r.d/2+.06){if(!best||r.w*r.d<best.w*best.d)best=r;}
+ }
+ return best?best.name:"—";
+}
+function renderOpeningSchedule(){
+ const box=$("openingSchedule");if(!box)return;const m=model();
+ if(!m.openings.length){box.innerHTML='<p class="muted">未有門窗。用「門」／「窗」工具撳牆身加入，呢度會自動列出編號、闊度同所屬房間。</p>';return;}
+ let d=0,wc=0;
+ const rows=m.openings.map(o=>({o,code:o.type==="door"?("D"+(++d)):("W"+(++wc))}));
+ box.innerHTML='<div class="dw-head"><span>編號</span><span>類型</span><span>闊度</span><span>所屬房間</span></div>'+
+  rows.map(r=>'<button class="dw-row" data-opening-row="'+r.o.id+'"><span><b>'+r.code+'</b></span><span>'+(r.o.type==="door"?"門":"窗")+'</span><span>'+Math.round(r.o.width*1000)+' mm</span><span>'+esc(openingRoomName(r.o))+'</span></button>').join("");
+}
+function bindV7(){
+ const na=$("northArrow");
+ if(na){
+  setNorthDeg(ui.north,false);
+  let dragging=false,moved=false,dragStartAngle=0,dragStartNorth=0;
+  const angleFromEvent=e=>{const d=$("northDial")||na;const r=d.getBoundingClientRect();return Math.atan2(e.clientX-(r.left+r.width/2),-(e.clientY-(r.top+r.height/2)))*180/Math.PI;};
+  na.addEventListener("pointerdown",e=>{dragging=true;moved=false;dragStartAngle=angleFromEvent(e);dragStartNorth=ui.north;try{na.setPointerCapture(e.pointerId);}catch(err){}e.preventDefault();});
+  na.addEventListener("pointermove",e=>{if(!dragging)return;let delta=angleFromEvent(e)-dragStartAngle;delta=((delta+540)%360)-180;if(Math.abs(delta)>.4)moved=true;setNorthDeg(dragStartNorth+delta,false);});
+  const endDrag=()=>{if(!dragging)return;dragging=false;setNorthDeg(ui.north,true);if(moved)toast("北方已設定為 "+ui.north+"°，已記住並會印喺 PNG／PDF");};
+  na.addEventListener("pointerup",endDrag);na.addEventListener("pointercancel",endDrag);
+  na.addEventListener("keydown",e=>{
+   if(e.key==="Home"){setNorthDeg(0,true);e.preventDefault();}
+   else if(e.key==="ArrowRight"||e.key==="ArrowUp"){setNorthDeg(ui.north+5,true);e.preventDefault();}
+   else if(e.key==="ArrowLeft"||e.key==="ArrowDown"){setNorthDeg(ui.north-5,true);e.preventDefault();}
+  });
+ }
+ const os=$("openingSchedule");
+ if(os)os.addEventListener("click",e=>{
+  const b=e.target.closest("[data-opening-row]");if(!b)return;
+  const d=$("statsDialog");if(d.open)d.close();
+  if(ui.mode!=="2d")mode("2d");
+  setSelection("opening",b.dataset.openingRow);fit();
+ });
+}
+/* ===== Pro v11 additions: dual area (usable + inner) info, legend & door-swing toggles =====
+   Both layers are ON by default in 簡單模式； their switches live in the advanced
+   （更多工具） set, so a first-timer never has to learn a new step. */
+function bindV11(){
+ const lg=$("legendButton");if(lg)lg.onclick=()=>{ui.legend=!ui.legend;try{localStorage.setItem("yuanzhan-legend",ui.legend?"1":"0");}catch(e){}refresh();toast("平面圖角落圖例："+(ui.legend?"顯示（只列用咗嘅符號）":"隱藏"));};
+ const sw=$("swingButton");if(sw)sw.onclick=()=>{ui.doorSwing=!ui.doorSwing;try{localStorage.setItem("yuanzhan-swing",ui.doorSwing?"1":"0");}catch(e){}refresh();toast("門擺弧："+(ui.doorSwing?"顯示":"隱藏")+"（設計檢查唔受影響，照樣會查）");};
+ document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-area-info]");if(!b)return;const d=$("areaInfoDialog");if(d&&!d.open)d.showModal();});
+}
+bindPro();bindV5();bindV7();bindV11();
+
 bind();fit();refresh();saveNow();
 })();
 
+</script>
+<script>
+/* Simple-first v8 behaviour: the toolbar starts in 簡單模式 so a first-timer only sees the
+   essential tools; one tap on 「更多工具」 reveals the advanced set. The choice is remembered
+   on this device only (same localStorage the app already uses for the plan itself). */
+(function(){
+  var nav=document.querySelector('nav.toolbar'); if(!nav) return;
+  var btn=document.getElementById('moreToolsButton'); if(!btn) return;
+  var KEY='yuanzhan-tools-simple';
+  function storedSimple(){ try{ return localStorage.getItem(KEY)!=='0'; }catch(e){ return true; } }
+  function apply(simple){
+    nav.classList.toggle('simple', simple);
+    btn.setAttribute('aria-expanded', String(!simple));
+    btn.classList.toggle('open', !simple);
+    var label=btn.querySelector('span'); if(label) label.textContent=simple?'更多工具':'收起工具';
+    if(simple){
+      /* If the tool being hidden is the one in use, fall back to 選取 so the canvas
+         never sits in a mode the user can no longer see selected. */
+      var active=nav.querySelector('[data-tool].active.adv');
+      if(active){ var sel=nav.querySelector('[data-tool="select"]'); if(sel) sel.click(); }
+    }
+  }
+  var simple=storedSimple();
+  apply(simple);
+  btn.addEventListener('click', function(){
+    simple=!simple;
+    try{ localStorage.setItem(KEY, simple?'1':'0'); }catch(e){}
+    apply(simple);
+  });
+})();
 </script>
 </body>
 </html>
