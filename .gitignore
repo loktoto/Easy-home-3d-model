@@ -4,5 +4,8 @@ Thumbs.db
 node_modules/
 *.log
 coverage/
+playwright-report/
+test-results/
+.workbuddy-ai/
 .env
 .env.*

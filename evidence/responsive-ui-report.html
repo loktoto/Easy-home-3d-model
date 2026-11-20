@@ -1,0 +1,21 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Easy Home 3D · 響應式 UI/UX 驗證</title><style>
+body{margin:0;background:#f5f7fa;color:#172438;font:15px/1.65 -apple-system,"PingFang TC",sans-serif}main{max-width:1080px;margin:0 auto;padding:36px 20px 60px}h1{font-size:30px;margin:0 0 8px}h2{font-size:19px;margin:34px 0 10px}.lead{color:#53657b}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:22px 0}.card{background:#fff;border:1px solid #d9e2ed;border-radius:12px;padding:12px 14px}.card b{display:block;font-size:21px;color:#1b62ae}.card span{font-size:11px;color:#62758c}
+.ok{background:#e8f7ee;border:1px solid #a9d9bd;border-radius:10px;padding:12px 15px;color:#1d6645}
+ul{background:#fff;border:1px solid #d9e2ed;border-radius:10px;padding:14px 16px 14px 32px}
+figure{margin:0 0 22px;background:#fff;border:1px solid #d9e2ed;border-radius:12px;padding:10px}figure img{width:100%;display:block;border-radius:7px}.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}figcaption{padding:8px 4px 2px;color:#53657b;font-size:13px}
+@media(max-width:700px){.pair{grid-template-columns:1fr}}
+</style></head><body><main><h1>Easy Home 3D · 響應式 UI/UX 驗證</h1>
+<p class="lead">由 320 px 細螢幕 到 1024 px 桌面逐個寬度實測。目標係：主要操作一眼睇到、所有觸控目標至少 44 px、對話框內容同動作鍵唔會跌出畫面、頁面零橫向溢出。</p>
+<div class="ok"><strong>結果：</strong>320 / 360 / 375 / 390 / 414 / 430 / 768 / 1024 px 全部零橫向溢出；電話寬度所有工具、樓層制同對話框動作鍵都达到觸控目標尺寸，精靈動作鍵永遠可見。</div>
+<h2>設計決定</h2><ul>
+<li><b>兩排工具列：</b>視角＋樓層固定喺第一行，編輯工具放第二行可橫向捲動；右邊漸變提示重有更多工具，唔再將「傢俬／建屋精靈／檢查」藏喺一眼睇唔到嘅位置。</li>
+<li><b>真正嘅觸控目標：</b>電話上樓層 tab、＋／－、工具鍵、header 動作鍵一律最少 44 px，符合 Apple HIG／WCAG 2.5.8 方向。</li>
+<li><b>對話框：</b>細螢幕改成近乎全高、較大圓角同較少 padding；標題唔再 被折成兩行；「建立圖則／取消」用 sticky 底部，表单幾長都撳到。</li>
+<li><b>可讀性：</b>320 px 收窄 onboarding 卡片、放大主要按鈕；精靈預覽 用兩欄迷你統計，減少捲動。</li>
+<li><b>尺寸選擇：</b>同時檢查 320（iPhone SE）、360（Android 細機）、390／414／430（主流 iPhone Pro／Plus／Max）同 768（平板直度）。</li>
+</ul>
+<div class="cards"><div class="card"><b>320 px</b><span>overflow 0 px · tap ≥44 · toolbar scroll</span></div><div class="card"><b>360 px</b><span>overflow 0 px · tap ≥44 · toolbar fit</span></div><div class="card"><b>375 px</b><span>overflow 0 px · tap ≥44 · toolbar fit</span></div><div class="card"><b>390 px</b><span>overflow 0 px · tap ≥44 · toolbar fit</span></div><div class="card"><b>414 px</b><span>overflow 0 px · tap ≥44 · toolbar fit</span></div><div class="card"><b>430 px</b><span>overflow 0 px · tap ≥44 · toolbar fit</span></div><div class="card"><b>768 px</b><span>overflow 0 px · tap ≥44 · toolbar fit</span></div><div class="card"><b>1024 px</b><span>overflow 0 px · tap ≥44 · toolbar fit</span></div></div>
+<h2>逐寬度截圖</h2>
+<figure><div class="pair"><img src="ui-audit/home-320.png"><img src="ui-audit/wizard-320.png"></div><figcaption>320 px — 左：首頁／工具列；右：建屋精靈</figcaption></figure><figure><div class="pair"><img src="ui-audit/home-390.png"><img src="ui-audit/wizard-390.png"></div><figcaption>390 px — 左：首頁／工具列；右：建屋精靈</figcaption></figure><figure><div class="pair"><img src="ui-audit/home-430.png"><img src="ui-audit/wizard-430.png"></div><figcaption>430 px — 左：首頁／工具列；右：建屋精靈</figcaption></figure><figure><div class="pair"><img src="ui-audit/home-768.png"><img src="ui-audit/wizard-768.png"></div><figcaption>768 px — 左：首頁／工具列；右：建屋精靈</figcaption></figure>
+</main></body></html>

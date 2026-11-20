@@ -1,0 +1,28 @@
+{
+  "time": "2026-11-20T17:22:48.335Z",
+  "name": "典範兩層屋",
+  "floorCount": 2,
+  "floorHeight": 3,
+  "ground": {
+    "walls": 7,
+    "openings": 8,
+    "furniture": 9
+  },
+  "first": {
+    "walls": 9,
+    "openings": 12,
+    "furniture": 10
+  },
+  "check": "✓ 圖則檢查通過 沒有發現門窗重疊、超出牆身、牆身斷開或傢俬碰撞。此檢查只作規劃輔助，不取代現場覆尺及專業結構評估。",
+  "firstFloorDesk": "書枱 @ floor 1",
+  "groundChair": "椅子 @ floor 0",
+  "chairWidth": 0.55,
+  "rotation": 1.5707963,
+  "locked": true,
+  "furnitureCountAfterUndoRedo": 22,
+  "restoredFloors": 2,
+  "restoredProjects": 3,
+  "floorsAfterAdd": 3,
+  "floorsAfterRemove": 2,
+  "consoleErrors": []
+}

@@ -1,0 +1,777 @@
+{
+  "format": "easy-home-3d",
+  "exportedAt": "2026-11-20T17:22:45.932Z",
+  "project": {
+    "schema": "easy-home-3d",
+    "version": 1,
+    "name": "典範兩層屋",
+    "wallHeight": 2.7,
+    "wallThickness": 0.13,
+    "floorCount": 2,
+    "floorHeight": 3,
+    "walls": [
+      {
+        "id": "881f5191-59aa-479f-aeef-fee76c273229",
+        "a": {
+          "x": 0,
+          "y": 0
+        },
+        "b": {
+          "x": 10,
+          "y": 0
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 0
+      },
+      {
+        "id": "cef12283-19d9-4b9f-bf5e-67b453029581",
+        "a": {
+          "x": 10,
+          "y": 0
+        },
+        "b": {
+          "x": 10,
+          "y": 7
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 0
+      },
+      {
+        "id": "5fe56e83-ddc9-4cd7-8b85-63f477fc19e2",
+        "a": {
+          "x": 10,
+          "y": 7
+        },
+        "b": {
+          "x": 0,
+          "y": 7
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 0
+      },
+      {
+        "id": "87688f7f-28a0-4e5c-9e02-a86063c0e3b4",
+        "a": {
+          "x": 0,
+          "y": 7
+        },
+        "b": {
+          "x": 0,
+          "y": 0
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 0
+      },
+      {
+        "id": "60ab3c7b-95cd-4beb-88a1-863bbd9a26ca",
+        "a": {
+          "x": 0,
+          "y": 4.06
+        },
+        "b": {
+          "x": 10,
+          "y": 4.06
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 0
+      },
+      {
+        "id": "6f810538-2c37-406c-853e-278bd63c57c6",
+        "a": {
+          "x": 3.2,
+          "y": 0
+        },
+        "b": {
+          "x": 3.2,
+          "y": 4.06
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 0
+      },
+      {
+        "id": "da78ffb6-bd6d-4aaa-8866-b3997f201aa4",
+        "a": {
+          "x": 5.2,
+          "y": 0
+        },
+        "b": {
+          "x": 5.2,
+          "y": 4.06
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 0
+      },
+      {
+        "id": "84d85291-d8bf-4619-ba6c-941c19e60ad3",
+        "a": {
+          "x": 0,
+          "y": 0
+        },
+        "b": {
+          "x": 10,
+          "y": 0
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 1
+      },
+      {
+        "id": "22dcb3d8-9ace-495e-a995-b98e4b9277a3",
+        "a": {
+          "x": 10,
+          "y": 0
+        },
+        "b": {
+          "x": 10,
+          "y": 7
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 1
+      },
+      {
+        "id": "5635d5c9-405c-4c12-8db8-fee71428859c",
+        "a": {
+          "x": 10,
+          "y": 7
+        },
+        "b": {
+          "x": 0,
+          "y": 7
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 1
+      },
+      {
+        "id": "b2914b03-f756-43bd-bbf2-85afe1a10325",
+        "a": {
+          "x": 0,
+          "y": 7
+        },
+        "b": {
+          "x": 0,
+          "y": 0
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 1
+      },
+      {
+        "id": "c207a90e-3725-465a-8903-eb85af17baee",
+        "a": {
+          "x": 0,
+          "y": 4.06
+        },
+        "b": {
+          "x": 10,
+          "y": 4.06
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 1
+      },
+      {
+        "id": "f3d8d586-7eba-4bf2-b1db-f5b49e0be898",
+        "a": {
+          "x": 3.2,
+          "y": 0
+        },
+        "b": {
+          "x": 3.2,
+          "y": 4.06
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 1
+      },
+      {
+        "id": "9eb07bd0-b343-4cfa-b5e8-382ec9c91e01",
+        "a": {
+          "x": 5.2,
+          "y": 0
+        },
+        "b": {
+          "x": 5.2,
+          "y": 4.06
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 1
+      },
+      {
+        "id": "ff735393-1b04-49a8-9b99-8ce57dc83d3b",
+        "a": {
+          "x": 3.33,
+          "y": 4.06
+        },
+        "b": {
+          "x": 3.33,
+          "y": 7
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 1
+      },
+      {
+        "id": "dcad7397-f00b-4ec6-98fc-c538b70f2f30",
+        "a": {
+          "x": 6.67,
+          "y": 4.06
+        },
+        "b": {
+          "x": 6.67,
+          "y": 7
+        },
+        "height": 2.7,
+        "thickness": 0.13,
+        "floor": 1
+      }
+    ],
+    "openings": [
+      {
+        "id": "9f5b97a0-654b-434e-86e3-27d999d763e7",
+        "wallId": "881f5191-59aa-479f-aeef-fee76c273229",
+        "type": "door",
+        "width": 0.92,
+        "offset": 9.35,
+        "height": 2.05,
+        "sill": 0,
+        "floor": 0
+      },
+      {
+        "id": "9cece1de-967d-4f04-87f2-93254f55af3c",
+        "wallId": "881f5191-59aa-479f-aeef-fee76c273229",
+        "type": "window",
+        "width": 1.4,
+        "offset": 4.2,
+        "height": 1.1,
+        "sill": 0.9,
+        "floor": 0
+      },
+      {
+        "id": "b6f9f6dd-9186-4cd8-a3df-b6ea7bcd57d0",
+        "wallId": "881f5191-59aa-479f-aeef-fee76c273229",
+        "type": "window",
+        "width": 0.9,
+        "offset": 1.6,
+        "height": 0.9,
+        "sill": 0.95,
+        "floor": 0
+      },
+      {
+        "id": "9f7422d5-fb0f-44cc-9b2c-b36409af3ba0",
+        "wallId": "cef12283-19d9-4b9f-bf5e-67b453029581",
+        "type": "window",
+        "width": 1.2,
+        "offset": 2.233,
+        "height": 1.1,
+        "sill": 0.9,
+        "floor": 0
+      },
+      {
+        "id": "eb30887a-9c3f-4bb1-b8ea-83c128f75bb3",
+        "wallId": "5fe56e83-ddc9-4cd7-8b85-63f477fc19e2",
+        "type": "window",
+        "width": 1.2,
+        "offset": 5,
+        "height": 1.1,
+        "sill": 0.9,
+        "floor": 0
+      },
+      {
+        "id": "664f11eb-1fac-49f6-b4db-917b7a9226ac",
+        "wallId": "60ab3c7b-95cd-4beb-88a1-863bbd9a26ca",
+        "type": "door",
+        "width": 0.82,
+        "offset": 5,
+        "height": 2.05,
+        "sill": 0,
+        "floor": 0
+      },
+      {
+        "id": "05132197-cd91-4243-8af9-0a4fbfb395be",
+        "wallId": "6f810538-2c37-406c-853e-278bd63c57c6",
+        "type": "door",
+        "width": 0.78,
+        "offset": 2.3547999999999996,
+        "height": 2.05,
+        "sill": 0,
+        "floor": 0
+      },
+      {
+        "id": "e2b362a1-ee50-4df6-a6e2-3aa6e0018c06",
+        "wallId": "da78ffb6-bd6d-4aaa-8866-b3997f201aa4",
+        "type": "door",
+        "width": 0.78,
+        "offset": 1.7051999999999998,
+        "height": 2.05,
+        "sill": 0,
+        "floor": 0
+      },
+      {
+        "id": "fad26b64-98c4-4ec7-b390-3999b43e6754",
+        "wallId": "84d85291-d8bf-4619-ba6c-941c19e60ad3",
+        "type": "door",
+        "width": 0.92,
+        "offset": 9.35,
+        "height": 2.05,
+        "sill": 0,
+        "floor": 1
+      },
+      {
+        "id": "8e23214b-5062-433e-af13-3710f3ed160a",
+        "wallId": "84d85291-d8bf-4619-ba6c-941c19e60ad3",
+        "type": "window",
+        "width": 1.4,
+        "offset": 4.2,
+        "height": 1.1,
+        "sill": 0.9,
+        "floor": 1
+      },
+      {
+        "id": "9fd3b2c9-f2b0-41ed-9454-345ed9554580",
+        "wallId": "84d85291-d8bf-4619-ba6c-941c19e60ad3",
+        "type": "window",
+        "width": 0.9,
+        "offset": 1.6,
+        "height": 0.9,
+        "sill": 0.95,
+        "floor": 1
+      },
+      {
+        "id": "82d2f13a-a187-4603-86b3-8b6583a803fc",
+        "wallId": "22dcb3d8-9ace-495e-a995-b98e4b9277a3",
+        "type": "window",
+        "width": 1.2,
+        "offset": 2.233,
+        "height": 1.1,
+        "sill": 0.9,
+        "floor": 1
+      },
+      {
+        "id": "9580653f-b9ca-4f34-8abf-70cdc1c1d660",
+        "wallId": "5635d5c9-405c-4c12-8db8-fee71428859c",
+        "type": "window",
+        "width": 1.2,
+        "offset": 8.333333333333334,
+        "height": 1.1,
+        "sill": 0.9,
+        "floor": 1
+      },
+      {
+        "id": "1ba88548-3c19-48d2-bb27-745de66e6678",
+        "wallId": "c207a90e-3725-465a-8903-eb85af17baee",
+        "type": "door",
+        "width": 0.82,
+        "offset": 1.6666666666666667,
+        "height": 2.05,
+        "sill": 0,
+        "floor": 1
+      },
+      {
+        "id": "99989771-73ad-4370-8570-7c80a0cf31c6",
+        "wallId": "5635d5c9-405c-4c12-8db8-fee71428859c",
+        "type": "window",
+        "width": 1.2,
+        "offset": 5,
+        "height": 1.1,
+        "sill": 0.9,
+        "floor": 1
+      },
+      {
+        "id": "33b75cf4-72bc-452d-b658-482b0a01ec06",
+        "wallId": "c207a90e-3725-465a-8903-eb85af17baee",
+        "type": "door",
+        "width": 0.82,
+        "offset": 5,
+        "height": 2.05,
+        "sill": 0,
+        "floor": 1
+      },
+      {
+        "id": "7bd763fc-315e-4236-9fb0-633e50b18bbf",
+        "wallId": "5635d5c9-405c-4c12-8db8-fee71428859c",
+        "type": "window",
+        "width": 1.2,
+        "offset": 1.666666666666666,
+        "height": 1.1,
+        "sill": 0.9,
+        "floor": 1
+      },
+      {
+        "id": "5a243e22-0373-460b-b48e-6c6cbdea23e3",
+        "wallId": "c207a90e-3725-465a-8903-eb85af17baee",
+        "type": "door",
+        "width": 0.82,
+        "offset": 8.333333333333334,
+        "height": 2.05,
+        "sill": 0,
+        "floor": 1
+      },
+      {
+        "id": "6a9b48c9-c421-43a9-b129-2452dd5f58bb",
+        "wallId": "f3d8d586-7eba-4bf2-b1db-f5b49e0be898",
+        "type": "door",
+        "width": 0.78,
+        "offset": 2.3547999999999996,
+        "height": 2.05,
+        "sill": 0,
+        "floor": 1
+      },
+      {
+        "id": "602e3026-2185-46f2-b0fe-184b07ecc0b4",
+        "wallId": "9eb07bd0-b343-4cfa-b5e8-382ec9c91e01",
+        "type": "door",
+        "width": 0.78,
+        "offset": 1.7051999999999998,
+        "height": 2.05,
+        "sill": 0,
+        "floor": 1
+      }
+    ],
+    "furniture": [
+      {
+        "id": "fec7d9b1-b971-46f0-86e6-0e925a37dbf6",
+        "type": "sofa",
+        "name": "梳化",
+        "x": 7.6,
+        "y": 3.17,
+        "w": 2.1,
+        "d": 0.88,
+        "h": 0.85,
+        "rotation": 0,
+        "locked": false,
+        "color": "#6da9bf",
+        "floor": 0
+      },
+      {
+        "id": "dce1ce96-0b3c-4188-add1-189714b38ee3",
+        "type": "table",
+        "name": "飯枱",
+        "x": 7.6,
+        "y": 1.54,
+        "w": 1.4,
+        "d": 0.8,
+        "h": 0.76,
+        "rotation": 0,
+        "locked": false,
+        "color": "#d4a66d",
+        "floor": 0
+      },
+      {
+        "id": "c033e09a-7cc4-499b-ab68-6be73feb5ea3",
+        "type": "kitchen",
+        "name": "廚櫃",
+        "x": 1.6,
+        "y": 0.5,
+        "w": 1.8,
+        "d": 0.6,
+        "h": 0.9,
+        "rotation": 0,
+        "locked": false,
+        "color": "#82aab5",
+        "floor": 0
+      },
+      {
+        "id": "b59e7b86-234f-4bc6-b543-8b7eadcf9467",
+        "type": "fridge",
+        "name": "雪櫃",
+        "x": 0.5,
+        "y": 3.56,
+        "w": 0.68,
+        "d": 0.7,
+        "h": 1.78,
+        "rotation": 0,
+        "locked": false,
+        "color": "#9aaebe",
+        "floor": 0
+      },
+      {
+        "id": "91275de3-d2c7-4dd2-a7a7-33fb0e2b9456",
+        "type": "washer",
+        "name": "洗衣機",
+        "x": 4.2,
+        "y": 3.61,
+        "w": 0.6,
+        "d": 0.6,
+        "h": 0.85,
+        "rotation": 0,
+        "locked": false,
+        "color": "#95b8c9",
+        "floor": 0
+      },
+      {
+        "id": "66d81003-fc9a-4956-9707-ad613e73ae55",
+        "type": "custom",
+        "name": "浴室櫃",
+        "x": 4.2,
+        "y": 0.5,
+        "w": 0.5,
+        "d": 0.45,
+        "h": 0.8,
+        "rotation": 0,
+        "locked": false,
+        "color": "#72bca6",
+        "floor": 0
+      },
+      {
+        "id": "e1cd27d1-04b2-4af0-8a87-40c321bd743b",
+        "type": "bed",
+        "name": "雙人床",
+        "x": 5,
+        "y": 5.53,
+        "w": 1.5,
+        "d": 1.9,
+        "h": 0.55,
+        "rotation": 0,
+        "locked": false,
+        "color": "#ad91d7",
+        "floor": 0
+      },
+      {
+        "id": "15e92fda-e241-470e-9e04-9019a68ac6b9",
+        "type": "shelf",
+        "name": "書架",
+        "x": 0.55,
+        "y": 6.65,
+        "w": 0.85,
+        "d": 0.35,
+        "h": 1.8,
+        "rotation": 0,
+        "locked": false,
+        "color": "#ba9971",
+        "floor": 0
+      },
+      {
+        "id": "7e3a63a2-7434-4c20-a183-d775ab4ea43b",
+        "type": "sofa",
+        "name": "梳化",
+        "x": 7.6,
+        "y": 3.17,
+        "w": 2.1,
+        "d": 0.88,
+        "h": 0.85,
+        "rotation": 0,
+        "locked": false,
+        "color": "#6da9bf",
+        "floor": 1
+      },
+      {
+        "id": "9764c053-0c1a-40ea-a993-6f02a71112d6",
+        "type": "table",
+        "name": "飯枱",
+        "x": 7.6,
+        "y": 1.54,
+        "w": 1.4,
+        "d": 0.8,
+        "h": 0.76,
+        "rotation": 0,
+        "locked": false,
+        "color": "#d4a66d",
+        "floor": 1
+      },
+      {
+        "id": "ade6ea5d-7eac-472c-ba05-2725b2248f38",
+        "type": "kitchen",
+        "name": "廚櫃",
+        "x": 1.6,
+        "y": 0.5,
+        "w": 1.8,
+        "d": 0.6,
+        "h": 0.9,
+        "rotation": 0,
+        "locked": false,
+        "color": "#82aab5",
+        "floor": 1
+      },
+      {
+        "id": "4e3624d5-4e4c-4c78-8461-41f1f151d5b7",
+        "type": "fridge",
+        "name": "雪櫃",
+        "x": 0.5,
+        "y": 3.56,
+        "w": 0.68,
+        "d": 0.7,
+        "h": 1.78,
+        "rotation": 0,
+        "locked": false,
+        "color": "#9aaebe",
+        "floor": 1
+      },
+      {
+        "id": "9c2fbefb-efc0-40db-a326-27068070bde8",
+        "type": "washer",
+        "name": "洗衣機",
+        "x": 4.2,
+        "y": 3.61,
+        "w": 0.6,
+        "d": 0.6,
+        "h": 0.85,
+        "rotation": 0,
+        "locked": false,
+        "color": "#95b8c9",
+        "floor": 1
+      },
+      {
+        "id": "195203fa-1885-4299-bf07-f99aceab3402",
+        "type": "custom",
+        "name": "浴室櫃",
+        "x": 4.2,
+        "y": 0.5,
+        "w": 0.5,
+        "d": 0.45,
+        "h": 0.8,
+        "rotation": 0,
+        "locked": false,
+        "color": "#72bca6",
+        "floor": 1
+      },
+      {
+        "id": "7819e491-2024-4a91-99b7-3a90c05864e0",
+        "type": "bed",
+        "name": "雙人床",
+        "x": 1.67,
+        "y": 5.53,
+        "w": 1.5,
+        "d": 1.9,
+        "h": 0.55,
+        "rotation": 0,
+        "locked": false,
+        "color": "#ad91d7",
+        "floor": 1
+      },
+      {
+        "id": "31cd070e-d784-453e-ac1b-756ce698fc3d",
+        "type": "bed",
+        "name": "雙人床",
+        "x": 5,
+        "y": 5.53,
+        "w": 1.5,
+        "d": 1.9,
+        "h": 0.55,
+        "rotation": 0,
+        "locked": false,
+        "color": "#ad91d7",
+        "floor": 1
+      },
+      {
+        "id": "ac953c95-f49c-4d70-aa53-42402a45ef51",
+        "type": "bed",
+        "name": "雙人床",
+        "x": 8.33,
+        "y": 5.53,
+        "w": 1.5,
+        "d": 1.9,
+        "h": 0.55,
+        "rotation": 0,
+        "locked": false,
+        "color": "#ad91d7",
+        "floor": 1
+      },
+      {
+        "id": "cb72915e-abba-4941-b70d-43b2a73de36e",
+        "type": "custom",
+        "name": "樓梯（地下）",
+        "x": 9.35,
+        "y": 1.35,
+        "w": 0.9,
+        "d": 2.2,
+        "h": 2.6,
+        "rotation": 0,
+        "locked": false,
+        "color": "#d8b26f",
+        "floor": 0
+      },
+      {
+        "id": "4abe4278-44d1-4b4c-b321-fb09a608c76d",
+        "type": "custom",
+        "name": "樓梯（一樓）",
+        "x": 9.35,
+        "y": 1.35,
+        "w": 0.9,
+        "d": 2.2,
+        "h": 2.6,
+        "rotation": 0,
+        "locked": false,
+        "color": "#d8b26f",
+        "floor": 1
+      },
+      {
+        "id": "87e2de57-fba4-44f0-a143-b8b8d6095407",
+        "type": "desk",
+        "name": "書枱",
+        "x": 5,
+        "y": 3.5,
+        "w": 1.2,
+        "d": 0.6,
+        "h": 0.75,
+        "rotation": 0,
+        "locked": false,
+        "color": "#bd926b",
+        "floor": 1
+      },
+      {
+        "id": "4f7257a8-eb0f-4b8c-9c3c-865c10bffe70",
+        "type": "chair",
+        "name": "椅子",
+        "x": 5,
+        "y": 3.5,
+        "w": 0.55,
+        "d": 0.5,
+        "h": 0.85,
+        "rotation": 1.5707963,
+        "locked": true,
+        "color": "#b7a18a",
+        "floor": 0
+      },
+      {
+        "id": "d7f94c5d-486c-44de-8f11-792eb86e6697",
+        "type": "chair",
+        "name": "椅子 副本",
+        "x": 5.3,
+        "y": 3.8,
+        "w": 0.55,
+        "d": 0.5,
+        "h": 0.85,
+        "rotation": 1.5707963,
+        "locked": false,
+        "color": "#b7a18a",
+        "floor": 0
+      }
+    ],
+    "measurements": [
+      {
+        "id": "946f51ae-3540-42c1-b82f-aca06068fb82",
+        "a": {
+          "x": 5.4,
+          "y": 0.2
+        },
+        "b": {
+          "x": 9.8,
+          "y": 3.86
+        },
+        "floor": 0
+      },
+      {
+        "id": "de1cb5ef-e421-4daf-aa19-0ba632ee250d",
+        "a": {
+          "x": 5.4,
+          "y": 0.2
+        },
+        "b": {
+          "x": 9.8,
+          "y": 3.86
+        },
+        "floor": 1
+      }
+    ]
+  }
+}

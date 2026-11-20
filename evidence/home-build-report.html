@@ -1,0 +1,29 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Easy Home 3D · 端到端建屋驗證</title><style>
+  body{margin:0;background:#f5f7fa;color:#172438;font:15px/1.65 -apple-system,"PingFang TC",sans-serif}
+  main{max-width:1080px;margin:0 auto;padding:36px 20px 60px}h1{font-size:30px;margin:0 0 8px}h2{font-size:19px;margin:36px 0 12px}
+  .lead{color:#53657b}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:24px 0}
+  .card{background:#fff;border:1px solid #d9e2ed;border-radius:12px;padding:14px 16px}.card b{display:block;font-size:24px;color:#1b62ae}.card span{font-size:12px;color:#62758c}
+  .ok{background:#e8f7ee;border:1px solid #a9d9bd;border-radius:10px;padding:12px 15px;color:#1d6645}
+  figure{margin:0 0 22px;background:#fff;border:1px solid #d9e2ed;border-radius:12px;padding:10px}figure img{width:100%;display:block;border-radius:7px}figcaption{padding:8px 4px 2px;color:#53657b;font-size:13px}
+  code{background:#e9eef5;padding:2px 5px;border-radius:4px}ul{background:#fff;border:1px solid #d9e2ed;border-radius:10px;padding:14px 16px 14px 32px}
+  </style></head><body><main><h1>Easy Home 3D · 端到端建屋驗證</h1>
+  <p class="lead">由空白圖則開始，使用「建屋精靈」建立一間 9 幅牆、12 個門窗、9 件傢俬的住宅，再逐項驗證編輯、3D、備份及還原。</p>
+  <div class="cards"><div class="card"><b>9</b><span>牆身</span></div><div class="card"><b>12</b><span>門窗</span></div>
+  <div class="card"><b>9</b><span>傢俬</span></div><div class="card"><b>1</b><span>量度線</span></div>
+  <div class="card"><b>3</b><span>專案（還原後）</span></div></div>
+  <div class="ok"><strong>圖則檢查：</strong>✓ 圖則檢查通過 沒有發現門窗重疊、超出牆身、牆身斷開或傢俬碰撞。此檢查只作規劃輔助，不取代現場覆尺及專業結構評估。</div>
+  <h2>功能驗證</h2><ul>
+  <li>牆長修改：10 m → 10.5 m；相接牆端點誤差 0 m。</li>
+  <li>傢俬拖動位移 0.806 m；旋轉、鎖定（成功）、複製、Undo／Redo 数量 11 → 10 → 11。</li>
+  <li>JSON 匯出後匯入至新專案，重新載入仍有 12 個門窗。</li>
+  <li>瀏覽器 JavaScript 錯誤：零。</li>
+  </ul>
+  <h2>操作截圖</h2>
+  <figure><img src="01-empty-start.png"><figcaption>1. 首次開啟：空白圖則與加入方式</figcaption></figure>
+  <figure><img src="02-home-wizard.png"><figcaption>2. 建屋精靈：10 × 7 m、三間睡房，即時預覽</figcaption></figure>
+  <figure><img src="03-home-2d.png"><figcaption>3. 建立後的 2D 平面圖</figcaption></figure>
+  <figure><img src="04-plan-check.png"><figcaption>4. 圖則檢查通過</figcaption></figure>
+  <figure><img src="05-furniture-inspector.png"><figcaption>5. 傢俬屬性：尺寸、座標、角度、顏色及與牆距離</figcaption></figure>
+  <figure><img src="06-home-3d.png"><figcaption>6. 3D 透視模型（已旋轉視角）</figcaption></figure>
+  <figure><img src="07-restored.png"><figcaption>7. 匯出／匯入並重新載入後的圖則</figcaption></figure>
+  </main></body></html>

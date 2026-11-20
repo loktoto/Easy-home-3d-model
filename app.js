@@ -8,10 +8,14 @@ const $num=n=>G.round(n,2).toFixed(2), esc=v=>String(v).replace(/[&<>"']/g,c=>({
 let state,history=[],future=[],saveTimer=null,toastTimer=null,drawRequested=false;
 const touches=new Map();let pinch=null;
 const ui={
- mode:"2d",tool:"select",snap:true,dimensions:true,
+ mode:"2d",tool:"select",floor:0,snap:true,dimensions:true,
  view:{scale:80,panX:0,panY:0},orbit:{azimuth:-.75,elevation:.82,distance:1},
  selected:null,pending:null,cursor:null,drag:null,hits:[],wallStart:null,wallCount:0
 };
+function visibleModel(){
+ const m=model(),on=v=>G.clamp(Math.round(Number(v.floor)||0),0,Math.max(0,(m.floorCount||1)-1))===ui.floor;
+ return {walls:m.walls.filter(on),openings:m.openings.filter(on),furniture:m.furniture.filter(on),measurements:m.measurements.filter(on)};
+}
 function newProject(data){return {id:G.uid(),name:data.name,data,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};}
 function readStore(){
  try{
@@ -63,7 +67,7 @@ function redo(){
  if(!future.length)return toast("已經沒有可以重做的操作");
  history.push(snapshot());active().data=G.sanitize(JSON.parse(future.pop()));retainSelection();ui.pending=null;scheduleSave();refresh();toast("已重做");
 }
-function clearUndo(){history=[];future=[];ui.selected=null;ui.pending=null;ui.cursor=null;ui.drag=null;}
+function clearUndo(){history=[];future=[];ui.selected=null;ui.pending=null;ui.cursor=null;ui.drag=null;ui.floor=0;}
 function toast(text){
  const el=$("toast");el.textContent=text;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2500);
 }
@@ -90,7 +94,7 @@ function render(){
    canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
   }
   ctx.setTransform(dpr,0,0,dpr,0,0);
-  ui.hits=R.draw(canvas,ctx,model(),ui);
+  ui.hits=R.draw(canvas,ctx,model(),{...ui,floor:ui.floor});
  });
 }
 function refresh(){
@@ -105,7 +109,8 @@ function refresh(){
  $("dimsButton").textContent="尺寸："+(ui.dimensions?"開":"關");$("dimsButton").classList.toggle("active",ui.dimensions);
  $("dimsButton").setAttribute("aria-pressed",String(ui.dimensions));
  $("undoButton").disabled=!history.length;$("redoButton").disabled=!future.length;
- const m=model();$("drawingStats").textContent=m.walls.length+" 幅牆 · "+m.openings.length+" 個門窗 · "+m.furniture.length+" 件傢俬";
+ renderFloors();
+ const m=model();$("drawingStats").textContent=(m.floorCount>1?floorLabel(ui.floor)+" · ":"")+m.walls.length+" 幅牆 · "+m.openings.length+" 個門窗 · "+m.furniture.length+" 件傢俬";
  $("startTip").hidden=!!(m.walls.length||m.furniture.length||m.openings.length||m.measurements.length||ui.tool!=="select"||ui.mode!=="2d");
  $("modeHint").textContent=ui.mode==="3d"?"3D 模式：拖動旋轉，滾輪縮放，按 2D 可返回編輯。":
  ui.tool==="room"?"畫房間：依次點選兩個對角，立即建立四幅牆。點 Esc 可以取消。":
@@ -123,12 +128,13 @@ function refresh(){
  renderInspector();render();
 }
 function fit(){
- const bounds=G.getBounds(model()),w=canvas.clientWidth||800,h=canvas.clientHeight||550;
+ const bounds=G.getBounds(ui.mode==="3d"?model():visibleModel(),ui.mode==="3d"?undefined:ui.floor),w=canvas.clientWidth||800,h=canvas.clientHeight||550;
  ui.view.scale=G.clamp(Math.min(w/(bounds.width+2.5),h/(bounds.height+2.5)),18,145);
  ui.view.panX=-bounds.cx*ui.view.scale;ui.view.panY=-bounds.cy*ui.view.scale;
  ui.orbit.distance=1;render();
 }
 function mode(next){
+ if(next==="2d"&&ui.selected){const o=getObject();if(o&&(Number(o.floor)||0)!==ui.floor)ui.selected=null;}
  ui.mode=next;ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.drag=null;if(next==="3d")ui.tool="select";
  $("inspector").classList.remove("open");refresh();
 }
@@ -142,7 +148,7 @@ function snapped(p,original=null){
  if(!ui.snap)return G.point(G.round(p.x,3),G.round(p.y,3));
  let q=G.point(Math.round(p.x*10)/10,Math.round(p.y*10)/10);
  let d=.24;
- for(const wall of model().walls)for(const end of [wall.a,wall.b]){
+ for(const wall of visibleModel().walls)for(const end of [wall.a,wall.b]){
   const len=G.length(p,end);if(len<d){d=len;q=G.point(end.x,end.y);}
  }
  if(original){
@@ -154,14 +160,14 @@ function snapped(p,original=null){
 }
 function nearestWall(p){
  let found=null,threshold=Math.max(.16,17/ui.view.scale);
- for(const wall of model().walls){
+ for(const wall of visibleModel().walls){
   const t=G.distancePointSegment(p,wall.a,wall.b);
   if(t.distance<threshold&&(!found||found.distance>t.distance))found={wall,distance:t.distance,t:t.t,foot:t.foot};
  }
  return found;
 }
 function hit2d(p){
- const m=model();
+ const m=visibleModel();
  for(let i=m.furniture.length-1;i>=0;i--)if(G.inPoly(p,G.furnitureCorners(m.furniture[i])))return {kind:"furniture",id:m.furniture[i].id};
  for(let i=m.measurements.length-1;i>=0;i--)if(G.distancePointSegment(p,m.measurements[i].a,m.measurements[i].b).distance<Math.max(.09,9/ui.view.scale))return {kind:"measurement",id:m.measurements[i].id};
  for(let i=m.openings.length-1;i>=0;i--){
@@ -182,13 +188,13 @@ function addOpening(which,p){
  if(!hit)return toast("請先畫牆，再按牆身加入"+(which==="door"?"門":"窗"));
  const w=hit.wall,len=G.length(w.a,w.b);if(len<.45)return toast("牆太短，無法放置門窗");
  const width=Math.min(which==="door"?.85:1.2,len*.8);
- const opening={id:G.uid(),type:which,wallId:w.id,offset:G.clamp(hit.t*len,width/2,len-width/2),
+ const opening={id:G.uid(),type:which,wallId:w.id,floor:Number(w.floor)||0,offset:G.clamp(hit.t*len,width/2,len-width/2),
   width,height:which==="door"?Math.min(2.1,w.height):Math.min(1.1,w.height*.5),sill:which==="door"?0:Math.min(.9,w.height*.35)};
  if(!G.openingFits(opening,model().openings))return toast("這個位置已有門窗，請移到其他牆段（至少預留 5 cm）");
  commit(()=>model().openings.push(opening));setSelection("opening",opening.id);
 }
 function joinedMove(original,updated,excludeId,originalWalls=null){
- const targets=originalWalls||model().walls;
+ const targets=originalWalls||visibleModel().walls;
  for(const base of targets){
   if(base.id===excludeId)continue;
   const live=model().walls.find(w=>w.id===base.id);if(!live)continue;
@@ -208,12 +214,12 @@ function hitWallHandle(p){
 function rectangleWalls(a,b){
  const x1=Math.min(a.x,b.x),x2=Math.max(a.x,b.x),y1=Math.min(a.y,b.y),y2=Math.max(a.y,b.y);
  const corners=[G.point(x1,y1),G.point(x2,y1),G.point(x2,y2),G.point(x1,y2)];
- const m=model(),segments=[];
+ const m=visibleModel(),segments=[];
  for(let i=0;i<4;i++){
   const a=corners[i],b=corners[(i+1)%4];
   const duplicate=m.walls.some(w=>
    (G.length(w.a,a)<.025&&G.length(w.b,b)<.025)||(G.length(w.a,b)<.025&&G.length(w.b,a)<.025));
-  if(!duplicate)segments.push(G.wall([a.x,a.y],[b.x,b.y],{height:m.wallHeight,thickness:m.wallThickness}));
+  if(!duplicate)segments.push(G.wall([a.x,a.y],[b.x,b.y],{height:model().wallHeight,thickness:model().wallThickness,floor:ui.floor}));
  }
  return segments;
 }
@@ -248,7 +254,7 @@ function changeStart(e){
  if(ui.tool==="wall"){
   if(!ui.pending){ui.pending=q;ui.wallStart=q;ui.wallCount=0;refresh();return;}
   if(G.length(ui.pending,q)<.1){toast("牆最少需要 0.1 米");return;}
-  const m=model(),next=G.wall([ui.pending.x,ui.pending.y],[q.x,q.y],{height:m.wallHeight,thickness:m.wallThickness});
+  const m=model(),next=G.wall([ui.pending.x,ui.pending.y],[q.x,q.y],{height:m.wallHeight,thickness:m.wallThickness,floor:ui.floor});
   commit(()=>m.walls.push(next));
   ui.wallCount++;
   if(ui.wallCount>=3&&G.length(q,ui.wallStart)<.05){
@@ -260,7 +266,7 @@ function changeStart(e){
  if(ui.tool==="measure"){
   if(!ui.pending){ui.pending=q;render();return;}
   if(G.length(ui.pending,q)<.02){toast("請選兩個不同位置");return;}
-  const measurement={id:G.uid(),a:ui.pending,b:q};
+  const measurement={id:G.uid(),a:ui.pending,b:q,floor:ui.floor};
   commit(()=>model().measurements.push(measurement));ui.pending=null;setSelection("measurement",measurement.id);return;
  }
  if(ui.tool==="door"||ui.tool==="window"){addOpening(ui.tool,w);return;}
@@ -271,7 +277,7 @@ function changeStart(e){
   setSelection(hit.kind,hit.id);
   const obj=getObject(),locked=hit.kind==="furniture"&&obj.locked;
   if(!locked&&hit.kind!=="measurement"){
-   ui.drag={type:hit.endpoint?"wall-endpoint":hit.kind,endpoint:hit.endpoint||null,origin:w,start:p,before:snapshot(),original:JSON.parse(JSON.stringify(obj)),originalWalls:hit.kind==="wall"?JSON.parse(JSON.stringify(model().walls)):null,moved:false};
+   ui.drag={type:hit.endpoint?"wall-endpoint":hit.kind,endpoint:hit.endpoint||null,origin:w,start:p,before:snapshot(),original:JSON.parse(JSON.stringify(obj)),originalWalls:hit.kind==="wall"?JSON.parse(JSON.stringify(visibleModel().walls)):null,moved:false};
   }else if(locked)toast("已鎖定傢俬；先到屬性解除鎖定");
  }else{setSelection(null,null);ui.drag={type:"pan",start:p,panX:ui.view.panX,panY:ui.view.panY};}
  canvas.setPointerCapture(e.pointerId);
@@ -405,6 +411,8 @@ function editNumber(prop,value){
    for(const opening of model().openings.filter(o=>o.wallId===obj.id)){
     const len=G.length(obj.a,obj.b);
     opening.width=Math.min(opening.width,len*.85);opening.offset=G.clamp(opening.offset,opening.width/2,len-opening.width/2);
+    opening.sill=Math.min(opening.sill,Math.max(0,obj.height-.3));
+    opening.height=Math.min(opening.height,Math.max(.3,obj.height-opening.sill));
    }
   }else if(type==="opening"){
    const wall=model().walls.find(v=>v.id===obj.wallId);
@@ -449,9 +457,9 @@ function duplicateSelected(){
 function addFurniture(type){
  const c=G.catalog.find(v=>v.type===type);if(!c)return;
  const center=R.toWorld({x:canvas.clientWidth/2,y:canvas.clientHeight/2},ui.view,canvas.clientWidth,canvas.clientHeight);
- const b=G.getBounds(model());
+ const b=G.getBounds(visibleModel(),ui.floor);
  const where=ui.mode==="3d"?{x:b.cx,y:b.cy}:center;
- const f={id:G.uid(),type:c.type,name:c.name,x:G.round(where.x,2),y:G.round(where.y,2),w:c.w,d:c.d,h:c.h,rotation:0,locked:false,color:c.color};
+ const f={id:G.uid(),type:c.type,name:c.name,x:G.round(where.x,2),y:G.round(where.y,2),w:c.w,d:c.d,h:c.h,rotation:0,locked:false,color:c.color,floor:ui.floor};
  commit(()=>model().furniture.push(f));ui.mode="2d";ui.tool="select";ui.pending=null;ui.wallStart=null;ui.drag=null;$("furnitureDialog").close();refresh();setSelection("furniture",f.id);toast("已加入"+c.name+"；現在可直接拖動，或於屬性修改尺寸");
 }
 function field(label,key,value,step=".01",min=null,max=null){
@@ -465,8 +473,8 @@ function renderInspector(){
  const box=$("inspectorContent"),m=model(),o=getObject(),s=ui.selected;
  if(!s||!o){
   box.innerHTML='<div class="empty-inspector"><div class="badge">100% 本機運行</div><p>按一下牆、門窗、傢俬或量度線，即可在此修改尺寸。</p><p>新增牆壁後，可在右邊直接輸入精確座標；所有尺寸標籤以 <b>米 (m)</b> 顯示。</p></div>'+
-   '<h3>圖則概覽</h3>'+row("牆身",m.walls.length+" 幅")+row("門窗",m.openings.length+" 個")+row("傢俬",m.furniture.length+" 件")+row("量度線",m.measurements.length+" 條")+
-   '<button class="aside-action primary" data-act="furniture">＋ 新增傢俬</button><button class="aside-action ghost" data-act="projects">開啟／管理專案</button>';
+   '<h3>圖則概覽</h3>'+row("樓層",m.floorCount+" 層 · 目前 "+floorLabel(ui.floor))+row("牆身",m.walls.length+" 幅")+row("門窗",m.openings.length+" 個")+row("傢俬",m.furniture.length+" 件")+row("量度線",m.measurements.length+" 條")+
+   '<button class="aside-action primary" data-act="furniture">＋ 新增傢俬</button><button class="aside-action ghost" data-act="projects">開啟／管理專案</button><button class="aside-action ghost" data-act="check">✓ 檢查圖則</button>';
   return;
  }
  let html="";
@@ -545,8 +553,72 @@ async function importJSON(e){
   saveNow();$("projectsDialog").close();fit();refresh();toast("成功匯入："+p.name);
  }catch(err){alert("匯入失敗："+err.message+"\n\n只接受 Easy Home 3D 匯出的 JSON。");}
 }
+function wizardOptions(){
+ return {width:Number($("homeWidth").value),depth:Number($("homeDepth").value),
+  bedrooms:Number($("homeBedrooms").value),floors:Number($("homeFloors").value),
+  name:$("homeName").value.trim()||"我的新居"};
+}
+function generateHome(o){return Number(o.floors)>1?G.house(o):G.home(o);}
+function previewHome(){
+ const o=wizardOptions();
+ if(!Number.isFinite(o.width)||!Number.isFinite(o.depth))return;
+ const m=generateHome(o),issues=G.validate(m),errors=issues.filter(v=>v.severity==="error").length;
+ $("homePreview").innerHTML='<div class="wizard-preview-grid">'+
+  row("建築面積",G.round(o.width*o.depth,2)+" m² × "+m.floorCount+" 層")+row("睡房",o.bedrooms+" 間")+
+  row("牆身",m.walls.length+" 幅")+row("門窗",m.openings.length+" 個")+row("傢俬",m.furniture.length+" 件")+'</div>'+
+  '<p class="'+(errors?'tip bad':'tip good')+'">'+(errors?"注意："+errors+" 項尺寸問題，建議減少房間或加大尺寸。":"✓ 尺寸檢查通過；建立後可再逐項微調。")+'</p>';
+}
+function buildHome(){
+ const o=wizardOptions();
+ if(!Number.isFinite(o.width)||!Number.isFinite(o.depth))return toast("請輸入有效長度及闊度");
+ const p=newProject(generateHome(o));
+ state.projects.push(p);state.activeId=p.id;clearUndo();saveNow();$("homeDialog").close();fit();refresh();
+ toast("已建立"+model().floorCount+" 層家居："+model().walls.length+" 幅牆 · "+model().openings.length+" 個門窗 · "+model().furniture.length+" 件傢俬");
+}
+function checkPlan(){
+ const issues=G.validate(model()),box=$("checkList");
+ if(!issues.length){
+  box.innerHTML='<div class="check-ok"><strong>✓ 圖則檢查通過</strong><p>沒有發現門窗重疊、超出牆身、牆身斷開或傢俬碰撞。此檢查只作規劃輔助，不取代現場覆尺及專業結構評估。</p></div>';
+ }else{
+  box.innerHTML=issues.map(v=>'<div class="issue '+esc(v.severity)+'"><strong>'+(v.severity==="error"?"必須修正":"建議檢查")+'</strong><span>'+esc(v.message)+'</span></div>').join("")+
+   '<p class="tip">以上為平面幾何檢查；承重牆、消防及建築法規仍需合資格人士核對。</p>';
+ }
+ showDialog("checkDialog");
+}
+function floorLabel(i){return i===0?"地下 G/F":i+"/F";}
+function floorCount(){return G.clamp(Math.round(Number(model().floorCount)||1),1,5);}
+function renderFloors(){
+ const count=floorCount(),box=$("floorTabs");box.textContent="";
+ for(let i=0;i<count;i++){
+  const b=document.createElement("button");b.className="floor-tab"+(i===ui.floor?" active":"");
+  b.dataset.floor=String(i);b.textContent=floorLabel(i);b.setAttribute("aria-pressed",String(i===ui.floor));box.append(b);
+ }
+ $("removeFloor").disabled=count<=1;$("addFloor").disabled=count>=5;
+}
+function setFloor(i){
+ const next=G.clamp(Math.round(i),0,floorCount()-1);
+ ui.floor=next;ui.selected=null;ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.drag=null;
+ $("inspector").classList.remove("open");refresh();toast("已切換到"+floorLabel(next));
+}
+function addFloor(){
+ const count=floorCount();if(count>=5)return toast("最多支援 5 層");
+ commit(()=>{model().floorCount=count+1;});setFloor(count);toast("已新增"+floorLabel(count));
+}
+function removeFloor(){
+ const count=floorCount();if(count<=1)return toast("至少保留一層");
+ const top=count-1;
+ if(!confirm("確定刪除"+floorLabel(top)+"？該層所有牆、門窗、傢俬及量度都會移除。"))return;
+ commit(()=>{
+  const m=model();
+  for(const key of ["walls","openings","furniture","measurements"])m[key]=m[key].filter(v=>(Number(v.floor)||0)!==top);
+  m.floorCount=top;
+ });
+ ui.floor=Math.min(ui.floor,top-1);refresh();toast("已刪除"+floorLabel(top));
+}
 function bind(){
  $("view2d").onclick=()=>mode("2d");$("view3d").onclick=()=>mode("3d");
+ $("floorTabs").addEventListener("click",e=>{const b=e.target.closest("[data-floor]");if(b)setFloor(Number(b.dataset.floor));});
+ $("addFloor").onclick=addFloor;$("removeFloor").onclick=removeFloor;
  document.querySelectorAll("[data-tool]").forEach(b=>b.onclick=()=>tool(b.dataset.tool));
  $("snapButton").onclick=()=>{ui.snap=!ui.snap;refresh();};
  $("dimsButton").onclick=()=>{ui.dimensions=!ui.dimensions;refresh();};
@@ -554,6 +626,12 @@ function bind(){
  $("fitButton").onclick=fit;$("fitBottom").onclick=fit;
  $("zoomIn").onclick=()=>zoom(1.25);$("zoomOut").onclick=()=>zoom(.8);
  $("projectsButton").onclick=()=>{renderProjects();showDialog("projectsDialog");};
+ $("buildButton").onclick=()=>{previewHome();showDialog("homeDialog");};
+ $("startBuild").onclick=()=>{previewHome();showDialog("homeDialog");};
+ $("checkButton").onclick=checkPlan;
+ $("homeWidth").addEventListener("input",previewHome);$("homeDepth").addEventListener("input",previewHome);
+ $("homeBedrooms").addEventListener("change",previewHome);$("homeFloors").addEventListener("change",previewHome);
+ $("buildHome").onclick=buildHome;
  $("exportButton").onclick=exportJSON;
  $("helpButton").onclick=()=>showDialog("helpDialog");
  $("addFurnitureButton").onclick=()=>showDialog("furnitureDialog");
@@ -595,6 +673,7 @@ function bind(){
   else if(act==="duplicate")duplicateSelected();
   else if(act==="furniture")showDialog("furnitureDialog");
   else if(act==="projects"){renderProjects();showDialog("projectsDialog");}
+  else if(act==="check")checkPlan();
  });
  canvas.addEventListener("pointerdown",e=>{if(preparePointer(e))return;changeStart(e);});
  canvas.addEventListener("pointermove",e=>{if(updatePinch(e))return;changeMove(e);});

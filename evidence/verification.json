@@ -1,0 +1,22 @@
+{
+  "time": "2026-11-20T17:00:07.640Z",
+  "name": "典範三房居",
+  "walls": 9,
+  "openings": 12,
+  "furniture": 9,
+  "measurements": 1,
+  "check": "✓ 圖則檢查通過 沒有發現門窗重疊、超出牆身、牆身斷開或傢俬碰撞。此檢查只作規劃輔助，不取代現場覆尺及專業結構評估。",
+  "wallLengthBefore": 10,
+  "wallLengthAfter": 10.5,
+  "joinedGapAfter": 0,
+  "furnitureMoved": 0.806,
+  "lockWorked": true,
+  "duplicateUndoRedo": [
+    11,
+    10,
+    11
+  ],
+  "projectsAfterReload": 3,
+  "restoredOpenings": 12,
+  "consoleErrors": []
+}

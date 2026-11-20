@@ -1,0 +1,30 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Easy Home 3D · 兩層屋端到端驗證</title><style>
+  body{margin:0;background:#f5f7fa;color:#172438;font:15px/1.65 -apple-system,"PingFang TC",sans-serif}
+  main{max-width:1080px;margin:0 auto;padding:36px 20px 60px}h1{font-size:30px;margin:0 0 8px}h2{font-size:19px;margin:36px 0 12px}.lead{color:#53657b}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:24px 0}.card{background:#fff;border:1px solid #d9e2ed;border-radius:12px;padding:14px 16px}
+  .card b{display:block;font-size:24px;color:#1b62ae}.card span{font-size:12px;color:#62758c}
+  .ok{background:#e8f7ee;border:1px solid #a9d9bd;border-radius:10px;padding:12px 15px;color:#1d6645}
+  figure{margin:0 0 22px;background:#fff;border:1px solid #d9e2ed;border-radius:12px;padding:10px}figure img{width:100%;display:block;border-radius:7px}figcaption{padding:8px 4px 2px;color:#53657b;font-size:13px}
+  ul{background:#fff;border:1px solid #d9e2ed;border-radius:10px;padding:14px 16px 14px 32px}
+  </style></head><body><main><h1>Easy Home 3D · 兩層屋端到端驗證</h1>
+  <p class="lead">由空白圖則開始，用建屋精靈建立 2 層、每層 7/9 幅牆嘅完整屋，逐層放傢俬，再驗證 3D、備份、加層／刪層。</p>
+  <div class="cards"><div class="card"><b>2</b><span>樓層</span></div><div class="card"><b>16</b><span>總牆數</span></div>
+  <div class="card"><b>20</b><span>總門窗</span></div><div class="card"><b>19</b><span>總傢俬</span></div>
+  <div class="card"><b>3 m</b><span>層高</span></div></div>
+  <div class="ok"><strong>圖則檢查：</strong>✓ 圖則檢查通過 沒有發現門窗重疊、超出牆身、牆身斷開或傢俬碰撞。此檢查只作規劃輔助，不取代現場覆尺及專業結構評估。</div>
+  <h2>功能驗證</h2><ul>
+  <li>地下 7 幅牆／8 個門窗／9 件傢俬；一樓 9／12／10。</li>
+  <li>一樓新增 書枱 @ floor 1；地下新增 椅子 @ floor 0，改闊至 0.55 m、旋轉 1.5707963 rad，鎖定 成功。</li>
+  <li>複製後 Undo／Redo：22 件傢俬；3D 兩層堆疊正常。</li>
+  <li>JSON 匯出／匯入／reload 後仍有 2 層、3 個專案。</li>
+  <li>加層 → 3 層，刪頂層 → 2 層。瀏覽器 JavaScript 錯誤：零。</li></ul>
+  <h2>操作截圖</h2>
+  <figure><img src="01-empty-start.png"><figcaption>1. 空白起始畫面</figcaption></figure>
+  <figure><img src="02-home-wizard.png"><figcaption>2. 建屋精靈：10 × 7 m、三房、兩層</figcaption></figure>
+  <figure><img src="03-ground-floor-2d.png"><figcaption>3. 地下 G/F 平面圖</figcaption></figure>
+  <figure><img src="04-plan-check.png"><figcaption>4. 圖則檢查</figcaption></figure>
+  <figure><img src="05-first-floor-2d.png"><figcaption>5. 切換到 1/F 並新增書枱</figcaption></figure>
+  <figure><img src="06-furniture-inspector.png"><figcaption>6. 地下傢俬屬性編輯</figcaption></figure>
+  <figure><img src="07-two-floor-3d.png"><figcaption>7. 3D 兩層堆疊模型</figcaption></figure>
+  <figure><img src="08-restored.png"><figcaption>8. 匯出／匯入並重新載入</figcaption></figure>
+  </main></body></html>

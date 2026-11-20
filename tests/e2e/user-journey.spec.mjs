@@ -216,6 +216,215 @@ test('furniture can be selected and moved in 3D, with coordinates kept in 2D',as
  expect(after.model.furniture[0].y).toBe(f.y);
 });
 
+test('build a complete home end to end: wizard, checker, precise wall height, 3D and backup',async({page},testInfo)=>{
+ test.skip(testInfo.project.name!=='desktop-chromium','Mouse precision workflow; mobile wizard is covered separately');
+ const errors=[];page.on('pageerror',err=>errors.push(err.message));
+ await page.goto('/');
+ await page.locator('#buildButton').click();
+ await expect(page.locator('#homeDialog')).toBeVisible();
+ await expect(page.locator('#homePreview')).toContainText('尺寸檢查通過');
+ await page.locator('#homeWidth').fill('9');
+ await page.locator('#homeDepth').fill('6.5');
+ await page.locator('#homeBedrooms').selectOption('2');
+ await page.locator('#buildHome').click();
+ let p=await saved(page);
+ expect(p.model.walls.length).toBeGreaterThanOrEqual(7);
+ expect(p.model.openings.length).toBeGreaterThanOrEqual(8);
+ expect(p.model.furniture.length).toBeGreaterThanOrEqual(3);
+ await expect(page.locator('#drawingStats')).toContainText('幅牆');
+ await page.screenshot({path:testInfo.outputPath('home-wizard-2d.png')});
+ await page.locator('#checkButton').click();
+ await expect(page.locator('#checkList')).toContainText('圖則檢查通過');
+ await page.locator('#checkDialog .dialog-actions button').click();
+
+ const spot=await page.evaluate(()=>{
+  const canvas=document.querySelector('#stage'),store=JSON.parse(localStorage.getItem('easy-home-3d:projects:v1'));
+  const m=store.projects.find(v=>v.id===store.activeId).data,b=window.EasyHomeCore.getBounds(m);
+  const scale=window.EasyHomeCore.clamp(Math.min(canvas.clientWidth/(b.width+2.5),canvas.clientHeight/(b.height+2.5)),18,145);
+  const wall=m.walls.find(w=>m.openings.some(o=>o.wallId===w.id));
+  const px=wall.a.x+(wall.b.x-wall.a.x)*.06,py=wall.a.y+(wall.b.y-wall.a.y)*.06;
+  return {x:canvas.clientWidth/2-scale*b.cx+px*scale,y:canvas.clientHeight/2-scale*b.cy+py*scale};
+ });
+ const g=await canvasGeometry(page);
+ await clickPoint(page,g.r.x+spot.x,g.r.y+spot.y);
+ await expect(page.locator('#inspectorContent')).toContainText('直接設定牆長');
+ await page.locator('#prop-height').fill('1.9');
+ await page.locator('#prop-height').press('Tab');
+ p=await saved(page);
+ const wallId=p.model.walls.find(w=>w.id===p.model.openings[0].wallId)?.id;
+ for(const o of p.model.openings.filter(o=>o.wallId===wallId))expect(o.sill+o.height).toBeLessThanOrEqual(1.9001);
+ await page.locator('#checkButton').click();
+ await expect(page.locator('#checkList')).not.toContainText('門窗頂部高於牆身');
+ await page.locator('#checkDialog .dialog-actions button').click();
+ await page.locator('#view3d').click();
+ await expect(page.locator('#view3d')).toHaveAttribute('aria-pressed','true');
+ await page.screenshot({path:testInfo.outputPath('home-wizard-3d.png')});
+ await page.locator('#view2d').click();
+ const downloadPromise=page.waitForEvent('download');
+ await page.locator('#exportButton').click();
+ const backup=await readFile(await (await downloadPromise).path(),'utf8');
+ await page.locator('#projectsButton').click();
+ await page.locator('#importFile').setInputFiles({name:'home.json',mimeType:'application/json',buffer:Buffer.from(backup)});
+ await page.reload();
+ p=await saved(page);
+ expect(p.state.projects.length).toBe(3);
+ expect(p.model.openings.length).toBeGreaterThanOrEqual(8);
+ expect(errors).toEqual([]);
+});
+
+test('mobile: home wizard builds a full plan and checker is reachable',async({page},testInfo)=>{
+ test.skip(testInfo.project.name!=='mobile-webkit','Desktop wizard journey covered above');
+ await page.goto('/');
+ await page.locator('#buildButton').tap();
+ await expect(page.locator('#homeDialog')).toBeVisible();
+ await page.locator('#homeBedrooms').selectOption('3');
+ await page.locator('#buildHome').tap();
+ await expect(page.locator('#drawingStats')).toContainText('幅牆');
+ const p=await saved(page);
+ expect(p.model.openings.length).toBeGreaterThanOrEqual(10);
+ await page.locator('#checkButton').tap();
+ await expect(page.locator('#checkList')).toContainText('圖則檢查通過');
+});
+
+test('two-floor home: floor tabs, independent editing, 3D stacking, backup and add/remove floor',async({page},testInfo)=>{
+ test.skip(testInfo.project.name!=='desktop-chromium','Mouse workflow; mobile two-floor covered by shared wizard journey');
+ const errors=[];page.on('pageerror',err=>errors.push(err.message));
+ await page.goto('/');
+ await page.locator('#buildButton').click();
+ await expect(page.locator('#homePreview')).toContainText('2 層');
+ await page.locator('#homeWidth').fill('10');
+ await page.locator('#homeDepth').fill('7');
+ await page.locator('#homeBedrooms').selectOption('3');
+ await page.locator('#homeFloors').selectOption('2');
+ await page.locator('#buildHome').click();
+ let p=await saved(page);
+ expect(p.model.floorCount).toBe(2);
+ expect(p.model.walls.filter(w=>w.floor===1).length).toBeGreaterThan(5);
+ expect(p.model.openings.filter(o=>o.floor===1).length).toBeGreaterThan(4);
+ await expect(page.locator('.floor-tab')).toHaveCount(2);
+ await expect(page.locator('.floor-tab').first()).toHaveClass(/active/);
+
+ await page.locator('.floor-tab').nth(1).click();
+ await expect(page.locator('.floor-tab').nth(1)).toHaveClass(/active/);
+ await page.locator('#addFurnitureButton').click();
+ await page.locator('#furnitureCatalog button').filter({hasText:'書枱'}).click();
+ await page.waitForTimeout(350);
+ p=await saved(page);const upper=p.model.furniture.at(-1);
+ expect(upper.floor).toBe(1);
+ await page.locator('.floor-tab').first().click();
+ await page.locator('#addFurnitureButton').click();
+ await page.locator('#furnitureCatalog button').filter({hasText:'椅子'}).click();
+ await page.waitForTimeout(350);
+ p=await saved(page);const ground=p.model.furniture.at(-1);
+ expect(ground.floor).toBe(0);
+ expect(upper.name).toBe('書枱');
+
+ await page.locator('#checkButton').click();
+ await expect(page.locator('#checkList')).not.toContainText('必須修正');
+ await page.locator('#checkDialog .dialog-actions button').click();
+ await page.locator('#view3d').click();
+ await expect(page.locator('#view3d')).toHaveAttribute('aria-pressed','true');
+ await page.screenshot({path:testInfo.outputPath('two-floor-3d.png')});
+ await page.locator('#view2d').click();
+
+ const downloadPromise=page.waitForEvent('download');
+ await page.locator('#exportButton').click();
+ const backup=await readFile(await (await downloadPromise).path(),'utf8');
+ await page.locator('#projectsButton').click();
+ await page.locator('#importFile').setInputFiles({name:'two-floor.json',mimeType:'application/json',buffer:Buffer.from(backup)});
+ await page.reload();
+ p=await saved(page);
+ expect(p.model.floorCount).toBe(2);
+ expect(p.model.furniture.some(f=>f.name==='書枱'&&f.floor===1)).toBe(true);
+ expect(p.model.furniture.some(f=>f.name==='椅子'&&f.floor===0)).toBe(true);
+
+ await page.locator('#addFloor').click();
+ p=await saved(page);expect(p.model.floorCount).toBe(3);
+ await expect(page.locator('.floor-tab')).toHaveCount(3);
+ page.once('dialog',d=>d.accept());
+ await page.locator('#removeFloor').click();
+ p=await saved(page);expect(p.model.floorCount).toBe(2);
+ await expect(page.locator('.floor-tab')).toHaveCount(2);
+ expect(errors).toEqual([]);
+});
+
+test('remaining controls: toggles, measure, rotate, nudge, rename and project deletion',async({page},testInfo)=>{
+ test.skip(testInfo.project.name!=='desktop-chromium','Desktop keyboard and mouse control sweep');
+ const errors=[];page.on('pageerror',err=>errors.push(err.message));
+ await page.goto('/');
+ await page.locator('#helpButton').click();
+ await expect(page.locator('#helpDialog')).toBeVisible();
+ await page.locator('#helpDialog .close-dialog').click();
+ for(const id of ['#snapButton','#dimsButton']){
+  const b=page.locator(id);await b.click();await expect(b).toHaveAttribute('aria-pressed','false');
+  await b.click();await expect(b).toHaveAttribute('aria-pressed','true');
+ }
+ for(const id of ['#zoomIn','#zoomOut','#fitButton','#fitBottom'])await page.locator(id).click();
+ const g=await canvasGeometry(page);
+ await page.locator('[data-tool="wall"]').click();
+ await clickPoint(page,g.cx-90,g.cy-60);
+ await page.keyboard.press('Escape');
+ expect((await saved(page)).model.walls).toHaveLength(0);
+ await page.locator('[data-tool="measure"]').click();
+ await clickPoint(page,g.cx-100,g.cy+80);await clickPoint(page,g.cx+40,g.cy+80);
+ let p=await saved(page);
+ expect(p.model.measurements).toHaveLength(1);
+ await expect(page.locator('#inspectorContent')).toContainText('量度結果');
+ await page.locator('#prop-bx').fill(String(p.model.measurements[0].b.x+1));
+ await page.locator('#prop-bx').press('Tab');
+ p=await saved(page);
+ expect(p.model.measurements[0].b.x).toBeGreaterThan(1);
+ await page.locator('#stage').focus();
+ await page.keyboard.press('Delete');
+ expect((await saved(page)).model.measurements).toHaveLength(0);
+ await page.locator('#addFurnitureButton').click();
+ await page.locator('#furnitureCatalog button').filter({hasText:'椅子'}).click();
+ p=await saved(page);const before=p.model.furniture[0];
+ await page.locator('#stage').focus();
+ await page.keyboard.press('ArrowRight');
+ await page.keyboard.press('Shift+ArrowUp');
+ p=await saved(page);
+ expect(p.model.furniture[0].x).toBeCloseTo(before.x+.05,3);
+ expect(p.model.furniture[0].y).toBeCloseTo(before.y-.25,3);
+ await page.locator('[data-act="rotate"]').click();
+ p=await saved(page);
+ expect(Math.abs(p.model.furniture[0].rotation-before.rotation)).toBeGreaterThan(1);
+ await page.locator('#projectName').fill('我的測試屋');
+ await page.locator('#projectName').press('Tab');
+ await page.reload();
+ await expect(page.locator('#projectName')).toHaveValue('我的測試屋');
+ await page.locator('#projectsButton').click();
+ await page.locator('#newBlank').click();
+ await page.locator('#projectsButton').click();
+ expect(await page.locator('.project-item').count()).toBe(2);
+ page.once('dialog',d=>d.accept());
+ await page.locator('.project-item').first().locator('button.danger').click();
+ await expect(page.locator('.project-item')).toHaveCount(1);
+ expect(errors).toEqual([]);
+});
+
+test('responsive layout across 320–768px: no overflow, real tap targets and reachable wizard actions',async({page},testInfo)=>{
+ test.skip(testInfo.project.name!=='desktop-chromium','Viewport sweep runs once in Chromium');
+ for(const width of [320,360,390,430,768]){
+  await page.setViewportSize({width,height:780});
+  await page.goto('/');
+  const layout=await page.evaluate(()=>{
+   const h=sel=>document.querySelector(sel).getBoundingClientRect().height;
+   return {doc:document.documentElement.scrollWidth,screen:window.innerWidth,
+    floorTab:h('.floor-tab'),floorAct:h('#addFloor'),project:h('#projectsButton'),tool:h('.tool-scroll .tool'),
+    floorBarVisible:document.querySelector('.floor-bar').getBoundingClientRect().height>0};
+  });
+  expect(layout.doc).toBeLessThanOrEqual(layout.screen+2);
+  expect(layout.floorBarVisible).toBe(true);
+  expect(Math.min(layout.floorTab,layout.floorAct,layout.project,layout.tool)).toBeGreaterThanOrEqual(43);
+  await page.locator('#buildButton').click();
+  const action=await page.locator('#buildHome').boundingBox();
+  expect(action).not.toBeNull();
+  expect(action.y+action.height).toBeLessThanOrEqual(780);
+  await page.locator('#homeDialog .close-dialog').click();
+ }
+});
+
 test('320px phone never hides project controls beyond document width',async({page})=>{
  await page.setViewportSize({width:320,height:700});
  await page.goto('/');

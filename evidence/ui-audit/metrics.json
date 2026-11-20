@@ -1,0 +1,546 @@
+[
+  {
+    "width": 320,
+    "docWidth": 320,
+    "innerWidth": 320,
+    "toolbarScroll": true,
+    "boxes": {
+      "#projectsButton": {
+        "x": 242,
+        "y": 10,
+        "w": 36,
+        "h": 44
+      },
+      "#exportButton": {
+        "x": 281,
+        "y": 10,
+        "w": 32,
+        "h": 44
+      },
+      "#buildButton": {
+        "x": 392,
+        "y": 129,
+        "w": 78,
+        "h": 44
+      },
+      "#checkButton": {
+        "x": 475,
+        "y": 129,
+        "w": 59,
+        "h": 44
+      },
+      "#addFloor": {
+        "x": 237,
+        "y": 75,
+        "w": 44,
+        "h": 44
+      },
+      "#removeFloor": {
+        "x": 285,
+        "y": 75,
+        "w": 44,
+        "h": 44
+      },
+      ".floor-tab": {
+        "x": 175,
+        "y": 75,
+        "w": 58,
+        "h": 44
+      },
+      "#startRoom": {
+        "x": 27,
+        "y": 442,
+        "w": 266,
+        "h": 46
+      },
+      "#stage": {
+        "x": 0,
+        "y": 185,
+        "w": 320,
+        "h": 563
+      }
+    },
+    "dialog": {
+      "x": 12,
+      "y": 31,
+      "w": 296,
+      "h": 718
+    }
+  },
+  {
+    "width": 360,
+    "docWidth": 360,
+    "innerWidth": 360,
+    "toolbarScroll": false,
+    "boxes": {
+      "#projectsButton": {
+        "x": 282,
+        "y": 10,
+        "w": 36,
+        "h": 44
+      },
+      "#exportButton": {
+        "x": 321,
+        "y": 10,
+        "w": 32,
+        "h": 44
+      },
+      "#buildButton": {
+        "x": 392,
+        "y": 129,
+        "w": 78,
+        "h": 44
+      },
+      "#checkButton": {
+        "x": 475,
+        "y": 129,
+        "w": 59,
+        "h": 44
+      },
+      "#addFloor": {
+        "x": 256,
+        "y": 75,
+        "w": 44,
+        "h": 44
+      },
+      "#removeFloor": {
+        "x": 304,
+        "y": 75,
+        "w": 44,
+        "h": 44
+      },
+      ".floor-tab": {
+        "x": 194,
+        "y": 75,
+        "w": 58,
+        "h": 44
+      },
+      "#startRoom": {
+        "x": 27,
+        "y": 453,
+        "w": 306,
+        "h": 46
+      },
+      "#stage": {
+        "x": 0,
+        "y": 185,
+        "w": 360,
+        "h": 563
+      }
+    },
+    "dialog": {
+      "x": 12,
+      "y": 31,
+      "w": 336,
+      "h": 718
+    }
+  },
+  {
+    "width": 375,
+    "docWidth": 375,
+    "innerWidth": 375,
+    "toolbarScroll": false,
+    "boxes": {
+      "#projectsButton": {
+        "x": 297,
+        "y": 10,
+        "w": 36,
+        "h": 44
+      },
+      "#exportButton": {
+        "x": 336,
+        "y": 10,
+        "w": 32,
+        "h": 44
+      },
+      "#buildButton": {
+        "x": 392,
+        "y": 129,
+        "w": 78,
+        "h": 44
+      },
+      "#checkButton": {
+        "x": 475,
+        "y": 129,
+        "w": 59,
+        "h": 44
+      },
+      "#addFloor": {
+        "x": 271,
+        "y": 75,
+        "w": 44,
+        "h": 44
+      },
+      "#removeFloor": {
+        "x": 319,
+        "y": 75,
+        "w": 44,
+        "h": 44
+      },
+      ".floor-tab": {
+        "x": 211,
+        "y": 75,
+        "w": 56,
+        "h": 44
+      },
+      "#startRoom": {
+        "x": 27,
+        "y": 453,
+        "w": 321,
+        "h": 46
+      },
+      "#stage": {
+        "x": 0,
+        "y": 185,
+        "w": 375,
+        "h": 563
+      }
+    },
+    "dialog": {
+      "x": 12,
+      "y": 31,
+      "w": 351,
+      "h": 718
+    }
+  },
+  {
+    "width": 390,
+    "docWidth": 390,
+    "innerWidth": 390,
+    "toolbarScroll": false,
+    "boxes": {
+      "#projectsButton": {
+        "x": 312,
+        "y": 10,
+        "w": 36,
+        "h": 44
+      },
+      "#exportButton": {
+        "x": 351,
+        "y": 10,
+        "w": 32,
+        "h": 44
+      },
+      "#buildButton": {
+        "x": 392,
+        "y": 129,
+        "w": 78,
+        "h": 44
+      },
+      "#checkButton": {
+        "x": 475,
+        "y": 129,
+        "w": 59,
+        "h": 44
+      },
+      "#addFloor": {
+        "x": 286,
+        "y": 75,
+        "w": 44,
+        "h": 44
+      },
+      "#removeFloor": {
+        "x": 334,
+        "y": 75,
+        "w": 44,
+        "h": 44
+      },
+      ".floor-tab": {
+        "x": 226,
+        "y": 75,
+        "w": 56,
+        "h": 44
+      },
+      "#startRoom": {
+        "x": 27,
+        "y": 453,
+        "w": 336,
+        "h": 46
+      },
+      "#stage": {
+        "x": 0,
+        "y": 185,
+        "w": 390,
+        "h": 563
+      }
+    },
+    "dialog": {
+      "x": 12,
+      "y": 31,
+      "w": 366,
+      "h": 718
+    }
+  },
+  {
+    "width": 414,
+    "docWidth": 414,
+    "innerWidth": 414,
+    "toolbarScroll": false,
+    "boxes": {
+      "#projectsButton": {
+        "x": 336,
+        "y": 10,
+        "w": 36,
+        "h": 44
+      },
+      "#exportButton": {
+        "x": 375,
+        "y": 10,
+        "w": 32,
+        "h": 44
+      },
+      "#buildButton": {
+        "x": 392,
+        "y": 129,
+        "w": 78,
+        "h": 44
+      },
+      "#checkButton": {
+        "x": 475,
+        "y": 129,
+        "w": 59,
+        "h": 44
+      },
+      "#addFloor": {
+        "x": 310,
+        "y": 75,
+        "w": 44,
+        "h": 44
+      },
+      "#removeFloor": {
+        "x": 358,
+        "y": 75,
+        "w": 44,
+        "h": 44
+      },
+      ".floor-tab": {
+        "x": 250,
+        "y": 75,
+        "w": 56,
+        "h": 44
+      },
+      "#startRoom": {
+        "x": 27,
+        "y": 453,
+        "w": 360,
+        "h": 46
+      },
+      "#stage": {
+        "x": 0,
+        "y": 185,
+        "w": 414,
+        "h": 563
+      }
+    },
+    "dialog": {
+      "x": 12,
+      "y": 31,
+      "w": 390,
+      "h": 718
+    }
+  },
+  {
+    "width": 430,
+    "docWidth": 430,
+    "innerWidth": 430,
+    "toolbarScroll": false,
+    "boxes": {
+      "#projectsButton": {
+        "x": 302,
+        "y": 7,
+        "w": 40,
+        "h": 44
+      },
+      "#exportButton": {
+        "x": 346,
+        "y": 7,
+        "w": 74,
+        "h": 44
+      },
+      "#buildButton": {
+        "x": 392,
+        "y": 124,
+        "w": 78,
+        "h": 44
+      },
+      "#checkButton": {
+        "x": 475,
+        "y": 124,
+        "w": 59,
+        "h": 44
+      },
+      "#addFloor": {
+        "x": 326,
+        "y": 70,
+        "w": 44,
+        "h": 44
+      },
+      "#removeFloor": {
+        "x": 374,
+        "y": 70,
+        "w": 44,
+        "h": 44
+      },
+      ".floor-tab": {
+        "x": 266,
+        "y": 70,
+        "w": 56,
+        "h": 44
+      },
+      "#startRoom": {
+        "x": 30,
+        "y": 454,
+        "w": 370,
+        "h": 46
+      },
+      "#stage": {
+        "x": 0,
+        "y": 180,
+        "w": 430,
+        "h": 568
+      }
+    },
+    "dialog": {
+      "x": 12,
+      "y": 77,
+      "w": 406,
+      "h": 626
+    }
+  },
+  {
+    "width": 768,
+    "docWidth": 768,
+    "innerWidth": 768,
+    "toolbarScroll": false,
+    "boxes": {
+      "#projectsButton": {
+        "x": 640,
+        "y": 7,
+        "w": 40,
+        "h": 44
+      },
+      "#exportButton": {
+        "x": 684,
+        "y": 7,
+        "w": 74,
+        "h": 44
+      },
+      "#buildButton": {
+        "x": 392,
+        "y": 124,
+        "w": 78,
+        "h": 44
+      },
+      "#checkButton": {
+        "x": 475,
+        "y": 124,
+        "w": 59,
+        "h": 44
+      },
+      "#addFloor": {
+        "x": 664,
+        "y": 70,
+        "w": 44,
+        "h": 44
+      },
+      "#removeFloor": {
+        "x": 712,
+        "y": 70,
+        "w": 44,
+        "h": 44
+      },
+      ".floor-tab": {
+        "x": 604,
+        "y": 70,
+        "w": 56,
+        "h": 44
+      },
+      "#startRoom": {
+        "x": 177,
+        "y": 454,
+        "w": 414,
+        "h": 46
+      },
+      "#stage": {
+        "x": 0,
+        "y": 180,
+        "w": 768,
+        "h": 568
+      }
+    },
+    "dialog": {
+      "x": 109,
+      "y": 77,
+      "w": 550,
+      "h": 626
+    }
+  },
+  {
+    "width": 1024,
+    "docWidth": 1024,
+    "innerWidth": 1024,
+    "toolbarScroll": false,
+    "boxes": {
+      "#projectsButton": {
+        "x": 771,
+        "y": 17,
+        "w": 42,
+        "h": 37
+      },
+      "#exportButton": {
+        "x": 817,
+        "y": 17,
+        "w": 79,
+        "h": 37
+      },
+      "#buildButton": {
+        "x": 795,
+        "y": 83,
+        "w": 78,
+        "h": 42
+      },
+      "#checkButton": {
+        "x": 878,
+        "y": 83,
+        "w": 59,
+        "h": 42
+      },
+      "#addFloor": {
+        "x": 302,
+        "y": 88,
+        "w": 30,
+        "h": 34
+      },
+      "#removeFloor": {
+        "x": 336,
+        "y": 88,
+        "w": 30,
+        "h": 34
+      },
+      ".floor-tab": {
+        "x": 235,
+        "y": 88,
+        "w": 64,
+        "h": 34
+      },
+      "#startRoom": {
+        "x": 206,
+        "y": 459,
+        "w": 126,
+        "h": 46
+      },
+      "#stage": {
+        "x": 0,
+        "y": 139,
+        "w": 754,
+        "h": 609
+      }
+    },
+    "dialog": {
+      "x": 237,
+      "y": 77,
+      "w": 550,
+      "h": 626
+    }
+  }
+]

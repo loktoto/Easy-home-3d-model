@@ -77,12 +77,66 @@ test("segment collision reports zero distance",()=>{
  assert.equal(G.segmentDistance(a,b,c,d),0);
 });
 
-test("door and window overlapping intervals are rejected with 5cm clearance",()=>{
- const door={id:"a",wallId:"wall-a",offset:1,width:1};
- const adjacent={id:"b",wallId:"wall-a",offset:2.1,width:1};
- const overlap={id:"c",wallId:"wall-a",offset:1.8,width:1};
- assert.equal(G.openingFits(adjacent,[door]),true);
- assert.equal(G.openingFits(overlap,[door]),false);
- assert.equal(G.openingFits({...door,width:1.1},[door]),true);
- assert.equal(G.openingFits({...overlap,wallId:"other-wall"},[door]),true);
+test("home wizard generates a complete, buildable plan with no geometry issues",()=>{
+ for(const opts of [{width:8,depth:6,bedrooms:2},{width:10,depth:7,bedrooms:3},{width:6,depth:5,bedrooms:1},{width:4,depth:4,bedrooms:1}]){
+  const m=G.home(opts);
+  assert.ok(m.walls.length>=7);
+  assert.ok(m.openings.length>=8);
+  assert.ok(m.furniture.length>=3);
+  assert.ok(m.openings.some(o=>o.type==="door"));
+  assert.ok(m.openings.some(o=>o.type==="window"));
+  assert.deepEqual(G.validate(m),[]);
+  assert.deepEqual(G.validate(G.fileImport(G.fileExport(m))),[]);
+ }
+});
+test("two-floor house keeps floors independent and survives JSON backup",()=>{
+ const m=G.house({name:"兩層屋",width:10,depth:7,bedrooms:3});
+ assert.equal(m.floorCount,2);assert.equal(m.floorHeight,3);
+ assert.ok(m.walls.some(w=>w.floor===1));assert.ok(m.walls.some(w=>w.floor===0));
+ assert.ok(m.furniture.some(f=>f.name.indexOf("樓梯")>=0));
+ assert.deepEqual(G.validate(m),[]);
+ const copy=G.fileImport(G.fileExport(m));
+ assert.equal(copy.floorCount,2);assert.equal(copy.floorHeight,3);
+ assert.equal(copy.walls.filter(w=>w.floor===1).length,m.walls.filter(w=>w.floor===1).length);
+ assert.deepEqual(G.validate(copy),[]);
+ const ground=G.getBounds(m,0),upper=G.getBounds(m,1);
+ assert.ok(ground.width>5&&upper.width>5);
+});
+test("old one-floor plans load as floor zero and validate per floor",()=>{
+ const old=G.demo();delete old.floorCount;delete old.floorHeight;
+ for(const key of ["walls","openings","furniture","measurements"])for(const v of old[key])delete v.floor;
+ const safe=G.sanitize(old);
+ assert.equal(safe.floorCount,1);
+ assert.ok(safe.walls.every(w=>w.floor===0));
+ assert.ok(G.validate(safe).every(i=>i.severity!=="error"));
+});
+
+test("sanitize caps window height above sill and validate reports impossible openings",()=>{
+ const m=G.demo(),wall=m.walls[1];
+ m.openings=[{id:"bad-window",wallId:wall.id,type:"window",offset:1,width:1,height:2.4,sill:1.6}];
+ const safe=G.sanitize(m);
+ assert.ok(safe.openings[0].sill+safe.openings[0].height<=safe.walls[1].height+.0001);
+ const broken=G.demo();broken.openings[0].sill=2.4;broken.openings[0].height=1.2;
+ assert.ok(G.validate(broken).some(i=>i.code==="opening-too-tall"));
+});
+test("validate catches overlapping openings, dangling walls and furniture collisions",()=>{
+ const m=G.empty("問題圖則");
+ m.walls=[G.wall([0,0],[5,0]),G.wall([0,0],[0,3])];
+ m.openings=[
+  {id:"d1",wallId:m.walls[0].id,type:"door",offset:1.5,width:.9,height:2.1,sill:0},
+  {id:"d2",wallId:m.walls[0].id,type:"door",offset:2.0,width:.9,height:2.1,sill:0}
+ ];
+ m.furniture=[
+  {id:"f1",type:"custom",name:"A",x:1,y:1,w:1,d:1,h:1,rotation:0,color:"#72bca6"},
+  {id:"f2",type:"custom",name:"B",x:1.3,y:1,w:1,d:1,h:1,rotation:0,color:"#72bca6"}
+ ];
+ const codes=G.validate(m).map(i=>i.code);
+ assert.ok(codes.includes("opening-overlap"));
+ assert.ok(codes.includes("open-end"));
+ assert.ok(codes.includes("furniture-overlap"));
+});
+test("rotated furniture overlap uses oriented bounding boxes",()=>{
+ const a={x:0,y:0,w:2,d:1,rotation:Math.PI/2},b={x:1.6,y:0,w:1,d:1,rotation:0};
+ assert.equal(G.furnitureOverlap(a,b),false);
+ assert.equal(G.furnitureOverlap(a,{...b,x:.8}),true);
 });

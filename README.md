@@ -7,7 +7,7 @@ A free, open-source, privacy-first 2D/3D floor-plan and furniture editor that ru
 
 **Live public demo (Cloudflare Workers):** https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/
 
-**E2E QA：** [10 個 browser tests 通過（Chromium + mobile WebKit）](https://github.com/loktoto/Easy-home-3d-model/actions/runs/43178748534) · [完整 UI／UX 審核與修正紀錄](docs/UX_E2E_AUDIT.md)
+**E2E QA：** [15 個 browser tests 通過（Chromium + mobile WebKit）+ 18 個 unit tests](https://github.com/loktoto/Easy-home-3d-model/actions) · [兩層屋端到端實測及截圖](evidence/two-floor-home-report.html) · [完整 UI／UX 審核與修正紀錄](docs/UX_E2E_AUDIT.md)
 
 **Download standalone HTML for Convika (no build needed):** [easy-home-3d-standalone.html](easy-home-3d-standalone.html) · [Raw file](https://raw.githubusercontent.com/loktoto/Easy-home-3d-model/main/easy-home-3d-standalone.html)
 
@@ -19,7 +19,11 @@ A free, open-source, privacy-first 2D/3D floor-plan and furniture editor that ru
 
 ### 功能
 
+- 🏢 **兩層樓支援**：地下／一樓分層編輯，可加至 5 層；2D 只看目前樓層，3D 將所有樓層連地板疊成立體屋。建屋精靈一鍵產生兩層完整家居（含樓梯），JSON 備份完整保留樓層資料。
+- 🏗️ **建屋精靈**：輸入總長、總闊及睡房數目，一次產生外牆、間隔牆、大門、窗戶、廚櫃、雪櫃、床及衣櫃；4–24 m × 4–24 m、1–3 間睡房共 231 種單層及 273 種兩層尺寸組合均通過幾何檢查。
+- ✅ **圖則檢查**：即時找出門窗重疊、開口超出牆身、窗台高於牆、未接合牆身及傢俬碰撞，並顯示可直接跟進的提示。
 - 🧱 **由空白開始**：新手點選兩個對角建立房間；亦可逐幅畫牆，支援端點／格線吸附、牆角連動和即時房間面積預覽。
+- 📱 **手機優先版面**：視角／樓層固定、工具列可分區捲動；320–430 px 電話所有觸控目標 ≥44 px，對話框動作鍵常駐可見；[響應式驗證報告](evidence/responsive-ui-report.html)。
 - 📏 **真實尺寸**：直接輸入牆長及兩端座標、牆高／厚度；門窗闊度、門邊剩餘距離、傢俬闊 × 深 × 高、量度線和傢俬距牆尺寸（m）。
 - 🚪 **門窗編輯**：在牆上加門窗，調整闊度、位置、窗台高度；檢查同牆重疊開口、預留 5 cm 間距；3D 呈現開口。
 - 🛋️ **自訂傢俬**：12 種物件，包括梳化、床、衣櫃、餐枱、廚櫃、書枱。可改闊、深、高、顏色、角度、位置、名稱。
@@ -76,6 +80,9 @@ npm run test:e2e
 | `tests/core.test.cjs` | 資料結構及幾何測試 |
 | `tests/e2e/user-journey.spec.mjs` | 端對端桌面／手機瀏覽器測試 |
 | `docs/UX_E2E_AUDIT.md` | UX 研究、已修正缺陷、完整驗收基準 |
+| `evidence/home-build-report.html` | 真實瀏覽器單層建屋的截圖及功能驗證結果 |
+| `evidence/two-floor-home-report.html` | 兩層屋端到端驗證：分層編輯、3D、備份、加層／刪層 |
+| `evidence/responsive-ui-report.html` | 320–1024 px 版面量測、觸控目標與對話框截圖 |
 | `scripts/build-single.py` | 產生可直接交給 Convika 的 HTML |
 | `.github/workflows/site.yml` | GitHub Actions 測試、打包及 Pages 部署 |
 
@@ -91,7 +98,7 @@ npm run test:e2e
 
 ## English
 
-**Easy Home 3D** is a zero-login, dependency-free 2D/3D home-planning tool. Start from a blank canvas, draw dimensioned walls, add doors and windows, place and lock customizable furniture, measure distances, orbit in 3D, manage locally saved projects, and export/import JSON backups. Reimagined from the owner's private prototype without publishing private plans or data.
+**Easy Home 3D** is a zero-login, dependency-free 2D/3D home-planning tool. Start from a blank canvas or generate a complete multi-room home from width, depth and bedroom count, then run the built-in plan check. Draw dimensioned walls, add doors and windows, place and lock customizable furniture, measure distances, orbit in 3D, manage locally saved projects, and export/import JSON backups. Reimagined from the owner's private prototype without publishing private plans or data.
 
 **Run:** Open `index.html` in a modern browser or use the CI-generated standalone HTML. **Publish:** Enable GitHub Pages (Settings → Pages → GitHub Actions), or upload the standalone HTML to [Convika](https://convika.com/zh-hant/). **Test:** `node --test tests/*.test.cjs` and `python3 scripts/build-single.py`.
 

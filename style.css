@@ -38,3 +38,52 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
  #projectsButton::after{content:"專案";font-size:11px}
  #exportButton::after{content:"⇩";font-size:18px}
 }
+
+/* Floor switcher */
+.floor-bar{display:flex;align-items:center;gap:4px;flex:none;background:#0d1a2a;border:1px solid #2d425b;border-radius:10px;padding:3px}
+.floor-label{font-size:10px;font-weight:800;color:#8fa9c2;padding:0 3px;white-space:nowrap}
+.floor-tabs{display:flex;gap:3px}
+.floor-tab{border:1px solid transparent;background:#1b2d44;color:#a9c0d6;border-radius:7px;padding:6px 9px;font-size:11px;font-weight:750;white-space:nowrap;min-height:34px}
+.floor-tab.active{background:#2a62a5;border-color:#5289be;color:#fff}
+.floor-act{border:1px solid #38516d;background:#1b2d44;color:#cfe0f1;border-radius:7px;width:30px;min-height:34px;font-size:15px;font-weight:800;padding:0}
+.floor-act:disabled{opacity:.3}
+@media(max-width:780px){.floor-label{display:none}.floor-tab{padding:6px 7px;font-size:10px}}
+
+.wizard-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px;margin-top:14px}
+.wizard-grid .field{margin-bottom:12px}
+.wizard-preview{border:1px solid #34506b;background:#101e30;border-radius:12px;padding:9px 13px;margin-top:6px}
+.wizard-preview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
+.tip.good{color:#8fe3bd}.tip.bad{color:#ffbd85}
+.check-list{display:flex;flex-direction:column;gap:8px;margin-top:14px;max-height:46dvh;overflow:auto}
+.issue{border:1px solid #5b4a35;background:#2a2418;border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;font-size:12px;line-height:1.5}
+.issue strong{color:#ffcb7f}.issue.error{border-color:#7b4343;background:#2c1c1c}.issue.error strong{color:#ff9a9a}
+.check-ok{border:1px solid #336b58;background:#15332a;border-radius:11px;padding:14px;line-height:1.65;font-size:13px}
+.check-ok strong{color:#8fe3bd}.check-ok p{margin:6px 0 0;color:#a9c9bb}
+@media(max-width:420px){.wizard-grid{grid-template-columns:1fr}.dialog-actions button{min-width:0}}
+
+/* Responsive layout pass: stable top row, scrollable tool rail, real tap targets */
+.toolbar{overflow:hidden}
+.tool-top{display:flex;align-items:center;gap:8px;flex:none}
+.tool-scroll{display:flex;align-items:center;gap:5px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
+@media(max-width:780px){
+ .toolbar{flex-direction:column;align-items:stretch;gap:6px;padding:7px 8px;overflow:visible}
+ .tool-top{width:100%;justify-content:space-between}
+ .tool-scroll{width:100%;flex:none;min-height:46px;padding-bottom:4px;mask-image:linear-gradient(90deg,#000 0,#000 94%,transparent 100%)}
+ .floor-tab,.floor-act{min-width:44px;min-height:44px}
+ .head-actions .subtle{min-height:44px}
+}
+@media(max-width:420px){
+ .top{height:64px}
+ .dialog{padding:16px;max-height:92dvh;border-radius:14px}
+ .dialog-head h2{font-size:18px}
+ .dialog p.muted{font-size:12px;margin:8px 0}
+ .wizard-grid .field{margin-bottom:9px}
+ .wizard-preview{padding:7px 10px}
+ .dialog-actions{position:sticky;bottom:-16px;background:#152337;padding:10px 0 2px;margin-top:10px;box-shadow:0 -8px 16px #152337}
+ .start-tip{padding:18px 14px}
+ .start-tip h2{font-size:20px}
+ .start-tip p{font-size:12px}
+ .viewport-info{top:5px}
+}
+@media(max-width:360px){.floor-label{display:none}.floor-tab{padding:6px 8px;font-size:10px}}
+
