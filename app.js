@@ -22,11 +22,14 @@ function newProject(data){return {id:G.uid(),name:data.name,data,createdAt:new D
 function cleanCloudRef(ref){return ref&&typeof ref.owner==="string"&&typeof ref.id==="string"&&Number.isInteger(ref.revision)&&ref.revision>0?{owner:ref.owner.slice(0,80),id:ref.id.slice(0,100),revision:ref.revision}:null;}
 function cleanVersions(raw){const rows=[];let size=0;for(const v of Array.isArray(raw)?raw.slice(0,12):[]){try{const data=G.sanitize(v.data),len=JSON.stringify(data).length;if(size+len>1000000)continue;size+=len;rows.push({id:String(v.id||G.uid()).slice(0,100),label:String(v.label||"").slice(0,80),at:String(v.at||"").slice(0,40),data});}catch(e){}}return rows;}
 const MAX_LOCAL_PROJECTS=100;
-let storageReadOnly=false,recoveryRaw=null;
+let storageReadOnly=false,recoveryRaw=null,lastStoredRaw=null,lastSavedState=null,storageConflict=false;
+// Web Locks keeps a single writer per origin in supported browsers. The raw-value
+// guard also rejects already-stale documents where Web Locks is unavailable.
+let writerHeld=false,writerPending=!!navigator.locks;
 function readStore(){
  let saved=null;
  try{
-  saved=localStorage.getItem(STORAGE);
+  saved=localStorage.getItem(STORAGE);lastStoredRaw=saved;
   const raw=saved===null?null:JSON.parse(saved);
   if(raw&&Array.isArray(raw.projects)&&raw.projects.length){
    const projects=[];
@@ -43,19 +46,47 @@ function readStore(){
  }catch(e){storageReadOnly=true;recoveryRaw=saved;console.warn("Local storage unavailable or invalid",e);}
  const p=newProject(G.empty());return {projects:[p],activeId:p.id};
 }
-state=readStore();
+state=readStore();lastSavedState=JSON.stringify(state);
 const active=()=>state.projects.find(p=>p.id===state.activeId)||state.projects[0];
 const model=()=>active().data;
+function markStorageConflict(){
+ const first=!storageConflict;storageConflict=true;
+ $("saveStatus").textContent=t("Another editor is open or changed local storage. Export your work, then close other editors and reload.");
+ $("saveStatus").classList.add("error");
+ if(first&&$("projectsDialog").open)renderProjects();
+}
 function saveNow(){
  clearTimeout(saveTimer);saveTimer=null;
+ if(storageConflict){markStorageConflict();return false;}
+ if(writerPending)return false;
  try{
   if(storageReadOnly)throw Error("Original local storage preserved for recovery");
-  localStorage.setItem(STORAGE,JSON.stringify(state));
-  $("saveStatus").textContent=t("✓ 本機已儲存");$("saveStatus").classList.remove("error");
- }catch(e){$("saveStatus").textContent=t("⚠ 未能儲存，請匯出備份");$("saveStatus").classList.add("error");}
+  if(navigator.locks&&!writerHeld||localStorage.getItem(STORAGE)!==lastStoredRaw){markStorageConflict();return false;}
+  const next=JSON.stringify(state);
+  if(next!==lastStoredRaw){localStorage.setItem(STORAGE,next);lastStoredRaw=next;}
+  lastSavedState=next;
+  $("saveStatus").textContent=t("✓ 本機已儲存");$("saveStatus").classList.remove("error");return true;
+ }catch(e){$("saveStatus").textContent=t("⚠ 未能儲存，請匯出備份");$("saveStatus").classList.add("error");return false;}
+}
+function startLocalWriter(){
+ if(!navigator.locks){saveNow();return;}
+ // Do not release a live document's writer lock on visibility changes.
+ // Closing/navigating the document releases its lock; a blocked editor
+ // must explicitly reload rather than silently persisting a stale snapshot.
+ navigator.locks.request(STORAGE+":writer",{mode:"exclusive",ifAvailable:true},lock=>{
+  writerPending=false;
+  if(!lock){markStorageConflict();return;}
+  writerHeld=true;saveNow();
+  return new Promise(()=>{});
+ }).catch(()=>{writerPending=false;markStorageConflict();});
+}
+function checkExternalStorage(e){
+ if(e.storageArea!==localStorage||(e.key!==STORAGE&&e.key!==null))return;
+ try{if(localStorage.getItem(STORAGE)!==lastStoredRaw)markStorageConflict();}catch(err){markStorageConflict();}
 }
 function scheduleSave(){
  active().updatedAt=new Date().toISOString();
+ if(storageConflict){markStorageConflict();return;}
  $("saveStatus").textContent=t("儲存中…");$("saveStatus").classList.remove("error");clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,250);
 }
 function snapshot(){return JSON.stringify(model());}
@@ -583,6 +614,7 @@ function renderProjects(){
   buttons.append(remove);item.append(txt,buttons);box.append(item);
  }
  if(!box.children.length)box.textContent=t("沒有符合搜尋的專案");
+ if(storageConflict){const note=document.createElement("p");note.className="muted";note.textContent=t("Another editor is open or changed local storage. Export your work, then close other editors and reload.");const backup=document.createElement("button");backup.id="conflictBackup";backup.textContent=t("Download unsaved editor backup");backup.onclick=()=>downloadText(JSON.stringify(state,null,2),"application/json","easy3dhome-unsaved-editor.json");box.prepend(note,backup);}
  if(recoveryRaw!==null){const recover=document.createElement("button");recover.id="recoveryBackup";recover.textContent=t("Download recovery backup");recover.onclick=()=>downloadText(recoveryRaw,"application/json","easy3dhome-local-recovery.json");box.prepend(recover);}
 }
 function switchProject(id){
@@ -660,7 +692,11 @@ async function downloadPdf(){const b=G.cleanBrand(model().brand);if($("pdfBrand"
 let traceDraft=null,tracePoints=[],traceSource=null,traceExisting=null;const traceImages=new Map();
 function getTraceImage(data){if(traceImages.has(data))return traceImages.get(data);if(traceImages.size>=8)traceImages.delete(traceImages.keys().next().value);const image=new Image();image.onload=render;image.src=data;traceImages.set(data,image);return image;}
 function paintTracePreview(){const c=$("tracePreview"),ctx=c.getContext("2d");ctx.clearRect(0,0,c.width,c.height);if(!traceSource)return;ctx.drawImage(traceSource,0,0,c.width,c.height);ctx.strokeStyle="#ea492d";ctx.fillStyle="#ea492d";ctx.lineWidth=3;if(tracePoints.length===2){ctx.beginPath();ctx.moveTo(tracePoints[0].x,tracePoints[0].y);ctx.lineTo(tracePoints[1].x,tracePoints[1].y);ctx.stroke();}for(const p of tracePoints){ctx.beginPath();ctx.arc(p.x,p.y,6,0,Math.PI*2);ctx.fill();}}
+const traceFields=["traceDistance","traceOpacity","traceX","traceY"];
+function clearTraceValidation(){for(const id of traceFields)$(id).removeAttribute("aria-invalid");}
+function validateTraceFields(){let invalid=false;for(const id of traceFields){const el=$(id);if(id==="traceDistance"&&!traceDraft){el.removeAttribute("aria-invalid");continue;}const ok=el.checkValidity()&&el.value.trim()!==""&&Number.isFinite(Number(el.value));el.setAttribute("aria-invalid",String(!ok));invalid||=!ok;}if(invalid)$("traceStatus").textContent=t("Check trace distance, opacity and offsets. Values are outside the allowed range or missing.");return !invalid;}
 function showTrace(){
+ clearTraceValidation();
  $("projectsDialog").close();traceExisting=(model().traces||[]).find(q=>q.floor===ui.floor)||null;traceDraft=null;tracePoints=[];traceSource=null;$("traceFile").value="";$("traceApply").disabled=!traceExisting;$("traceRemove").disabled=!traceExisting;
  $("traceOpacity").value=Math.round((traceExisting?.opacity??.4)*100);$("traceX").value=traceExisting?.x??0;$("traceY").value=traceExisting?.y??0;$("traceDistance").value=3;$("traceStatus").textContent=traceExisting?t("已儲存圖片，可調整位置與透明度。"):t("請點選兩個不同位置");
  const c=$("tracePreview");c.width=600;c.height=300;paintTracePreview();
@@ -676,9 +712,9 @@ async function loadTrace(e){
  }catch(err){$("traceStatus").textContent=t("圖片無效或太大");}finally{URL.revokeObjectURL(url);}
 }
 function selectTracePoint(e){if(!traceDraft)return;const c=$("tracePreview"),r=c.getBoundingClientRect();if(tracePoints.length===2)tracePoints=[];tracePoints.push({x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height});paintTracePreview();const ready=tracePoints.length===2&&Math.hypot(tracePoints[0].x-tracePoints[1].x,tracePoints[0].y-tracePoints[1].y)>=2;$("traceApply").disabled=!ready;$("traceStatus").textContent=t(ready?"比例校準完成":"請點選兩個不同位置");}
-function applyTrace(){const x=Number($("traceX").value),y=Number($("traceY").value),opacity=Number($("traceOpacity").value)/100;let q;
- if(!Number.isFinite(x)||!Number.isFinite(y)||Math.abs(x)>1000||Math.abs(y)>1000||opacity<.05||opacity>1)return;
- if(traceDraft&&tracePoints.length===2){const distance=Number($("traceDistance").value),c=$("tracePreview"),d=Math.hypot(tracePoints[0].x-tracePoints[1].x,tracePoints[0].y-tracePoints[1].y);if(!(distance>=.01&&distance<=1000&&d>=2))return;const s=distance/d;q={floor:ui.floor,data:traceDraft.data,w:c.width*s,h:c.height*s,x:x-tracePoints[0].x*s,y:y-tracePoints[0].y*s,opacity};}else if(traceExisting)q={...traceExisting,x,y,opacity};else return;
+function applyTrace(){if(!validateTraceFields())return;const x=Number($("traceX").value),y=Number($("traceY").value),opacity=Number($("traceOpacity").value)/100;let q;
+ if(traceDraft&&tracePoints.length===2){const distance=Number($("traceDistance").value),c=$("tracePreview"),d=Math.hypot(tracePoints[0].x-tracePoints[1].x,tracePoints[0].y-tracePoints[1].y);if(!(distance>=.01&&distance<=1000&&d>=2)){$("traceStatus").textContent=t("請點選兩個不同位置");return;}const s=distance/d;q={floor:ui.floor,data:traceDraft.data,w:c.width*s,h:c.height*s,x:x-tracePoints[0].x*s,y:y-tracePoints[0].y*s,opacity};}else if(traceExisting)q={...traceExisting,x,y,opacity};else return;
+ if(Math.abs(q.x)>1000||Math.abs(q.y)>1000){$("traceStatus").textContent=t("Check trace distance, opacity and offsets. Values are outside the allowed range or missing.");return;}
  const cleaned=G.cleanTraces([q],model().floorCount);if(!cleaned.length){$("traceStatus").textContent=t("圖片尺寸超出限制");return;}commit(()=>{model().traces=G.cleanTraces([...(model().traces||[]).filter(q=>q.floor!==ui.floor),...cleaned],model().floorCount);});$("traceDialog").close();ui.mode="2d";fit();refresh();toast(t("已載入描繪圖片"));
 }
 function renderVersions(){const box=$("versionRows");box.replaceChildren();const m=model(),versions=cleanVersions(active().versions);if(!versions.length)box.textContent=t("未有版本");for(const v of versions){const item=document.createElement("div");item.className="project-item";const content=document.createElement("div"),name=document.createElement("strong"),small=document.createElement("small");content.className="project-text";name.textContent=v.label||v.at;const delta=[["牆身",v.data.walls.length-m.walls.length],["門窗",v.data.openings.length-m.openings.length],["傢俬",v.data.furniture.length-m.furniture.length]].map(([k,n])=>t(k)+" "+(n>0?"+":"")+n).join(" · ");small.textContent=v.at.slice(0,16).replace("T"," ")+" · "+t("與目前差異")+": "+delta;content.append(name,small);const b=document.createElement("button");b.textContent=t("還原");b.dataset.restore=v.id;b.onclick=()=>restoreVersion(v.id);item.append(content,b);box.append(item);}}
@@ -892,6 +928,7 @@ function bind(){
  $("exportButton").onclick=exportJSON;$("templatesButton").onclick=showTemplates;$("exportPngButton").onclick=()=>{$("projectsDialog").close();$("pngStatus").textContent="";showDialog("pngDialog");};$("downloadPng").onclick=exportPNG;
  $("clientButton").onclick=showClient;$("clientSave").onclick=saveClient;$("projectSearch").oninput=renderProjects;$("projectStatus").onchange=renderProjects;
  $("versionsButton").onclick=showVersions;$("versionSave").onclick=()=>{if(saveVersion($("versionName").value.trim()||new Date().toISOString())){$("versionName").value="";renderVersions();}};
+ for(const id of traceFields)$(id).addEventListener("input",()=>{const field=$(id);if(field.hasAttribute("aria-invalid")&&field.checkValidity()&&field.value.trim()!=="")field.removeAttribute("aria-invalid");});
  $("traceButton").onclick=showTrace;$("traceFile").onchange=loadTrace;$("tracePreview").onclick=selectTracePoint;$("traceApply").onclick=applyTrace;$("traceRemove").onclick=()=>{commit(()=>{model().traces=(model().traces||[]).filter(q=>q.floor!==ui.floor);});$("traceDialog").close();refresh();toast(t("已移除描繪圖片"));};
 
  $("shareCreate").onclick=()=>shareTask(createShare);$("shareClaim").onclick=()=>cloudTask(claimShare);
@@ -966,7 +1003,8 @@ function bind(){
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();e.shiftKey?redo():undo();return;}
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();redo();}
  });
- window.addEventListener("beforeunload",saveNow);
+ window.addEventListener("storage",checkExternalStorage);
+ window.addEventListener("beforeunload",e=>{saveNow();if(storageConflict&&JSON.stringify(state)!==lastSavedState){e.preventDefault();e.returnValue="";}});
  window.addEventListener("pagehide",()=>{if(saveTimer!==null)saveNow();});
  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&saveTimer!==null)saveNow();});
  const resizeView=()=>{if(ui.mode==="3d")fit3D();render();};
@@ -982,5 +1020,5 @@ function zoom(factor,at){
  ui.view.panY=loc.y-h/2-before.y*ui.view.scale;
  render();
 }
-bind();fit();refresh();saveNow();
+bind();fit();refresh();startLocalWriter();
 })();
