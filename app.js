@@ -712,7 +712,7 @@ function exportJSON(){
  saveNow();
  const data=G.fileExport(model()),blob=new Blob([data],{type:"application/json;charset=utf-8"});
  const link=document.createElement("a");link.href=URL.createObjectURL(blob);
- const safe=active().name.replace(/[^\w\u3400-\u9fff-]/g,"_").slice(0,45)||"floorplan";
+ const safe=active().name.normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^A-Za-z0-9_-]+/g,"_").slice(0,45).replace(/^[_-]+|[_-]+$/g,"")||"floorplan";
  link.download="easy-home-3d-"+safe+".json";document.body.append(link);link.click();link.remove();
  setTimeout(()=>URL.revokeObjectURL(link.href),1200);toast(t("已下載 JSON 備份（包括傢俬及尺寸）"));
 }
@@ -786,13 +786,28 @@ function renderClearance(){
  for(const item of items.slice(0,100)){const div=document.createElement("div");div.className="issue";div.textContent=item.name+" · "+t(item.kind==="wall"?"與牆身":"傢俬之間")+" · "+fmt(item.distance);box.append(div);}
  const note=document.createElement("small");note.className="muted";note.textContent=t("只檢查同層平面幾何，不代表通行或消防合規。");box.append(note);
 }
+function locateIssueObject(ids){
+ const m=model();for(const id of ids||[]){
+  for(const [kind,items] of [["wall",m.walls],["opening",m.openings],["furniture",m.furniture],["measurement",m.measurements]]){
+   const o=items.find(item=>item.id===id);if(!o)continue;let p,level=Number(o.floor)||0;
+   if(kind==="opening"){const w=m.walls.find(w=>w.id===o.wallId);if(!w)continue;const length=G.length(w.a,w.b);if(!length)continue;p=G.lerp(w.a,w.b,o.offset/length);level=Number(w.floor)||0;}
+   else if(kind==="wall"||kind==="measurement")p=G.lerp(o.a,o.b,.5);else p={x:o.x,y:o.y};
+   if(!Number.isFinite(p.x)||!Number.isFinite(p.y))continue;
+   return {id,kind,p,level};
+  }
+ }return null;
+}
+function focusIssue(target){
+ $("checkDialog").close();setFloor(target.level);mode("2d");tool("select");fit();ui.view.panX=-target.p.x*ui.view.scale;ui.view.panY=-target.p.y*ui.view.scale;setSelection(target.kind,target.id);
+}
 function checkPlan(){
  const issues=G.validate(model()),box=$("checkList");
  if(!issues.length){
   box.innerHTML=t('<div class="check-ok"><strong>✓ 圖則檢查通過</strong><p>沒有發現門窗重疊、超出牆身、牆身斷開或傢俬碰撞。此檢查只作規劃輔助，不取代現場覆尺及專業結構評估。</p></div>');
  }else{
-  box.innerHTML=issues.map(v=>'<div class="issue '+esc(v.severity)+'"><strong>'+(v.severity==="error"?t("必須修正"):t("建議檢查"))+'</strong><span>'+esc(v.message)+'</span></div>').join("")+
-   t('<p class="tip">以上為平面幾何檢查；承重牆、消防及建築法規仍需合資格人士核對。</p>');
+  box.replaceChildren();
+  for(const v of issues){const target=locateIssueObject(v.ids),el=document.createElement(target?"button":"div"),heading=document.createElement("strong"),detail=document.createElement("span");el.className="issue "+v.severity;heading.textContent=t(v.severity==="error"?"必須修正":"建議檢查");detail.textContent=v.message;el.append(heading,detail);if(target){el.type="button";el.dataset.issueTarget=target.id;el.onclick=()=>focusIssue(target);}box.append(el);}
+  const note=document.createElement("p");note.className="tip";note.textContent=t("以上為平面幾何檢查；承重牆、消防及建築法規仍需合資格人士核對。");box.append(note);
  }
  const swing=$("doorSwingList");swing.replaceChildren();for(const q of G.doorSwingWarnings(model())){const x=document.createElement("div");x.className="issue";x.textContent=t(q.code==="door-swing-door"?"門弧互相重疊":"傢俬阻礙門弧")+(q.name?" · "+q.name:"");swing.append(x);}
  renderClearance();showDialog("checkDialog");
