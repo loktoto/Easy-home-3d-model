@@ -30,6 +30,15 @@ jobs:
         run: python3 scripts/build-single.py
       - name: Build allow-listed public website
         run: python3 scripts/build-site.py
+      - name: Validate and package the release Worker
+        run: |
+          node --test tests/worker-release.test.mjs
+          node scripts/build-worker.mjs
+      - name: Upload versioned Worker module
+        uses: actions/upload-artifact@v4
+        with:
+          name: easy3dhome-worker-module
+          path: dist/worker.mjs
       - name: Upload versioned public website
         uses: actions/upload-artifact@v4
         with:
