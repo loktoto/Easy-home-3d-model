@@ -30,7 +30,7 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
         with:
@@ -61,6 +61,7 @@ jobs:
           APPROVED_SHA: ${{ inputs.approved_sha }}
         run: |
           set -euo pipefail
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)" = "$APPROVED_SHA"
           for workflow in site.yml e2e.yml cloud-e2e.yml release-package.yml readme-preview.yml; do
             run=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/$workflow/runs?branch=main&head_sha=$APPROVED_SHA&per_page=100" --jq '[.workflow_runs[] | select(.event == "push" or .event == "workflow_dispatch")] | sort_by(.created_at, .id) | last // {}')
             jq -e --arg sha "$APPROVED_SHA" '.head_sha == $sha and .head_branch == "main" and .status == "completed" and .conclusion == "success"' <<< "$run" >/dev/null || { echo "Missing successful latest exact-main run: $workflow"; exit 1; }
@@ -75,6 +76,27 @@ jobs:
       - run: npx playwright install --with-deps chromium webkit
       - name: Browser regression
         run: npx playwright test
+      - name: Preserve desktop-chromium source E2E evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: easy3dhome-release-source-chromium
+          path: test-results/*-desktop-chromium*/**
+          if-no-files-found: warn
+      - name: Preserve mobile-webkit source E2E evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: easy3dhome-release-source-webkit
+          path: test-results/*-mobile-webkit*/**
+          if-no-files-found: warn
+      - name: Preserve source HTML report before packaged tests
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: easy3dhome-release-source-report
+          path: playwright-report/
+          if-no-files-found: warn
       - name: Package release assets
         run: |
           python3 scripts/package-release.py
@@ -127,10 +149,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
+          APPROVED_SHA: ${{ inputs.approved_sha }}
           RELEASE_TAG: ${{ inputs.tag }}
         run: |
           set -euo pipefail
           [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)" = "$APPROVED_SHA"
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             echo "Release already exists; refusing to overwrite" >&2
             exit 1

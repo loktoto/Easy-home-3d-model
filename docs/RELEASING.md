@@ -11,6 +11,8 @@
 
 All five acceptance workflows now run on every main commit (build, browser, isolated cloud, packaged browser, README). Before manual publication, the latest run of each workflow must have succeeded on the approved main SHA; stale or failed runs block publication. GitHub Pages is opt-in via the site workflow's manual `publish_pages` flag and exact reviewed SHA; normal pushes only build artifacts. The workflow tests and builds before it publishes. Only the manual confirmed main run can create a public GitHub Release. PR runs produce evidence and a dry-run artifact without changing releases or tags.
 
+Browser evidence is retained as separate Chromium, WebKit and HTML-report artifacts; the versioned release dry run preserves source evidence before running packaged-site tests. A manual publication also rejects a main branch that has advanced past the reviewed SHA.
+
 ## Downloads
 
 - `Easy3DHome.html`: standalone HTML.
