@@ -128,15 +128,16 @@ function refresh(){
  $("selectionHint").textContent=ui.selected?t("已選取：")+(getObject()?.name||(ui.selected.kind==="wall"?t("牆身"):ui.selected.kind==="opening"?t("門窗"):t("量度"))):"";
  renderInspector();render();
 }
+function fit3D(){ui.orbit=R.fitOrbit(canvas,model(),ui.orbit);}
 function fit(){
  const bounds=G.getBounds(ui.mode==="3d"?model():visibleModel(),ui.mode==="3d"?undefined:ui.floor),w=canvas.clientWidth||800,h=canvas.clientHeight||550;
  ui.view.scale=G.clamp(Math.min(w/(bounds.width+2.5),h/(bounds.height+2.5)),18,145);
  ui.view.panX=-bounds.cx*ui.view.scale;ui.view.panY=-bounds.cy*ui.view.scale;
- ui.orbit.distance=1;render();
+ if(ui.mode==="3d")fit3D();else {ui.orbit.distance=1;delete ui.orbit.targetZ;}render();
 }
 function mode(next){
  if(next==="2d"&&ui.selected){const o=getObject();if(o&&(Number(o.floor)||0)!==ui.floor)ui.selected=null;}
- ui.mode=next;ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.drag=null;if(next==="3d")ui.tool="select";
+ ui.mode=next;ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.drag=null;if(next==="3d"){ui.tool="select";fit3D();}
  $("inspector").classList.remove("open");refresh();
 }
 function tool(next){
@@ -357,7 +358,7 @@ function updatePinch(e){
  const vals=[...touches.values()],a=vals[0],b=vals[1];
  const dist=Math.max(10,Math.hypot(a.x-b.x,a.y-b.y));
  const center={x:(a.x+b.x)/2,y:(a.y+b.y)/2},factor=dist/pinch.distance;
- if(ui.mode==="3d")ui.orbit.distance=G.clamp(pinch.orbitDistance/factor,.35,4);
+ if(ui.mode==="3d")ui.orbit.distance=G.clamp(pinch.orbitDistance/factor,.35,Math.max(4,pinch.orbitDistance*2));
  else{
   const w=canvas.clientWidth,h=canvas.clientHeight;
   ui.view.scale=G.clamp(pinch.scale*factor,12,400);
@@ -600,7 +601,7 @@ function renderFloors(){
 function setFloor(i){
  const next=G.clamp(Math.round(i),0,floorCount()-1);
  ui.floor=next;ui.selected=null;ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.drag=null;
- $("inspector").classList.remove("open");refresh();toast(t("已切換到")+floorLabel(next));
+ $("inspector").classList.remove("open");if(ui.mode==="3d")fit3D();refresh();toast(t("已切換到")+floorLabel(next));
 }
 function addFloor(){
  const count=floorCount();if(count>=5)return toast(t("最多支援 5 層"));
@@ -615,7 +616,7 @@ function removeFloor(){
   for(const key of ["walls","openings","furniture","measurements"])m[key]=m[key].filter(v=>(Number(v.floor)||0)!==top);
   m.floorCount=top;
  });
- ui.floor=Math.min(ui.floor,top-1);refresh();toast(t("已刪除")+floorLabel(top));
+ ui.floor=Math.min(ui.floor,top-1);if(ui.mode==="3d")fit3D();refresh();toast(t("已刪除")+floorLabel(top));
 }
 function bind(){
  $("localeSelect").addEventListener("change",e=>{saveNow();if($("saveStatus").classList.contains("error")){e.target.value=window.EasyHomeI18n.locale;return;}const url=new URL(location.href);url.searchParams.set("lang",e.target.value);location.replace(url.href);});
@@ -704,11 +705,12 @@ function bind(){
  window.addEventListener("beforeunload",saveNow);
  window.addEventListener("pagehide",()=>{if(saveTimer!==null)saveNow();});
  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&saveTimer!==null)saveNow();});
- window.addEventListener("resize",render);
- if(window.ResizeObserver)new ResizeObserver(render).observe(canvas.parentElement);
+ const resizeView=()=>{if(ui.mode==="3d")fit3D();render();};
+ window.addEventListener("resize",resizeView);
+ if(window.ResizeObserver)new ResizeObserver(resizeView).observe(canvas.parentElement);
 }
 function zoom(factor,at){
- if(ui.mode==="3d"){ui.orbit.distance=G.clamp(ui.orbit.distance/factor,.35,4);render();return;}
+ if(ui.mode==="3d"){ui.orbit.distance=G.clamp(ui.orbit.distance/factor,.35,Math.max(4,ui.orbit.distance*1.25));render();return;}
  const w=canvas.clientWidth,h=canvas.clientHeight;
  const loc=at||{x:w/2,y:h/2},before=R.toWorld(loc,ui.view,w,h);
  ui.view.scale=G.clamp(ui.view.scale*factor,12,400);
