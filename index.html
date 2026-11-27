@@ -83,7 +83,7 @@
   <div class="dialog-head"><h2>我的專案</h2><button class="close-dialog" data-close="projectsDialog" aria-label="關閉">✕</button></div>
   <p class="muted">每個專案獨立保存在此瀏覽器。清除瀏覽資料可能導致資料消失，請定期匯出 JSON 備份。</p>
   <div id="projectList" class="project-list"></div>
-  <div class="dialog-actions"><button id="newBlank" class="primary">＋ 新建空白平面圖</button><button id="newDemo" class="ghost">新建示範圖</button><button id="importButton" class="ghost">匯入 JSON</button></div>
+  <div class="dialog-actions"><button id="newBlank" class="primary">＋ 新建空白平面圖</button><button id="newDemo" class="ghost">新建示範圖</button><button id="importButton" class="ghost">匯入 JSON</button><button id="exportPngButton" class="ghost">匯出高清 PNG</button></div>
 </dialog>
 <dialog id="furnitureDialog" class="dialog">
   <div class="dialog-head"><h2>選擇傢俬</h2><button class="close-dialog" data-close="furnitureDialog" aria-label="關閉">✕</button></div>
@@ -123,6 +123,7 @@
   <div id="checkList" class="check-list"></div>
   <div class="dialog-actions"><button class="primary" data-close="checkDialog">知道了</button></div>
 </dialog>
+<dialog id="pngDialog" class="dialog"><div class="dialog-head"><h2>匯出高清 PNG</h2><button class="close-dialog" data-close="pngDialog" aria-label="關閉">✕</button></div><p class="muted">匯出目前 2D 或 3D 視角，保持比例。不包括工具列。此圖片不保證印刷比例。</p><div class="field"><label for="pngSize">最長邊像素</label><select id="pngSize"><option value="1600">1600 px</option><option value="2400" selected>2400 px</option><option value="3200">3200 px</option></select></div><div class="dialog-actions"><button class="primary" id="downloadPng">下載 PNG</button><button class="ghost" data-close="pngDialog">取消</button></div><p id="pngStatus" role="status"></p></dialog>
 <input id="importFile" type="file" accept=".json,application/json" hidden>
 <script src="./core.js" defer></script>
 <script src="./renderer.js" defer></script>

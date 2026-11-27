@@ -544,6 +544,24 @@ function exportJSON(){
  link.download="easy-home-3d-"+safe+".json";document.body.append(link);link.click();link.remove();
  setTimeout(()=>URL.revokeObjectURL(link.href),1200);toast("已下載 JSON 備份（包括傢俬及尺寸）");
 }
+function exportPNG(){
+ const width=canvas.clientWidth,height=canvas.clientHeight,longest=Number($("pngSize").value),mode=ui.mode;
+ if(!width||!height||![1600,2400,3200].includes(longest))return;
+ const scale=longest/Math.max(width,height),out=document.createElement("canvas");
+ out.width=Math.round(width*scale);out.height=Math.round(height*scale);
+ const c=out.getContext("2d");if(!c){$("pngStatus").textContent="無法建立圖片";return;}
+ const button=$("downloadPng");button.disabled=true;$("pngStatus").textContent="產生圖片中…";
+ try{
+  c.setTransform(scale,0,0,scale,0,0);
+  R.draw({clientWidth:width,clientHeight:height},c,model(),{...ui,selected:null,pending:null,cursor:null,drag:null,floor:ui.floor});
+  out.toBlob(blob=>{
+   button.disabled=false;if(!blob){$("pngStatus").textContent="匯出失敗";return;}
+   const url=URL.createObjectURL(blob),link=document.createElement("a");
+   link.href=url;link.download="easy-home-3d-"+mode+"-"+longest+".png";document.body.append(link);link.click();link.remove();
+   setTimeout(()=>URL.revokeObjectURL(url),30000);$("pngStatus").textContent="圖片已產生";
+  },"image/png");
+ }catch(err){button.disabled=false;$("pngStatus").textContent="匯出失敗："+err.message;}
+}
 async function importJSON(e){
  const file=e.target.files&&e.target.files[0];e.target.value="";if(!file)return;
  try{
@@ -633,6 +651,8 @@ function bind(){
  $("homeBedrooms").addEventListener("change",previewHome);$("homeFloors").addEventListener("change",previewHome);
  $("buildHome").onclick=buildHome;
  $("exportButton").onclick=exportJSON;
+ $("exportPngButton").onclick=()=>{$("projectsDialog").close();$("pngStatus").textContent="";showDialog("pngDialog");};
+ $("downloadPng").onclick=exportPNG;
  $("helpButton").onclick=()=>showDialog("helpDialog");
  $("addFurnitureButton").onclick=()=>showDialog("furnitureDialog");
  $("startWall").onclick=()=>tool("wall");
