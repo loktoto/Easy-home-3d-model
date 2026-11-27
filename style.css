@@ -92,3 +92,6 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
 :root{--mint:#8CE0C1;--blue:#9BC5FF;--sub:#B0C3D8;--danger:#FFAAAA}
 .mark{background:#11685A;color:#fff}
 :where(button,a,input,select):focus-visible{outline:3px solid #9BC5FF;outline-offset:3px}
+
+/* P0 show autosave status even on compact screens; do not hide errors. */
+@media(max-width:780px){.project-head{position:relative;align-self:stretch;flex-direction:column;justify-content:center;gap:0}.project-head input{flex:none;width:100%;padding:5px}.save-status{display:block;font-size:9px;line-height:1.25;max-width:100%;overflow:hidden;text-overflow:ellipsis}.save-status.error{font-weight:800;white-space:normal;overflow:visible;font-size:9px}}
