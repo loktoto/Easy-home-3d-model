@@ -1,0 +1,3 @@
+# Per-PR acceptance gate
+
+Every PR must pass build/unit and Playwright Chromium + mobile WebKit. Download `easy-home-3d-e2e-evidence` from the exact head SHA Actions run and inspect actual desktop/mobile screenshots. Landing tests capture each language before navigation; successful tests also produce screenshots. Record SHA, run links, visual findings, and defects in the PR. A green run alone is not visual approval. Never merge while a required screenshot is missing or a material visual defect is unresolved. Mobile WebKit is emulated, not physical iPhone hardware. Do not close linked feature issues until accepted and merged.
