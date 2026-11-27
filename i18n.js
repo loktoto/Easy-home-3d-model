@@ -2,6 +2,12 @@
 (function(){
 "use strict";
 const messages={
+"設計模板":["Design templates","设计模板"],
+"選擇後建立獨立新專案，不會覆蓋現有圖則。尺寸為示範值，施工前請覆尺。":["Choose a template to create an independent project. Dimensions are examples; verify site measurements.","选择后创建独立新项目，不会覆盖现有图纸。尺寸为示例值，施工前请复尺。"],
+"小型一房住宅":["Compact one-bedroom home","小型一居室住宅"],
+"兩房公寓":["Two-bedroom apartment","两居室公寓"],
+"三房家庭住宅":["Three-bedroom family home","三居室家庭住宅"],
+"雙層住宅":["Two-storey home","双层住宅"],
  "總長及總闊必須在 4 至 24 米之間":["Width and depth must be between 4 and 24 m","总长及总宽必须在 4 至 24 米之间"],
  "尺寸必須在 0.1 至 6 米之間":["Dimension must be between 0.1 and 6 m","尺寸必须在 0.1 至 6 米之间"],
  "尺寸必須在 0.1 至 15 米之間":["Dimension must be between 0.1 and 15 m","尺寸必须在 0.1 至 15 米之间"],

@@ -1,0 +1,5 @@
+import {test,expect} from '@playwright/test';
+test('template library makes independent editable copies',async({page},info)=>{
+ await page.goto('/');await page.locator('#projectsButton').click();await page.locator('#templatesButton').click();await expect(page.locator('#templateList button')).toHaveCount(4);await page.screenshot({path:info.outputPath('templates.png')});await page.locator('#templateList button').filter({hasText:'兩房公寓'}).click();await expect(page.locator('#saveStatus')).toContainText('本機已儲存');
+ await page.locator('#projectsButton').click();await page.locator('#templatesButton').click();await page.locator('#templateList button').filter({hasText:'兩房公寓'}).click();await expect(page.locator('#saveStatus')).toContainText('本機已儲存');const s=await page.evaluate(()=>JSON.parse(localStorage.getItem('easy-home-3d:projects:v1')));expect(s.projects).toHaveLength(3);expect(s.projects[0].data.walls).toHaveLength(0);expect(s.projects[1].data.walls.length).toBeGreaterThan(0);expect(s.projects[2].data.walls[0].id).not.toBe(s.projects[1].data.walls[0].id);
+});
