@@ -1,5 +1,7 @@
 name: Real local Supabase cloud E2E
 on:
+  push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 permissions:

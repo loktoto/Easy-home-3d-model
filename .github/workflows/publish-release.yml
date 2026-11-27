@@ -23,6 +23,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: easy3dhome-versioned-release
   cancel-in-progress: false
@@ -53,18 +54,33 @@ jobs:
           [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
           test -f scripts/build-site.py
           test -f tests/e2e/release-package.spec.mjs
+      - name: Require successful exact-main acceptance workflows
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APPROVED_SHA: ${{ inputs.approved_sha }}
+        run: |
+          set -euo pipefail
+          for workflow in site.yml e2e.yml cloud-e2e.yml release-package.yml readme-preview.yml; do
+            run=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/$workflow/runs?branch=main&head_sha=$APPROVED_SHA&per_page=100" --jq '[.workflow_runs[] | select(.event == "push" or .event == "workflow_dispatch")] | sort_by(.created_at, .id) | last // {}')
+            jq -e --arg sha "$APPROVED_SHA" '.head_sha == $sha and .head_branch == "main" and .status == "completed" and .conclusion == "success"' <<< "$run" >/dev/null || { echo "Missing successful latest exact-main run: $workflow"; exit 1; }
+            jq -r '.html_url' <<< "$run"
+          done
       - name: Check syntax and unit tests
         run: |
           for file in app.js core.js renderer.js i18n.js; do node --check "$file"; done
           npm run test:unit
+          node --test tests/worker-release.test.mjs
       - run: npm install --no-audit --no-fund
       - run: npx playwright install --with-deps chromium webkit
       - name: Browser regression
         run: npx playwright test
       - name: Package release assets
-        run: python3 scripts/package-release.py
+        run: |
+          python3 scripts/package-release.py
+          python3 scripts/check-repo-layout.py
+          node scripts/build-worker.mjs
       - name: Verify packaged site
-        if: github.event_name == 'workflow_dispatch'
         env:
           TEST_PACKAGED_SITE: '1'
         run: npx playwright test tests/e2e/release-package.spec.mjs
