@@ -11,7 +11,7 @@ export default {async fetch(request){
  const [type,body]=ASSETS[path];
  const headers={"Content-Type":type,"X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer","X-Easy-Home-Commit":COMMIT,"Cache-Control":path==="/version.json"?"no-store":"public, max-age=120"};
  if(path.endsWith(".zip"))headers["Content-Disposition"]='attachment; filename="Easy3DHome-offline.zip"';
- return new Response(method==="HEAD"?null:path.endsWith(".zip")?Uint8Array.from(atob(body),c=>c.charCodeAt(0)):body,{headers});
+ return new Response(method==="HEAD"?null:(type==="application/zip"||type==="image/png")?Uint8Array.from(atob(body),c=>c.charCodeAt(0)):body,{headers});
 }};
 `;
 }
