@@ -3,6 +3,7 @@
 "use strict";
 const t=s=>root.EasyHomeI18n?root.EasyHomeI18n.t(s):s;
 const SCHEMA="easy-home-3d", VERSION=1, EPS=1e-8;
+const OBJECT_LIMITS=Object.freeze({walls:500,openings:250,furniture:500,measurements:500});
 const catalog=[
  {type:"sofa",name:t("梳化"),icon:"▰",w:2.1,d:0.88,h:0.85,color:"#6da9bf"},
  {type:"bed",name:t("雙人床"),icon:"▣",w:1.5,d:1.9,h:0.55,color:"#ad91d7"},
@@ -228,7 +229,7 @@ function validate(model){
 function sanitize(raw){
  if(!raw||typeof raw!=="object"||raw.schema!==SCHEMA||raw.version!==VERSION)throw new Error(t("不支援的圖則格式或版本"));
  if(!Array.isArray(raw.walls)||!Array.isArray(raw.furniture)||!Array.isArray(raw.openings)||!Array.isArray(raw.measurements))throw new Error(t("圖則資料不完整"));
- if(raw.walls.length>500||raw.furniture.length>500||raw.openings.length>250||raw.measurements.length>500)throw new Error(t("物件數量超出限制"));
+ if(Object.entries(OBJECT_LIMITS).some(([key,max])=>raw[key].length>max))throw new Error(t("物件數量超出限制"));
  const safePos=(v)=>clamp(num(v),-1000,1000);
  const safePoint=p=>point(safePos(p&&p.x),safePos(p&&p.y));
  const safeName=(s,fallback)=>typeof s==="string"?s.slice(0,80):fallback;
@@ -409,7 +410,7 @@ function budgetSummary(m){const b=cleanBudget(m.budget),s=shoppingSummary(m),row
 function cleanTraces(raw,floors=5){const list=[];for(const v of Array.isArray(raw)?raw.slice(0,5):[]){if(!v||!Number.isInteger(v.floor)||v.floor<0||v.floor>=floors||list.some(x=>x.floor===v.floor)||typeof v.data!=="string"||v.data.length>450000||!/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(v.data)||!(v.w>0&&v.w<=1000&&v.h>0&&v.h<=1000))continue;list.push({floor:v.floor,data:v.data,w:num(v.w),h:num(v.h),x:clamp(num(v.x),-1000,1000),y:clamp(num(v.y),-1000,1000),opacity:clamp(num(v.opacity,.4),.05,1)});}return list;}
 function cleanClient(raw){return {client:String(raw?.client||"").slice(0,100),reference:String(raw?.reference||"").slice(0,80),status:["draft","active","completed","archived"].includes(raw?.status)?raw.status:"draft",notes:String(raw?.notes||"").slice(0,1000)};}
 function cleanBrand(raw){return {company:String(raw?.company||"").slice(0,80),title:String(raw?.title||"").slice(0,80),color:/^#[0-9a-f]{6}$/i.test(raw?.color||"")?raw.color:"#11685a",logo:typeof raw?.logo==="string"&&raw.logo.length<=160000&&/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(raw.logo)?raw.logo:""};}
-const api={cleanPlanMeta,niceScale,planSymbols,planAreas,doorSwingGeometry,doorSwingWarnings,cleanBrand,cleanClient,cleanTraces,cleanBudget,budgetSummary,currencies,shoppingKey,cleanShopping,shoppingSummary,csvCell,furnitureGap,clearanceWarnings,units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
+const api={OBJECT_LIMITS,cleanPlanMeta,niceScale,planSymbols,planAreas,doorSwingGeometry,doorSwingWarnings,cleanBrand,cleanClient,cleanTraces,cleanBudget,budgetSummary,currencies,shoppingKey,cleanShopping,shoppingSummary,csvCell,furnitureGap,clearanceWarnings,units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.EasyHomeCore=api;
 })(typeof window!=="undefined"?window:globalThis);

@@ -63,8 +63,10 @@ function record(before){
  if(before===snapshot())return false;
  history.push(before);if(history.length>65)history.shift();future=[];scheduleSave();refresh();return true;
 }
+function objectCapacity(kind,count=1){const max=G.OBJECT_LIMITS[kind];if(model()[kind].length+count<=max)return true;alert(t("物件數量超出限制")+" ("+max+")");return false;}
+const boundedPosition=n=>G.clamp(n,-1000,1000);
 function commit(fn){
- const before=snapshot();try{fn();}catch(err){active().data=JSON.parse(before);retainSelection();refresh();throw err;}return record(before);
+ const before=snapshot();try{fn();if(Object.entries(G.OBJECT_LIMITS).some(([key,max])=>model()[key].length>max))throw new Error(t("物件數量超出限制"));}catch(err){active().data=JSON.parse(before);retainSelection();refresh();throw err;}return record(before);
 }
 function retainSelection(){
  ui.floor=G.clamp(ui.floor,0,Math.max(0,(model().floorCount||1)-1));
@@ -235,6 +237,7 @@ function addOpening(which,p){
  const opening={id:G.uid(),type:which,wallId:w.id,floor:Number(w.floor)||0,offset:G.clamp(hit.t*len,width/2,len-width/2),
   width,height:which==="door"?Math.min(2.1,w.height):Math.min(1.1,w.height*.5),sill:which==="door"?0:Math.min(.9,w.height*.35)};
  if(!G.openingFits(opening,model().openings))return toast(t("這個位置已有門窗，請移到其他牆段（至少預留 5 cm）"));
+ if(!objectCapacity("openings"))return;
  commit(()=>model().openings.push(opening));setSelection("opening",opening.id);
 }
 function joinedMove(original,updated,excludeId,originalWalls=null){
@@ -290,6 +293,7 @@ function changeStart(e){
   if(Math.abs(b.x-a.x)<.4||Math.abs(b.y-a.y)<.4){toast(t("房間長及闊最少 0.4 米；請選較遠的對角"));return;}
   const walls=rectangleWalls(a,b);
   if(!walls.length){toast(t("這個房間已有四面牆"));ui.pending=null;tool("select");return;}
+  if(!objectCapacity("walls",walls.length)){ui.pending=null;ui.wallStart=null;ui.wallCount=0;refresh();return;}
   commit(()=>model().walls.push(...walls));
   ui.pending=null;ui.cursor=null;ui.tool="select";refresh();
   toast(t("已建立 ")+$num(Math.abs(a.x-b.x))+" × "+$num(Math.abs(a.y-b.y))+t(" 米房間；下一步加門窗"));
@@ -299,6 +303,7 @@ function changeStart(e){
   if(!ui.pending){ui.pending=q;ui.wallStart=q;ui.wallCount=0;refresh();return;}
   if(G.length(ui.pending,q)<.1){toast(t("牆最少需要 0.1 米"));return;}
   const m=model(),next=G.wall([ui.pending.x,ui.pending.y],[q.x,q.y],{height:m.wallHeight,thickness:m.wallThickness,floor:ui.floor});
+  if(!objectCapacity("walls")){ui.pending=null;ui.wallStart=null;ui.wallCount=0;refresh();return;}
   commit(()=>m.walls.push(next));
   ui.wallCount++;
   if(ui.wallCount>=3&&G.length(q,ui.wallStart)<.05){
@@ -311,6 +316,7 @@ function changeStart(e){
   if(!ui.pending){ui.pending=q;render();return;}
   if(G.length(ui.pending,q)<.02){toast(t("請選兩個不同位置"));return;}
   const measurement={id:G.uid(),a:ui.pending,b:q,floor:ui.floor};
+  if(!objectCapacity("measurements")){ui.pending=null;refresh();return;}
   commit(()=>model().measurements.push(measurement));ui.pending=null;setSelection("measurement",measurement.id);return;
  }
  if(ui.tool==="door"||ui.tool==="window"){addOpening(ui.tool,w);return;}
@@ -338,8 +344,8 @@ function changeMove(e){
    if(Math.hypot(p.x-d.start.x,p.y-d.start.y)<4&&!d.moved)return;
    d.moved=true;
    const adj=v=>ui.snap?Math.round(v*20)/20:G.round(v,3);
-   obj.x=adj(d.original.x+at.x-d.origin.x);
-   obj.y=adj(d.original.y+at.y-d.origin.y);
+   obj.x=boundedPosition(adj(d.original.x+at.x-d.origin.x));
+   obj.y=boundedPosition(adj(d.original.y+at.y-d.origin.y));
    render();
   }
   return;
@@ -357,7 +363,7 @@ function changeMove(e){
  const adj=v=>ui.snap?Math.round(v*20)/20:G.round(v,3);
  const obj=getObject();if(!obj)return;
  if(d.type==="furniture"){
-  obj.x=adj(d.original.x+dx);obj.y=adj(d.original.y+dy);
+  obj.x=boundedPosition(adj(d.original.x+dx));obj.y=boundedPosition(adj(d.original.y+dy));
  }else if(d.type==="wall"){
   const nextA=G.point(adj(d.original.a.x+dx),adj(d.original.a.y+dy));
   const nextB=G.point(adj(d.original.b.x+dx),adj(d.original.b.y+dy));
@@ -495,15 +501,16 @@ function rotateSelected(){
 }
 function duplicateSelected(){
  const o=getObject();if(!o||ui.selected.kind!=="furniture")return;
- const clone=JSON.parse(JSON.stringify(o));clone.id=G.uid();clone.name=o.name+t(" 副本");clone.x+=.3;clone.y+=.3;clone.locked=false;
+ if(!objectCapacity("furniture"))return;
+ const clone=JSON.parse(JSON.stringify(o));clone.id=G.uid();clone.name=o.name+t(" 副本");clone.x=boundedPosition(clone.x+.3);clone.y=boundedPosition(clone.y+.3);clone.locked=false;
  commit(()=>model().furniture.push(clone));setSelection("furniture",clone.id);
 }
 function addFurniture(type){
- const c=G.catalog.find(v=>v.type===type);if(!c)return;
+ const c=G.catalog.find(v=>v.type===type);if(!c||!objectCapacity("furniture"))return;
  const center=R.toWorld({x:canvas.clientWidth/2,y:canvas.clientHeight/2},ui.view,canvas.clientWidth,canvas.clientHeight);
  const b=G.getBounds(visibleModel(),ui.floor);
  const where=ui.mode==="3d"?{x:b.cx,y:b.cy}:center;
- const f={id:G.uid(),type:c.type,name:c.name,x:G.round(where.x,2),y:G.round(where.y,2),w:c.w,d:c.d,h:c.h,rotation:0,locked:false,color:c.color,floor:ui.floor};
+ const f={id:G.uid(),type:c.type,name:c.name,x:boundedPosition(G.round(where.x,2)),y:boundedPosition(G.round(where.y,2)),w:c.w,d:c.d,h:c.h,rotation:0,locked:false,color:c.color,floor:ui.floor};
  commit(()=>model().furniture.push(f));ui.mode="2d";ui.tool="select";ui.pending=null;ui.wallStart=null;ui.drag=null;$("furnitureDialog").close();refresh();setSelection("furniture",f.id);toast(t("已加入")+c.name+t("；現在可直接拖動，或於屬性修改尺寸"));
 }
 function field(label,key,value,step=".01",min=null,max=null){
@@ -599,8 +606,10 @@ function renderShopping(){
  const desc=document.createElement("div"),name=document.createElement("strong"),detail=document.createElement("small");name.textContent=row.name;detail.textContent=[row.w,row.d,row.h].map(fmt).join(" × ")+" · "+t("數量")+": "+row.count;desc.append(name,detail);
  const price=document.createElement("input");price.type="number";price.min="0";price.max="10000000";price.step=s.currency==="JPY"?"1":".01";price.inputMode="decimal";price.value=row.price===null?"":String(row.price/100);price.placeholder=t("未定價");price.setAttribute("aria-label",row.name+" "+t("單價"));
  const total=document.createElement("span");total.className="report-subtotal";total.textContent=row.total===null?"—":currencyAmount(row.total,s.currency);
- price.onchange=()=>{const value=price.value.trim(),n=Number(value);if(price.validity.badInput||value!==""&&(!Number.isFinite(n)||n<0||n>10000000||!Number.isInteger(Math.round(n*100))||s.currency==="JPY"&&!Number.isInteger(n))){price.value=row.price===null?"":String(row.price/100);return;}commit(()=>{const shop=G.cleanShopping(model().shopping);if(value==="")delete shop.prices[row.key];else shop.prices[row.key]=Math.round(n*100);model().shopping=shop;});total.textContent=value===""?"—":currencyAmount(Math.round(n*100)*row.count,s.currency);shoppingTotals();};
- line.append(desc,price,total);box.append(line);}
+ const priceWrap=document.createElement("div"),status=document.createElement("small");priceWrap.style.minWidth="0";status.id="shopping-input-status-"+G.uid();status.setAttribute("role","status");status.className="muted";price.setAttribute("aria-describedby",status.id);priceWrap.append(price,status);
+ const syncPrice=()=>{const cents=G.cleanShopping(model().shopping).prices[row.key]??null;price.value=cents===null?"":String(cents/100);total.textContent=cents===null?"—":currencyAmount(cents*row.count,s.currency);};
+ price.onchange=()=>{const value=price.value.trim(),n=Number(value);if(!price.checkValidity()||(value!==""&&!Number.isFinite(n))){syncPrice();status.textContent=t("Invalid value; previous value restored.");return;}commit(()=>{const shop=G.cleanShopping(model().shopping);if(value==="")delete shop.prices[row.key];else shop.prices[row.key]=Math.round(n*100);model().shopping=shop;});syncPrice();status.textContent="";shoppingTotals();};
+ line.append(desc,priceWrap,total);box.append(line);}
  if(!s.rows.length)box.textContent=t("沒有傢俬");shoppingTotals();
 }
 function showShopping(){$("projectsDialog").close();renderShopping();showDialog("shoppingDialog");}
@@ -608,8 +617,10 @@ function shoppingCsv(){const s=G.shoppingSummary(model()),rows=[["Name","Width (
 function budgetTotals(){const s=G.budgetSummary(model()),box=$("budgetSummary");box.innerHTML=row(t("工程合計"),currencyAmount(s.work,s.currency))+row(t("傢俬合計"),currencyAmount(s.furniture,s.currency))+row(t("預備金"),currencyAmount(s.contingency,s.currency))+row(t("預算合計"),currencyAmount(s.total,s.currency))+row(t("未定價項目"),s.unpriced);}
 function renderBudget(){const b=G.cleanBudget(model().budget),box=$("budgetRows");box.replaceChildren();$("budgetContingency").value=b.contingency;const note=$("budgetContingencyStatus");if(note)note.textContent="";
  for(const item of b.rows){const wrap=document.createElement("div");wrap.className="report-row budget-row";
- for(const [key,label,type,value] of [["name",t("工程項目"),"text",item.name],["qty",t("數量"),"number",item.qty],["cost",t("單價"),"number",item.cost===null?"":item.cost/100]]){const field=document.createElement("div"),l=document.createElement("label"),input=document.createElement("input");field.className="field";l.textContent=label;input.type=type;input.value=String(value);input.dataset.budgetProp=key;input.setAttribute("aria-label",label);if(type==="number"){input.min="0";input.step="0.01";input.max=key==="qty"?"100000":"10000000";}else input.maxLength=80;
- input.onchange=()=>{if(type==="number"&&(input.validity.badInput||Number(input.value)<0||Number(input.value)>Number(input.max))){input.value=String(value);return;}commit(()=>{const b=G.cleanBudget(model().budget),r=b.rows.find(r=>r.id===item.id);if(!r)return;r[key]=key==="name"?input.value.trim():key==="qty"?Number(input.value):input.value===""?null:Math.round(Number(input.value)*100);model().budget=b;});budgetTotals();};field.append(l,input);wrap.append(field);}
+ for(const [key,label,type,value] of [["name",t("工程項目"),"text",item.name],["qty",t("數量"),"number",item.qty],["cost",t("單價"),"number",item.cost===null?"":item.cost/100]]){const field=document.createElement("div"),l=document.createElement("label"),input=document.createElement("input");field.className="field";l.textContent=label;input.type=type;input.value=String(value);input.dataset.budgetProp=key;input.setAttribute("aria-label",label);if(type==="number"){input.min="0";input.step=key==="cost"&&G.cleanShopping(model().shopping).currency==="JPY"?"1":"0.01";input.max=key==="qty"?"100000":"10000000";input.required=key==="qty";}else input.maxLength=80;
+ const status=document.createElement("small");status.id="budget-input-status-"+G.uid();status.className="muted";status.setAttribute("role","status");input.setAttribute("aria-describedby",status.id);
+ const syncInput=()=>{const r=G.cleanBudget(model().budget).rows.find(r=>r.id===item.id);if(r)input.value=key==="cost"?(r.cost===null?"":String(r.cost/100)):String(r[key]);};
+ input.onchange=()=>{if(type==="number"&&(!input.checkValidity()||(input.value!==""&&!Number.isFinite(Number(input.value))))){syncInput();status.textContent=t("Invalid value; previous value restored.");return;}commit(()=>{const b=G.cleanBudget(model().budget),r=b.rows.find(r=>r.id===item.id);if(!r)return;r[key]=key==="name"?input.value.trim():key==="qty"?Number(input.value):input.value===""?null:Math.round(Number(input.value)*100);model().budget=b;});syncInput();status.textContent="";budgetTotals();};field.append(l,input,status);wrap.append(field);}
  const del=document.createElement("button");del.className="danger";del.textContent=t("刪除");del.onclick=()=>{commit(()=>{const b=G.cleanBudget(model().budget);b.rows=b.rows.filter(r=>r.id!==item.id);model().budget=b;});renderBudget();};wrap.append(del);box.append(wrap);}
  budgetTotals();}
 function showBudget(){$("projectsDialog").close();renderBudget();showDialog("budgetDialog");}
@@ -944,10 +955,10 @@ function bind(){
    const obj=getObject();if(obj&&!obj.locked){
     e.preventDefault();const delta=e.shiftKey?.25:.05;
     commit(()=>{
-     if(e.key==="ArrowLeft")obj.x=G.round(obj.x-delta,3);
-     if(e.key==="ArrowRight")obj.x=G.round(obj.x+delta,3);
-     if(e.key==="ArrowUp")obj.y=G.round(obj.y-delta,3);
-     if(e.key==="ArrowDown")obj.y=G.round(obj.y+delta,3);
+     if(e.key==="ArrowLeft")obj.x=boundedPosition(G.round(obj.x-delta,3));
+     if(e.key==="ArrowRight")obj.x=boundedPosition(G.round(obj.x+delta,3));
+     if(e.key==="ArrowUp")obj.y=boundedPosition(G.round(obj.y-delta,3));
+     if(e.key==="ArrowDown")obj.y=boundedPosition(G.round(obj.y+delta,3));
     });return;
    }
   }
