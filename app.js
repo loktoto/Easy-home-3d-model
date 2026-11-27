@@ -579,6 +579,14 @@ function buildHome(){
  state.projects.push(p);state.activeId=p.id;clearUndo();saveNow();$("homeDialog").close();fit();refresh();
  toast(t("已建立")+model().floorCount+t(" 層家居：")+model().walls.length+t(" 幅牆 · ")+model().openings.length+t(" 個門窗 · ")+model().furniture.length+t(" 件傢俬"));
 }
+function renderClearance(){
+ const box=$("clearanceList"),n=Number($("clearanceLimit").value);box.replaceChildren();const heading=document.createElement("strong");heading.textContent=t("淨距提示");box.append(heading);
+ if(!Number.isFinite(n)||n<0||n>100)return;
+ const items=G.clearanceWarnings(model(),n/100);
+ if(!items.length){const p=document.createElement("p");p.className="muted";p.textContent=t("沒有低於設定值的淨距。");box.append(p);}
+ for(const item of items.slice(0,100)){const div=document.createElement("div");div.className="issue";div.textContent=item.name+" · "+t(item.kind==="wall"?"與牆身":"傢俬之間")+" · "+fmt(item.distance);box.append(div);}
+ const note=document.createElement("small");note.className="muted";note.textContent=t("只檢查同層平面幾何，不代表通行或消防合規。");box.append(note);
+}
 function checkPlan(){
  const issues=G.validate(model()),box=$("checkList");
  if(!issues.length){
@@ -587,7 +595,7 @@ function checkPlan(){
   box.innerHTML=issues.map(v=>'<div class="issue '+esc(v.severity)+'"><strong>'+(v.severity==="error"?t("必須修正"):t("建議檢查"))+'</strong><span>'+esc(v.message)+'</span></div>').join("")+
    t('<p class="tip">以上為平面幾何檢查；承重牆、消防及建築法規仍需合資格人士核對。</p>');
  }
- showDialog("checkDialog");
+ renderClearance();showDialog("checkDialog");
 }
 function floorLabel(i){return i===0?t("地下 G/F"):i+"/F";}
 function floorCount(){return G.clamp(Math.round(Number(model().floorCount)||1),1,5);}
@@ -641,7 +649,7 @@ function bind(){
  $("projectsButton").onclick=()=>{renderProjects();showDialog("projectsDialog");};
  $("buildButton").onclick=()=>{previewHome();showDialog("homeDialog");};
  $("startBuild").onclick=()=>{previewHome();showDialog("homeDialog");};
- $("checkButton").onclick=checkPlan;
+ $("checkButton").onclick=checkPlan;$("clearanceLimit").oninput=renderClearance;
  $("homeWidth").addEventListener("input",previewHome);$("homeDepth").addEventListener("input",previewHome);
  $("homeBedrooms").addEventListener("change",previewHome);$("homeFloors").addEventListener("change",previewHome);
  $("buildHome").onclick=buildHome;

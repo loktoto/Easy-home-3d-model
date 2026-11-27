@@ -60,7 +60,7 @@ function segmentDistance(a,b,c,d){
 function furnitureClearances(f,walls){
  const poly=furnitureCorners(f);const result=[];
  for(let i=0;i<walls.length;i++){
-  const wall=walls[i];let d=Infinity;
+  const wall=walls[i];if((Number(wall.floor)||0)!==(Number(f.floor)||0))continue;let d=inPoly(wall.a,poly)||inPoly(wall.b,poly)?0:Infinity;
   for(let k=0;k<4;k++)d=Math.min(d,segmentDistance(poly[k],poly[(k+1)%4],wall.a,wall.b));
   result.push({wallId:wall.id,index:i+1,distance:round(Math.max(0,d-wall.thickness/2),3)});
  }
@@ -68,6 +68,7 @@ function furnitureClearances(f,walls){
 }
 function furnitureIntersectsWall(f,w){
  const poly=furnitureCorners(f);
+ if(inPoly(w.a,poly)||inPoly(w.b,poly))return true;
  for(let i=0;i<4;i++)if(segmentDistance(poly[i],poly[(i+1)%4],w.a,w.b)<Math.max(.02,w.thickness/2-.01))return true;
  return false;
 }
@@ -75,10 +76,23 @@ function furnitureOverlap(a,b){
  const A=furnitureCorners(a),B=furnitureCorners(b),TOL=.01;
  for(const poly of [A,B])for(let i=0;i<4;i++){
   const p=poly[i],q=poly[(i+1)%4],axis={x:-(q.y-p.y),y:q.x-p.x};
+  const norm=Math.hypot(axis.x,axis.y)||1;axis.x/=norm;axis.y/=norm;
   const pa=A.map(v=>v.x*axis.x+v.y*axis.y),pb=B.map(v=>v.x*axis.x+v.y*axis.y);
   if(Math.max(...pa)<=Math.min(...pb)+TOL||Math.max(...pb)<=Math.min(...pa)+TOL)return false;
  }
  return true;
+}
+function furnitureGap(a,b){
+ if((Number(a.floor)||0)!==(Number(b.floor)||0))return Infinity;
+ if(furnitureOverlap(a,b))return 0;
+ const A=furnitureCorners(a),B=furnitureCorners(b);if(inPoly(A[0],B)||inPoly(B[0],A))return 0;
+ let d=Infinity;for(let i=0;i<4;i++)for(let j=0;j<4;j++)d=Math.min(d,segmentDistance(A[i],A[(i+1)%4],B[j],B[(j+1)%4]));return d;
+}
+function clearanceWarnings(model,limit=.1){
+ const out=[],f=model.furniture||[],walls=model.walls||[];
+ for(const a of f){const nearest=furnitureClearances(a,walls)[0];if(nearest&&nearest.distance<limit)out.push({kind:"wall",id:a.id,name:a.name,distance:nearest.distance});}
+ for(let i=0;i<f.length;i++)for(let j=i+1;j<f.length;j++){const d=furnitureGap(f[i],f[j]);if(d<limit)out.push({kind:"furniture",id:f[i].id,name:f[i].name+" / "+f[j].name,distance:d});}
+ return out.sort((a,b)=>a.distance-b.distance);
 }
 function inPoly(pt,poly){
  let inside=false;
@@ -188,7 +202,7 @@ function validate(model){
  const issues=[],add=(severity,code,message,ids)=>issues.push({severity,code,message,ids:ids||[]});
  const m=model||{},walls=Array.isArray(m.walls)?m.walls:[],openings=Array.isArray(m.openings)?m.openings:[],furniture=Array.isArray(m.furniture)?m.furniture:[];
  const floorOf=v=>clamp(Math.round(num(v.floor,0)),0,Math.max(0,num(m.floorCount,1)-1));
- if(!walls.length){add("warning","empty",t("圖則尚沒有牆身，先畫第一間房。"));return issues;}
+ if(!walls.length)add("warning","empty",t("圖則尚沒有牆身，先畫第一間房。"));
  for(const w of walls)if(length(w.a,w.b)<.1)add("error","short-wall",t("有牆身短於 0.1 米。"),[w.id]);
  const ends=[];walls.forEach(w=>{ends.push({p:w.a,id:w.id,wall:w});ends.push({p:w.b,id:w.id,wall:w});});
  const dangling=new Set();
@@ -271,7 +285,7 @@ function parseUnit(value,unit){
 }
 function formatLength(m,unit="m"){if(unit==="ft-in"){const sign=m<0?"-":"",inch=Math.abs(m)/.0254;let feet=Math.floor(inch/12),rest=round(inch-feet*12,2);if(rest>=12){feet++;rest=0;}return sign+feet+"' "+rest+'"';}return (unit==="m"?round(m,2).toFixed(2):String(round(m*(factors[unit]||1),unit==="mm"?1:2)))+" "+unit;}
 function formatArea(m,unit="m"){const f=unit==="ft-in"?1/.3048:(factors[unit]||1);return round(m*f*f,2)+" "+(unit==="ft-in"?"ft":unit)+"²";}
-const api={units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
+const api={furnitureGap,clearanceWarnings,units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.EasyHomeCore=api;
 })(typeof window!=="undefined"?window:globalThis);

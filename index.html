@@ -120,7 +120,7 @@
 <dialog id="checkDialog" class="dialog">
   <div class="dialog-head"><h2>圖則檢查</h2><button class="close-dialog" data-close="checkDialog" aria-label="關閉">✕</button></div>
   <p class="muted">即時檢查門窗重疊、開口高度、未接合牆身及傢俬碰撞；只作規劃輔助，不取代專業核對。</p>
-  <div id="checkList" class="check-list"></div>
+  <div id="checkList" class="check-list"></div><div class="field"><label for="clearanceLimit">最小建議淨距 (cm)</label><input id="clearanceLimit" type="number" min="0" max="100" value="10" step="1"></div><div id="clearanceList" class="check-list" aria-live="polite"></div>
   <div class="dialog-actions"><button class="primary" data-close="checkDialog">知道了</button></div>
 </dialog>
 <input id="importFile" type="file" accept=".json,application/json" hidden>

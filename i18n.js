@@ -2,6 +2,7 @@
 (function(){
 "use strict";
 const messages={
+"最小建議淨距 (cm)":["Suggested minimum clearance (cm)","最小建议净距 (cm)"],"淨距提示":["Clearance notices","净距提示"],"沒有低於設定值的淨距。":["No gaps below the chosen threshold.","没有低于设定值的净距。"],"與牆身":["to wall","与墙体"],"傢俬之間":["between furniture","家具之间"],"只檢查同層平面幾何，不代表通行或消防合規。":["Same-floor planar geometry only; not a circulation or fire compliance check.","仅检查同层平面几何，不代表通行或消防合规。"],
 "尺寸單位":["Measurement units","尺寸单位"],"目前單位：":["Units: ","当前单位："],
 "外觀":["Appearance","外观"],
 "深色":["Dark","深色"],
