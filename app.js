@@ -88,6 +88,32 @@ function setSelection(kind,id){
  ui.selected=id?{kind,id}:null;renderInspector();render();
  if(ui.selected&&window.matchMedia("(max-width:780px)").matches)$("inspector").classList.add("open");
 }
+const planSymbolNames={wall:"牆身",door:"門",window:"窗",furniture:"傢俬",measurement:"量度線"};
+function renderPlanHud(){
+ const m=model(),meta=G.cleanPlanMeta(m.planMeta),symbols=G.planSymbols(m,ui.floor),visible=ui.mode==="2d"&&symbols.length>0;
+ $("northArrow").hidden=!visible;$("planHud").hidden=!visible;
+ if(!visible)return;
+ $("northDial").style.transform="rotate("+meta.north+"deg)";$("northLabel").textContent="N "+meta.north+"°";
+ const scale=G.niceScale(ui.view.scale,Math.min(92,canvas.clientWidth*.23));
+ $("scaleBarFill").style.width=scale.pixels+"px";$("scaleBarText").textContent=G.formatLength(scale.meters,unit);
+ const legend=$("planLegendBox");legend.hidden=!meta.legend;
+ const key=symbols.join(",");if(legend.dataset.symbols!==key){legend.dataset.symbols=key;legend.replaceChildren();for(const k of symbols){const x=document.createElement("span");x.dataset.symbol=k;x.textContent=t(planSymbolNames[k]);legend.append(x);}}
+}
+function updatePlanMeta(patch){commit(()=>{model().planMeta=G.cleanPlanMeta({...G.cleanPlanMeta(model().planMeta),...patch});});saveNow();}
+function showPlanStats(){
+ if($("projectsDialog").open)$("projectsDialog").close();
+ const m=model(),meta=G.cleanPlanMeta(m.planMeta),s=G.planAreas(m,ui.floor);
+ const format=(v)=>G.round(v,2)+" m²",other=v=>G.round(v/.09290304,1)+" ft² · "+G.round(v/3.305785,2)+" 坪";
+ for(const [id,v] of [["planGross",s.gross],["planNet",s.net]]){const el=$(id);el.textContent=s.available?format(v):"—";el.dataset.area=s.available?String(v):"";$(id+"Other").textContent=s.available?other(v):"";}
+ $("planAreaUnavailable").hidden=s.available&&s.gross>0;
+ $("northDegrees").value=meta.north;$("planNorthStatus").textContent="N "+meta.north+"°";
+ $("planLegend").checked=meta.legend;$("planDoorSwing").checked=meta.doorSwing;$("planGrid").checked=meta.grid;
+ const rooms=$("planRooms");rooms.replaceChildren();s.rooms.forEach((r,i)=>{const row=document.createElement("p");row.textContent=(i+1)+". "+format(r.net)+" · "+t("周長")+" "+G.formatLength(r.perimeter,unit);rooms.append(row);});
+ if(!s.rooms.length)rooms.textContent="—";
+ const list=$("openingSchedule");list.replaceChildren();const count={door:0,window:0};
+ for(const o of m.openings){const w=m.walls.find(v=>v.id===o.wallId);if(!w||!count.hasOwnProperty(o.type))continue;const b=document.createElement("button");b.type="button";b.dataset.opening=o.id;b.textContent=(o.type==="door"?"D":"W")+(++count[o.type])+" · "+floorLabel(Number(w.floor)||0)+" · "+t(o.type==="door"?"門":"窗")+" · "+fmt(o.width)+" × "+fmt(o.height);b.onclick=()=>{ $("planStatsDialog").close();setFloor(Number(w.floor)||0);mode("2d");fit();const p=G.lerp(w.a,w.b,o.offset/G.length(w.a,w.b));ui.view.panX=-p.x*ui.view.scale;ui.view.panY=-p.y*ui.view.scale;setSelection("opening",o.id);};list.append(b);}
+ if(!list.children.length)list.textContent="—";showDialog("planStatsDialog");
+}
 function render(){
  if(drawRequested)return;drawRequested=true;
  requestAnimationFrame(()=>{
@@ -100,7 +126,7 @@ function render(){
   }
   ctx.setTransform(dpr,0,0,dpr,0,0);
   const trace=(model().traces||[]).find(q=>q.floor===ui.floor);const traceImage=trace?getTraceImage(trace.data):null;
-  ui.hits=R.draw(canvas,ctx,model(),{...ui,floor:ui.floor,unit,trace,traceImage});
+  ui.hits=R.draw(canvas,ctx,model(),{...ui,floor:ui.floor,unit,trace,traceImage,avoidLabelOverlap:true});renderPlanHud();
  });
 }
 function refresh(){
@@ -592,7 +618,7 @@ function pdfCanvas(){
  if(branded){const client=G.cleanClient(model().client),summary=G.budgetSummary(model());c.font=Math.round(3*ppm)+"px system-ui";c.fillText([active().name,client.client,client.reference,summary.unpriced? t("已定價合計"):t("預算合計"),currencyAmount(summary.total,summary.currency)].filter(Boolean).join(" · "),margin,Math.round(24*ppm),w-2*margin-(brand.logo?40*ppm:0));}
  if(fits){
   const surface={clientWidth:pw,clientHeight:ph},old=document.documentElement.dataset.theme;document.documentElement.dataset.theme="light";
-  try{c.save();c.translate(margin,top);c.beginPath();c.rect(0,0,pw,ph);c.clip();R.draw(surface,c,m,{...ui,mode:"2d",unit:"m",selected:null,pending:null,cursor:null,drag:null,view:{scale:s,panX:-b.cx*s,panY:-b.cy*s},floor:ui.floor,dimensions:true,avoidLabelOverlap:true});c.restore();}finally{document.documentElement.dataset.theme=old;}
+  try{c.save();c.translate(margin,top);c.beginPath();c.rect(0,0,pw,ph);c.clip();R.draw(surface,c,m,{...ui,mode:"2d",unit:"m",selected:null,pending:null,cursor:null,drag:null,view:{scale:s,panX:-b.cx*s,panY:-b.cy*s},floor:ui.floor,dimensions:true,avoidLabelOverlap:true,planDecorations:true});c.restore();}finally{document.documentElement.dataset.theme=old;}
  }else{c.fillStyle="#a52131";c.fillText(t("圖則太大，請選較小比例或較大紙張。"),margin,top+30);}
  const y=h-Math.round(14*ppm),bar=50*ppm;c.strokeStyle="#172b2a";c.lineWidth=2;c.beginPath();c.moveTo(margin,y);c.lineTo(margin+bar,y);c.moveTo(margin,y-12);c.lineTo(margin,y+12);c.moveTo(margin+bar,y-12);c.lineTo(margin+bar,y+12);c.stroke();
  c.font=Math.round(3*ppm)+"px system-ui";c.fillStyle="#172b2a";c.fillText("50 mm calibration · Print at 100% · Verify dimensions on site",margin,y-18,w-2*margin);
@@ -687,7 +713,7 @@ function exportPNG(){
  const button=$("downloadPng");button.disabled=true;$("pngStatus").textContent=t("產生圖片中…");
  try{
   c.setTransform(scale,0,0,scale,0,0);
-  const surface={clientWidth:width,clientHeight:height},opts={...ui,selected:null,pending:null,cursor:null,drag:null,floor:ui.floor,unit,avoidLabelOverlap:true};
+  const surface={clientWidth:width,clientHeight:height},opts={...ui,selected:null,pending:null,cursor:null,drag:null,floor:ui.floor,unit,avoidLabelOverlap:true,planDecorations:true};
   if(fitted){
    const b=G.getBounds(model(),mode==="2d"?ui.floor:undefined);
    if(mode==="2d"){
@@ -754,6 +780,7 @@ function checkPlan(){
   box.innerHTML=issues.map(v=>'<div class="issue '+esc(v.severity)+'"><strong>'+(v.severity==="error"?t("必須修正"):t("建議檢查"))+'</strong><span>'+esc(v.message)+'</span></div>').join("")+
    t('<p class="tip">以上為平面幾何檢查；承重牆、消防及建築法規仍需合資格人士核對。</p>');
  }
+ const swing=$("doorSwingList");swing.replaceChildren();for(const q of G.doorSwingWarnings(model())){const x=document.createElement("div");x.className="issue";x.textContent=t(q.code==="door-swing-door"?"門弧互相重疊":"傢俬阻礙門弧")+(q.name?" · "+q.name:"");swing.append(x);}
  renderClearance();showDialog("checkDialog");
 }
 function floorLabel(i){return i===0?t("地下 G/F"):i+"/F";}
@@ -769,7 +796,7 @@ function renderFloors(){
 function setFloor(i){
  const next=G.clamp(Math.round(i),0,floorCount()-1);
  ui.floor=next;ui.selected=null;ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.drag=null;
- $("inspector").classList.remove("open");refresh();toast(t("已切換到")+floorLabel(next));
+ $("inspector").classList.remove("open");if(ui.mode==="3d")fit3D();refresh();toast(t("已切換到")+floorLabel(next));
 }
 function addFloor(){
  const count=floorCount();if(count>=5)return toast(t("最多支援 5 層"));
@@ -784,7 +811,7 @@ function removeFloor(){
   for(const key of ["walls","openings","furniture","measurements"])m[key]=m[key].filter(v=>(Number(v.floor)||0)!==top);
   m.floorCount=top;if(m.traces)m.traces=G.cleanTraces(m.traces,top);
  });
- ui.floor=Math.min(ui.floor,top-1);refresh();toast(t("已刪除")+floorLabel(top));
+ ui.floor=Math.min(ui.floor,top-1);if(ui.mode==="3d")fit3D();refresh();toast(t("已刪除")+floorLabel(top));
 }
 const themeKey="easy-home-3d:theme:v1",systemTheme=matchMedia("(prefers-color-scheme: dark)");
 let theme="dark";try{const v=localStorage.getItem(themeKey);if(["dark","light","system"].includes(v))theme=v;}catch(e){}
@@ -792,6 +819,16 @@ function applyTheme(){document.documentElement.dataset.theme=theme==="system"?(s
 function setWizardUnits(oldUnit){for(const id of ["homeWidth","homeDepth"]){const input=$(id),m=G.parseUnit(input.value,oldUnit);input.type=unit==="ft-in"?"text":"number";input.inputMode=unit==="ft-in"?"text":"decimal";input.value=G.unitValue(Number.isFinite(m)?m:8,unit);if(unit!=="ft-in"){input.min=G.unitValue(4,unit);input.max=G.unitValue(24,unit);input.step="any";}else{input.removeAttribute("min");input.removeAttribute("max");input.removeAttribute("step");}const label=document.querySelector('label[for="'+id+'"]');label.textContent=label.textContent.replace(/\s*\([^)]*\)$/,"")+" ("+unitLabel()+")";}}
 function updateCatalogUnits(){[...$("furnitureCatalog").querySelectorAll("small")].forEach((el,i)=>{const c=G.catalog[i];if(c)el.textContent=[c.w,c.d,c.h].map(fmt).join(" × ");});}
 function bind(){
+ $("planStatsButton").onclick=showPlanStats;$("northArrow").onclick=showPlanStats;
+ $("northDegrees").onchange=e=>{if(!e.target.value.trim()||!Number.isFinite(Number(e.target.value)))return;updatePlanMeta({north:Number(e.target.value)});const n=G.cleanPlanMeta(model().planMeta).north;e.target.value=n;$("planNorthStatus").textContent="N "+n+"°";};
+ for(const [id,key] of [["planLegend","legend"],["planDoorSwing","doorSwing"],["planGrid","grid"]])$(id).onchange=e=>updatePlanMeta({[key]:e.target.checked});
+ let northDrag=null;
+ $("northArrow").onpointerdown=e=>{northDrag={x:e.clientX,y:e.clientY,north:G.cleanPlanMeta(model().planMeta).north,id:e.pointerId,moved:false};$("northArrow").setPointerCapture(e.pointerId);};
+ $("northArrow").onpointermove=e=>{if(!northDrag||northDrag.id!==e.pointerId)return;const delta=e.clientX-northDrag.x+(e.clientY-northDrag.y);if(Math.abs(delta)<6&&!northDrag.moved)return;northDrag.moved=true;northDrag.next=((Math.round(northDrag.north+delta*2)%360)+360)%360;$("northDial").style.transform="rotate("+northDrag.next+"deg)";$("northLabel").textContent="N "+northDrag.next+"°";};
+ $("northArrow").onpointerup=e=>{if(northDrag?.moved){const n=northDrag.next;$("northArrow").onclick=null;updatePlanMeta({north:n});setTimeout(()=>{$("northArrow").onclick=showPlanStats;},0);}northDrag=null;};
+ $("northArrow").onpointercancel=()=>{northDrag=null;renderPlanHud();};
+ $("northArrow").onkeydown=e=>{if(["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key)){e.preventDefault();updatePlanMeta({north:G.cleanPlanMeta(model().planMeta).north+((e.key==="ArrowLeft"||e.key==="ArrowDown")?-5:5)});}};
+
  $("unitSelect").value=unit;setWizardUnits("m");$("unitSelect").onchange=e=>{const old=unit;unit=e.target.value;try{localStorage.setItem(unitKey,unit);}catch(e){}setWizardUnits(old);updateCatalogUnits();refresh();};
  $("themeSelect").onchange=e=>{theme=e.target.value;try{localStorage.setItem(themeKey,theme);}catch(e){}applyTheme();};
  systemTheme.addEventListener("change",()=>{if(theme==="system")applyTheme();});applyTheme();
