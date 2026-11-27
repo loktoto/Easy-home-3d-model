@@ -114,3 +114,6 @@ html[lang="en"] .tool-scroll .tool{max-width:none}html[lang="en"] .start-buttons
 [data-theme="light"] .issue.error strong{color:#8e1b2c}
 [data-theme="light"] :is(button,a,input,select):focus-visible{outline-color:#11685a}
 [data-theme="light"] .save-status.error{color:#a52131}
+
+/* Imperial input needs room for feet and inches. */
+.field input[data-prop][type=text]{font-variant-numeric:tabular-nums;font-size:14px;min-width:0;padding-inline:7px}

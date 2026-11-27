@@ -499,7 +499,7 @@ function renderInspector(){
  }else if(s.kind==="furniture"){
   html='<div class="item-summary"><strong>'+esc(o.name)+'</strong><small>'+(o.locked?t("🔒 已鎖定位置"):t("可拖動及修改尺寸"))+'</small></div>'+
     t('<div class="field"><label for="objName">傢俬名稱</label><input id="objName" data-prop="name" maxlength="80" value="')+esc(o.name)+'"></div>'+
-    t('<h3>實際尺寸（米）</h3><div class="fields3">')+field(t("闊 (m)"),"w",o.w)+field(t("深 (m)"),"d",o.d)+field(t("高 (m)"),"h",o.h)+'</div>'+
+    '<h3>'+t('實際尺寸（米）').replace(/(?:（米）|\s*\(m\))$/,'')+' ('+unitLabel()+')</h3><div class="fields3"'+(unit==="ft-in"?' style="grid-template-columns:1fr"':'')+'>'+field(t("闊 (m)"),"w",o.w)+field(t("深 (m)"),"d",o.d)+field(t("高 (m)"),"h",o.h)+'</div>'+
     t('<h3>擺放位置</h3><div class="fields2">')+field(t("中心 X"),"x",o.x)+field(t("中心 Y"),"y",o.y)+field(t("旋轉 (°)"),"rotation",G.round(o.rotation*180/Math.PI,1),"1")+
     t('<div class="field"><label for="colorInput">顏色</label><input id="colorInput" data-prop="color" type="color" value="')+esc(o.color)+'"></div></div>'+
     row(t("底面積"),area(o.w*o.d))+
