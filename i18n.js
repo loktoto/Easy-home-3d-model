@@ -2,6 +2,10 @@
 (function(){
 "use strict";
 const messages={
+"外觀":["Appearance","外观"],
+"深色":["Dark","深色"],
+"淺色":["Light","浅色"],
+"跟隨系統":["System","跟随系统"],
 "匯出高清 PNG":["Export high-resolution PNG","导出高清 PNG"],
 "預設將整個圖則置中並留白，適合分享；也可匯出目前視角。不包括工具列。此圖片不保證印刷比例。":["Center the complete plan with margins, or export the current view. Toolbars are excluded. Print scale is not guaranteed.","默认将整张图纸居中并留白，适合分享；也可导出当前视角。不包括工具栏。此图片不保证印刷比例。"],
 "最長邊像素":["Longest side in pixels","最长边像素"],

@@ -659,7 +659,12 @@ function removeFloor(){
  });
  ui.floor=Math.min(ui.floor,top-1);if(ui.mode==="3d")fit3D();refresh();toast(t("已刪除")+floorLabel(top));
 }
+const themeKey="easy-home-3d:theme:v1",systemTheme=matchMedia("(prefers-color-scheme: dark)");
+let theme="dark";try{const v=localStorage.getItem(themeKey);if(["dark","light","system"].includes(v))theme=v;}catch(e){}
+function applyTheme(){document.documentElement.dataset.theme=theme==="system"?(systemTheme.matches?"dark":"light"):theme;$("themeSelect").value=theme;render();}
 function bind(){
+ $("themeSelect").onchange=e=>{theme=e.target.value;try{localStorage.setItem(themeKey,theme);}catch(e){}applyTheme();};
+ systemTheme.addEventListener("change",()=>{if(theme==="system")applyTheme();});applyTheme();
  $("localeSelect").addEventListener("change",e=>{saveNow();if($("saveStatus").classList.contains("error")){e.target.value=window.EasyHomeI18n.locale;return;}const url=new URL(location.href);url.searchParams.set("lang",e.target.value);location.replace(url.href);});
  $("view2d").onclick=()=>mode("2d");$("view3d").onclick=()=>mode("3d");
  $("floorTabs").addEventListener("click",e=>{const b=e.target.closest("[data-floor]");if(b)setFloor(Number(b.dataset.floor));});
