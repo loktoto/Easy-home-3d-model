@@ -96,6 +96,34 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
 html[lang="en"] .tool-scroll .tool{max-width:none}html[lang="en"] .start-buttons .ghost{white-space:normal}html[lang="en"] .identity h1{white-space:nowrap}html[lang="en"] .save-status{max-width:150px;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:420px){html[lang="en"] #projectsButton::after{font-size:10px}html[lang="en"] .project-head{min-width:45px}}
 
+/* Closed mobile inspector must not extend the document's scrollable viewport. */
+@media(max-width:780px){.workspace{overflow:hidden}.inspector:not(.open){visibility:hidden;pointer-events:none}.inspector.open{visibility:visible;pointer-events:auto}}
+
+/* Keep autosave status visible at narrow widths. */
+@media(max-width:780px){.project-head{position:relative;align-self:stretch;flex-direction:column;justify-content:center;gap:0}.project-head input{flex:none;width:100%;padding:5px}.save-status{display:block;font-size:9px;line-height:1.25;max-width:100%;overflow:hidden;text-overflow:ellipsis}.save-status.error{font-weight:800;white-space:normal;overflow:visible;font-size:9px}}
+
+/* P0 mobile target size and reachable inspector */
+@media(max-width:780px){
+ .toolbar .tab,.toolbar .tool,.floor-tab,.floor-act,.viewport-controls button,.panel-close,.close-dialog,.head-actions button{min-height:44px;min-width:44px}
+ .tool-top{gap:4px;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;flex-shrink:0}
+ .tool-scroll{mask-image:none;scroll-padding-inline:8px}
+ .inspector{max-height:55dvh;padding-bottom:max(15px,env(safe-area-inset-bottom));overscroll-behavior:contain}
+ .inspector:not(.open){visibility:hidden;pointer-events:none}
+ .inspector.open{visibility:visible;pointer-events:auto}
+ .project-head{min-width:45px}
+ .head-actions .subtle{min-width:44px}
+}
+
+/* Keep view tabs fixed while the independent floor rail can scroll. */
+@media(max-width:780px){
+ .tool-top{overflow:visible;min-width:0;align-items:center}
+ .tool-top .tabs{flex:0 0 auto}
+ .floor-bar{min-width:0;flex:1;overflow:hidden}
+ .floor-tabs{min-width:0;overflow-x:auto;scrollbar-width:thin;flex:1}
+ .floor-tab,.floor-act{flex:none}
+ .tool-top .floor-act{width:44px;min-width:44px}
+}
+
 /* Accessible light palette, scoped to user preference. */
 :root[data-theme="light"]{color-scheme:light;--bg:#f7f7f2;--panel:#fff;--line:#c3d0ca;--ink:#172b2a;--sub:#435954;--blue:#11685a;--blue-dark:#11685a;--mint:#11685a;--danger:#a52131}
 [data-theme="light"] :is(.top,.toolbar,.footer,.dialog,.inspector,.dialog-actions){background:#fff;color:var(--ink);border-color:var(--line)}
@@ -118,3 +146,4 @@ html[lang="en"] .tool-scroll .tool{max-width:none}html[lang="en"] .start-buttons
 /* Active tabs must retain high contrast after the generic light text rules. */
 [data-theme="light"] :is(.tab.active,.tool.active,.floor-tab.active,.primary){color:#fff;background:#11685a;border-color:#11685a}
 [data-theme="light"] :is(.tab.active,.tool.active,.floor-tab.active,.primary) :is(span,b,small){color:inherit}
+

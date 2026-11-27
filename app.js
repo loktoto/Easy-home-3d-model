@@ -1,4 +1,4 @@
-/* Easy Home 3D — browser editor. No tracking, account or server required. MIT © 2026 loktoto */
+/* Easy3DHome — browser editor. No tracking, account or server required. MIT © 2026 loktoto */
 (function(){
 "use strict";
 const G=window.EasyHomeCore,R=window.EasyHomeRenderer,t=window.EasyHomeI18n.t;
@@ -43,7 +43,7 @@ function saveNow(){
 }
 function scheduleSave(){
  active().updatedAt=new Date().toISOString();
- $("saveStatus").textContent=t("儲存中…");clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,250);
+ $("saveStatus").textContent=t("儲存中…");$("saveStatus").classList.remove("error");clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,250);
 }
 function snapshot(){return JSON.stringify(model());}
 function record(before){
@@ -51,9 +51,10 @@ function record(before){
  history.push(before);if(history.length>65)history.shift();future=[];scheduleSave();refresh();return true;
 }
 function commit(fn){
- const before=snapshot();fn();return record(before);
+ const before=snapshot();try{fn();}catch(err){active().data=JSON.parse(before);retainSelection();refresh();throw err;}return record(before);
 }
 function retainSelection(){
+ ui.floor=G.clamp(ui.floor,0,Math.max(0,(model().floorCount||1)-1));
  if(!ui.selected)return;
  const m=model(),array=ui.selected.kind==="wall"?m.walls:ui.selected.kind==="opening"?m.openings:
   ui.selected.kind==="furniture"?m.furniture:m.measurements;
@@ -127,15 +128,16 @@ function refresh(){
  $("selectionHint").textContent=ui.selected?t("已選取：")+(getObject()?.name||(ui.selected.kind==="wall"?t("牆身"):ui.selected.kind==="opening"?t("門窗"):t("量度"))):"";
  renderInspector();render();
 }
+function fit3D(){ui.orbit=R.fitOrbit(canvas,model(),ui.orbit);}
 function fit(){
  const bounds=G.getBounds(ui.mode==="3d"?model():visibleModel(),ui.mode==="3d"?undefined:ui.floor),w=canvas.clientWidth||800,h=canvas.clientHeight||550;
  ui.view.scale=G.clamp(Math.min(w/(bounds.width+2.5),h/(bounds.height+2.5)),18,145);
  ui.view.panX=-bounds.cx*ui.view.scale;ui.view.panY=-bounds.cy*ui.view.scale;
- ui.orbit.distance=1;render();
+ if(ui.mode==="3d")fit3D();else {ui.orbit.distance=1;delete ui.orbit.targetZ;}render();
 }
 function mode(next){
  if(next==="2d"&&ui.selected){const o=getObject();if(o&&(Number(o.floor)||0)!==ui.floor)ui.selected=null;}
- ui.mode=next;ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.drag=null;if(next==="3d")ui.tool="select";
+ ui.mode=next;ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.drag=null;if(next==="3d"){ui.tool="select";fit3D();}
  $("inspector").classList.remove("open");refresh();
 }
 function tool(next){
@@ -356,7 +358,7 @@ function updatePinch(e){
  const vals=[...touches.values()],a=vals[0],b=vals[1];
  const dist=Math.max(10,Math.hypot(a.x-b.x,a.y-b.y));
  const center={x:(a.x+b.x)/2,y:(a.y+b.y)/2},factor=dist/pinch.distance;
- if(ui.mode==="3d")ui.orbit.distance=G.clamp(pinch.orbitDistance/factor,.35,4);
+ if(ui.mode==="3d")ui.orbit.distance=G.clamp(pinch.orbitDistance/factor,.35,Math.max(4,pinch.orbitDistance*2));
  else{
   const w=canvas.clientWidth,h=canvas.clientHeight;
   ui.view.scale=G.clamp(pinch.scale*factor,12,400);
@@ -387,7 +389,7 @@ function escapeAction(){
 function editNumber(prop,value){
  if(!ui.selected)return;
  const obj=getObject();if(!obj)return;
- const n=Number(value);if(!Number.isFinite(n))return toast(t("請輸入有效數字"));
+ const n=Number(value);if(String(value).trim()===""||!Number.isFinite(n))return toast(t("請輸入有效數字"));
  const type=ui.selected.kind;
  commit(()=>{
   if(type==="wall"){
@@ -428,9 +430,9 @@ function editNumber(prop,value){
    if(!G.openingFits(candidate,model().openings))throw new Error(t("門窗位置重疊，請縮窄或移動至少 5 cm"));
    Object.assign(obj,candidate);
   }else if(type==="furniture"){
-   if(["w","d","h"].includes(prop))obj[prop]=G.clamp(n,.1,15);
+   if(["w","d","h"].includes(prop)){const max=prop==="h"?6:15;if(n<.1||n>max)throw new Error(t(max===6?"尺寸必須在 0.1 至 6 米之間":"尺寸必須在 0.1 至 15 米之間"));obj[prop]=n;}
    else if(["x","y"].includes(prop))obj[prop]=G.clamp(n,-1000,1000);
-   else if(prop==="rotation")obj.rotation=G.round(n*Math.PI/180,7);
+   else if(prop==="rotation")obj.rotation=G.round((((n%360)+360)%360)*Math.PI/180,7);
   }else if(type==="measurement"){
    if(["ax","ay","bx","by"].includes(prop)){const key=prop[0]==="a"?"a":"b",axis=prop[1]==="x"?"x":"y";obj[key][axis]=G.clamp(n,-1000,1000);}
   }
@@ -536,6 +538,19 @@ function createProject(demoMode=false){
  state.projects.push(p);state.activeId=p.id;clearUndo();saveNow();$("projectsDialog").close();fit();refresh();
  toast(demoMode?t("已新增示範圖則"):t("已新增空白平面圖"));
 }
+const templates=[{name:"小型一房住宅",width:6,depth:5,bedrooms:1,floors:1},{name:"兩房公寓",width:8,depth:6,bedrooms:2,floors:1},{name:"三房家庭住宅",width:10,depth:7,bedrooms:3,floors:1},{name:"雙層住宅",width:10,depth:8,bedrooms:3,floors:2}];
+function showTemplates(){
+ const list=$("templateList");list.replaceChildren();
+ for(const preset of templates){
+  const b=document.createElement("button"),name=document.createElement("strong"),details=document.createElement("small"),preview=document.createElement("canvas");
+  name.textContent=t(preset.name);details.textContent=preset.width+" × "+preset.depth+" m · "+preset.floors+t(" 層");
+  const m=generateHome({...preset,name:t(preset.name)}),w=200,h=112,bounds=G.getBounds(m,0),scale=Math.min(w/(bounds.width+1),h/(bounds.height+1));
+  preview.width=w;preview.height=h;preview.style.width="100%";preview.style.borderRadius="8px";preview.setAttribute("aria-hidden","true");
+  const c=preview.getContext("2d");if(c)R.draw({clientWidth:w,clientHeight:h},c,m,{mode:"2d",floor:0,view:{scale,panX:-bounds.cx*scale,panY:-bounds.cy*scale},dimensions:false,selected:null,tool:"select",orbit:ui.orbit});
+  b.append(preview,name,details);b.onclick=()=>{const p=newProject(generateHome({...preset,name:t(preset.name)}));state.projects.push(p);state.activeId=p.id;clearUndo();ui.mode="2d";ui.tool="select";saveNow();$("templatesDialog").close();fit();refresh();};list.append(b);
+ }
+ $("projectsDialog").close();showDialog("templatesDialog");
+}
 function exportJSON(){
  saveNow();
  const data=G.fileExport(model()),blob=new Blob([data],{type:"application/json;charset=utf-8"});
@@ -544,6 +559,34 @@ function exportJSON(){
  link.download="easy-home-3d-"+safe+".json";document.body.append(link);link.click();link.remove();
  setTimeout(()=>URL.revokeObjectURL(link.href),1200);toast(t("已下載 JSON 備份（包括傢俬及尺寸）"));
 }
+function exportPNG(){
+ const fitted=$("pngFraming").value==="fit",width=fitted?1200:canvas.clientWidth,height=fitted?800:canvas.clientHeight,longest=Number($("pngSize").value),mode=ui.mode;
+ if(!width||!height||![1600,2400,3200].includes(longest))return;
+ const scale=longest/Math.max(width,height),out=document.createElement("canvas");
+ out.width=Math.round(width*scale);out.height=Math.round(height*scale);
+ const c=out.getContext("2d");if(!c){$("pngStatus").textContent=t("無法建立圖片");return;}
+ const button=$("downloadPng");button.disabled=true;$("pngStatus").textContent=t("產生圖片中…");
+ try{
+  c.setTransform(scale,0,0,scale,0,0);
+  const surface={clientWidth:width,clientHeight:height},opts={...ui,selected:null,pending:null,cursor:null,drag:null,floor:ui.floor,avoidLabelOverlap:true};
+  if(fitted){
+   const b=G.getBounds(model(),mode==="2d"?ui.floor:undefined);
+   if(mode==="2d"){
+    const zoom=Math.min((width-160)/Math.max(1,b.width+.5),(height-160)/Math.max(1,b.height+.5));
+    opts.view={scale:zoom,panX:-b.cx*zoom,panY:-b.cy*zoom};
+   }else{
+    opts.orbit=R.fitOrbit(surface,model(),ui.orbit);
+   }
+  }
+  R.draw(surface,c,model(),opts);
+  out.toBlob(blob=>{
+   button.disabled=false;if(!blob){$("pngStatus").textContent=t("匯出失敗");return;}
+   const url=URL.createObjectURL(blob),link=document.createElement("a");
+   link.href=url;link.download="easy-home-3d-"+mode+"-"+longest+".png";document.body.append(link);link.click();link.remove();
+   setTimeout(()=>URL.revokeObjectURL(url),30000);$("pngStatus").textContent=t("圖片已產生");
+  },"image/png");
+ }catch(err){button.disabled=false;$("pngStatus").textContent=t("匯出失敗：")+err.message;}
+}
 async function importJSON(e){
  const file=e.target.files&&e.target.files[0];e.target.value="";if(!file)return;
  try{
@@ -551,7 +594,7 @@ async function importJSON(e){
   const data=G.fileImport(await file.text());
   const p=newProject(data);state.projects.push(p);state.activeId=p.id;clearUndo();
   saveNow();$("projectsDialog").close();fit();refresh();toast(t("成功匯入：")+p.name);
- }catch(err){alert(t("匯入失敗：")+err.message+t("\n\n只接受 Easy Home 3D 匯出的 JSON。"));}
+ }catch(err){alert(t("匯入失敗：")+err.message+t("\n\n只接受 Easy3DHome 匯出的 JSON。"));}
 }
 function wizardOptions(){
  return {width:Number($("homeWidth").value),depth:Number($("homeDepth").value),
@@ -561,7 +604,8 @@ function wizardOptions(){
 function generateHome(o){return Number(o.floors)>1?G.house(o):G.home(o);}
 function previewHome(){
  const o=wizardOptions();
- if(!Number.isFinite(o.width)||!Number.isFinite(o.depth))return;
+ if(!Number.isFinite(o.width)||!Number.isFinite(o.depth)||o.width<4||o.width>24||o.depth<4||o.depth>24){$("homePreview").textContent=t("總長及總闊必須在 4 至 24 米之間");$("buildHome").disabled=true;return;}
+ $("buildHome").disabled=false;
  const m=generateHome(o),issues=G.validate(m),errors=issues.filter(v=>v.severity==="error").length;
  $("homePreview").innerHTML='<div class="wizard-preview-grid">'+
   row(t("建築面積"),G.round(o.width*o.depth,2)+" m² × "+m.floorCount+t(" 層"))+row(t("睡房"),o.bedrooms+t(" 間"))+
@@ -570,7 +614,7 @@ function previewHome(){
 }
 function buildHome(){
  const o=wizardOptions();
- if(!Number.isFinite(o.width)||!Number.isFinite(o.depth))return toast(t("請輸入有效長度及闊度"));
+ if(!Number.isFinite(o.width)||!Number.isFinite(o.depth)||o.width<4||o.width>24||o.depth<4||o.depth>24)return toast(t("總長及總闊必須在 4 至 24 米之間"));
  const p=newProject(generateHome(o));
  state.projects.push(p);state.activeId=p.id;clearUndo();saveNow();$("homeDialog").close();fit();refresh();
  toast(t("已建立")+model().floorCount+t(" 層家居：")+model().walls.length+t(" 幅牆 · ")+model().openings.length+t(" 個門窗 · ")+model().furniture.length+t(" 件傢俬"));
@@ -598,7 +642,7 @@ function renderFloors(){
 function setFloor(i){
  const next=G.clamp(Math.round(i),0,floorCount()-1);
  ui.floor=next;ui.selected=null;ui.pending=null;ui.wallStart=null;ui.wallCount=0;ui.drag=null;
- $("inspector").classList.remove("open");refresh();toast(t("已切換到")+floorLabel(next));
+ $("inspector").classList.remove("open");if(ui.mode==="3d")fit3D();refresh();toast(t("已切換到")+floorLabel(next));
 }
 function addFloor(){
  const count=floorCount();if(count>=5)return toast(t("最多支援 5 層"));
@@ -613,7 +657,7 @@ function removeFloor(){
   for(const key of ["walls","openings","furniture","measurements"])m[key]=m[key].filter(v=>(Number(v.floor)||0)!==top);
   m.floorCount=top;
  });
- ui.floor=Math.min(ui.floor,top-1);refresh();toast(t("已刪除")+floorLabel(top));
+ ui.floor=Math.min(ui.floor,top-1);if(ui.mode==="3d")fit3D();refresh();toast(t("已刪除")+floorLabel(top));
 }
 const themeKey="easy-home-3d:theme:v1",systemTheme=matchMedia("(prefers-color-scheme: dark)");
 let theme="dark";try{const v=localStorage.getItem(themeKey);if(["dark","light","system"].includes(v))theme=v;}catch(e){}
@@ -639,6 +683,8 @@ function bind(){
  $("homeBedrooms").addEventListener("change",previewHome);$("homeFloors").addEventListener("change",previewHome);
  $("buildHome").onclick=buildHome;
  $("exportButton").onclick=exportJSON;
+ $("exportPngButton").onclick=()=>{$("projectsDialog").close();$("pngStatus").textContent="";showDialog("pngDialog");};
+ $("downloadPng").onclick=exportPNG;
  $("helpButton").onclick=()=>showDialog("helpDialog");
  $("addFurnitureButton").onclick=()=>showDialog("furnitureDialog");
  $("startWall").onclick=()=>tool("wall");
@@ -649,6 +695,7 @@ function bind(){
  };
  $("propertiesButton").onclick=()=>$("inspector").classList.toggle("open");
  $("closeInspector").onclick=()=>$("inspector").classList.remove("open");
+ $("templatesButton").onclick=showTemplates;
  $("newBlank").onclick=()=>createProject(false);$("newDemo").onclick=()=>createProject(true);
  $("importButton").onclick=()=>$("importFile").click();$("importFile").onchange=importJSON;
  document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>$((b.dataset.close)).close());
@@ -705,11 +752,14 @@ function bind(){
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();redo();}
  });
  window.addEventListener("beforeunload",saveNow);
- window.addEventListener("resize",render);
- if(window.ResizeObserver)new ResizeObserver(render).observe(canvas.parentElement);
+ window.addEventListener("pagehide",()=>{if(saveTimer!==null)saveNow();});
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&saveTimer!==null)saveNow();});
+ const resizeView=()=>{if(ui.mode==="3d")fit3D();render();};
+ window.addEventListener("resize",resizeView);
+ if(window.ResizeObserver)new ResizeObserver(resizeView).observe(canvas.parentElement);
 }
 function zoom(factor,at){
- if(ui.mode==="3d"){ui.orbit.distance=G.clamp(ui.orbit.distance/factor,.35,4);render();return;}
+ if(ui.mode==="3d"){ui.orbit.distance=G.clamp(ui.orbit.distance/factor,.35,Math.max(4,ui.orbit.distance*1.25));render();return;}
  const w=canvas.clientWidth,h=canvas.clientHeight;
  const loc=at||{x:w/2,y:h/2},before=R.toWorld(loc,ui.view,w,h);
  ui.view.scale=G.clamp(ui.view.scale*factor,12,400);

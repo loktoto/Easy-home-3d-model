@@ -6,7 +6,28 @@ const messages={
 "深色":["Dark","深色"],
 "淺色":["Light","浅色"],
 "跟隨系統":["System","跟随系统"],
- "Easy Home 3D · 免費開源裝修圖": [
+"匯出高清 PNG":["Export high-resolution PNG","导出高清 PNG"],
+"預設將整個圖則置中並留白，適合分享；也可匯出目前視角。不包括工具列。此圖片不保證印刷比例。":["Center the complete plan with margins, or export the current view. Toolbars are excluded. Print scale is not guaranteed.","默认将整张图纸居中并留白，适合分享；也可导出当前视角。不包括工具栏。此图片不保证印刷比例。"],
+"最長邊像素":["Longest side in pixels","最长边像素"],
+"構圖":["Framing","构图"],
+"完整圖則（橫向）":["Full plan (landscape)","完整图纸（横向）"],
+"目前視角":["Current view","当前视角"],
+"下載 PNG":["Download PNG","下载 PNG"],
+"無法建立圖片":["Unable to create image","无法创建图片"],
+"產生圖片中…":["Generating image…","正在生成图片…"],
+"匯出失敗":["Export failed","导出失败"],
+"圖片已產生":["Image generated","图片已生成"],
+"匯出失敗：":["Export failed: ","导出失败："],
+"設計模板":["Design templates","设计模板"],
+"選擇後建立獨立新專案，不會覆蓋現有圖則。尺寸為示範值，施工前請覆尺。":["Choose a template to create an independent project. Dimensions are examples; verify site measurements.","选择后创建独立新项目，不会覆盖现有图纸。尺寸为示例值，施工前请复尺。"],
+"小型一房住宅":["Compact one-bedroom home","小型一居室住宅"],
+"兩房公寓":["Two-bedroom apartment","两居室公寓"],
+"三房家庭住宅":["Three-bedroom family home","三居室家庭住宅"],
+"雙層住宅":["Two-storey home","双层住宅"],
+ "總長及總闊必須在 4 至 24 米之間":["Width and depth must be between 4 and 24 m","总长及总宽必须在 4 至 24 米之间"],
+ "尺寸必須在 0.1 至 6 米之間":["Dimension must be between 0.1 and 6 m","尺寸必须在 0.1 至 6 米之间"],
+ "尺寸必須在 0.1 至 15 米之間":["Dimension must be between 0.1 and 15 m","尺寸必须在 0.1 至 15 米之间"],
+ "Easy3DHome · 免費開源裝修圖": [
   "Easy3DHome · Free open-source floor planner",
   "Easy3DHome · 免费开源装修图"
  ],
@@ -310,7 +331,7 @@ const messages={
   "Done",
   "知道了"
  ],
- "Easy Home 3D — 免費開源的 2D 平面圖與 3D 裝修規劃工具。畫牆、加門窗、放傢俬、量尺寸、自動儲存。": [
+ "Easy3DHome — 免費開源的 2D 平面圖與 3D 裝修規劃工具。畫牆、加門窗、放傢俬、量尺寸、自動儲存。": [
   "Easy3DHome — free open-source 2D floor plan and 3D home planner. Draw walls, add openings and furniture, measure, and save locally.",
   "Easy3DHome — 免费开源的 2D 平面图与 3D 装修规划工具。画墙、添加门窗、放家具、测量尺寸、自动保存。"
  ],
@@ -950,7 +971,7 @@ const messages={
   "Import failed: ",
   "导入失败："
  ],
- "只接受 Easy Home 3D 匯出的 JSON。": [
+ "只接受 Easy3DHome 匯出的 JSON。": [
   "Only Easy3DHome JSON exports are supported.",
   "仅支持 Easy3DHome 导出的 JSON。"
  ],
