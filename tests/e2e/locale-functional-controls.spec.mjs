@@ -161,7 +161,7 @@ for(const locale of locales){
   expect(budget.toString('utf8')).toContain('"QA painting","3","USD","100","300"');expect(budget.toString('utf8')).toContain('"Total","","USD","","357.5"');
   await qa.shot(locale+'-budget');await closeDialog(page,'budgetDialog');
   await openProject(page,'clientButton');await page.locator('#clientName').fill('QA client '+locale);await page.locator('#clientReference').fill('Q-42');await page.locator('#clientStatus').selectOption('active');await page.locator('#clientNotes').fill('QA note');
-  await qa.shot(locale+'-client');await page.locator('#clientSave').click();await expectModel(page,m=>m.client.client,'QA client '+locale);
+  await qa.shot(locale+'-client');await page.locator('#clientSave').click();await expectModel(page,m=>m.client?.client,'QA client '+locale);
   await openProject(page,'brandButton');await page.locator('#brandCompany').fill('QA Studio');await page.locator('#brandTitle').fill('QA plan');await page.locator('#brandColor').fill('#11685a');
   const png=await page.evaluate(()=>{const c=document.createElement('canvas');c.width=400;c.height=200;const ctx=c.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,400,200);ctx.strokeStyle='#11685a';ctx.lineWidth=8;ctx.strokeRect(20,20,360,160);return c.toDataURL('image/png').split(',')[1];});
   await page.locator('#brandLogo').setInputFiles({name:'qa-logo.png',mimeType:'image/png',buffer:Buffer.from(png,'base64')});
