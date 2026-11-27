@@ -35,7 +35,7 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
  .project-head input{min-width:0;padding:8px 5px;letter-spacing:-.04em}
  .head-actions{gap:3px;flex:none}
  .head-actions .subtle{padding:8px 6px;font-size:0;min-height:36px}
- #projectsButton::after{content:"專案";font-size:11px}
+ #projectsButton::after{content:attr(data-short-label);font-size:11px}
  #exportButton::after{content:"⇩";font-size:18px}
 }
 
@@ -93,5 +93,11 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
 .mark{background:#11685A;color:#fff}
 :where(button,a,input,select):focus-visible{outline:3px solid #9BC5FF;outline-offset:3px}
 
-/* P0 show autosave status even on compact screens; do not hide errors. */
+html[lang="en"] .tool-scroll .tool{max-width:none}html[lang="en"] .start-buttons .ghost{white-space:normal}html[lang="en"] .identity h1{white-space:nowrap}html[lang="en"] .save-status{max-width:150px;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:420px){html[lang="en"] #projectsButton::after{font-size:10px}html[lang="en"] .project-head{min-width:45px}}
+
+/* Closed mobile inspector must not extend the document's scrollable viewport. */
+@media(max-width:780px){.workspace{overflow:hidden}.inspector:not(.open){visibility:hidden;pointer-events:none}.inspector.open{visibility:visible;pointer-events:auto}}
+
+/* Keep autosave status visible at narrow widths. */
 @media(max-width:780px){.project-head{position:relative;align-self:stretch;flex-direction:column;justify-content:center;gap:0}.project-head input{flex:none;width:100%;padding:5px}.save-status{display:block;font-size:9px;line-height:1.25;max-width:100%;overflow:hidden;text-overflow:ellipsis}.save-status.error{font-weight:800;white-space:normal;overflow:visible;font-size:9px}}
