@@ -1,20 +1,21 @@
-/* Easy Home 3D — geometry and document format. MIT © 2026 loktoto */
+/* Easy3DHome — geometry and document format. MIT © 2026 loktoto */
 (function(root){
 "use strict";
+const t=s=>root.EasyHomeI18n?root.EasyHomeI18n.t(s):s;
 const SCHEMA="easy-home-3d", VERSION=1, EPS=1e-8;
 const catalog=[
- {type:"sofa",name:"梳化",icon:"▰",w:2.1,d:0.88,h:0.85,color:"#6da9bf"},
- {type:"bed",name:"雙人床",icon:"▣",w:1.5,d:1.9,h:0.55,color:"#ad91d7"},
- {type:"single-bed",name:"單人床",icon:"▤",w:0.95,d:1.9,h:0.52,color:"#b19cd8"},
- {type:"table",name:"飯枱",icon:"▦",w:1.4,d:0.8,h:0.76,color:"#d4a66d"},
- {type:"chair",name:"椅子",icon:"▢",w:0.48,d:0.5,h:0.85,color:"#b7a18a"},
- {type:"desk",name:"書枱",icon:"▥",w:1.2,d:0.6,h:0.75,color:"#bd926b"},
- {type:"wardrobe",name:"衣櫃",icon:"▥",w:1.6,d:0.6,h:2.2,color:"#91a8c0"},
- {type:"shelf",name:"書架",icon:"▤",w:0.85,d:0.35,h:1.8,color:"#ba9971"},
- {type:"fridge",name:"雪櫃",icon:"▣",w:0.68,d:0.7,h:1.78,color:"#9aaebe"},
- {type:"kitchen",name:"廚櫃",icon:"▦",w:1.8,d:0.6,h:0.9,color:"#82aab5"},
- {type:"washer",name:"洗衣機",icon:"▧",w:0.6,d:0.6,h:0.85,color:"#95b8c9"},
- {type:"custom",name:"自訂方塊",icon:"◇",w:1,d:1,h:1,color:"#72bca6"}
+ {type:"sofa",name:t("梳化"),icon:"▰",w:2.1,d:0.88,h:0.85,color:"#6da9bf"},
+ {type:"bed",name:t("雙人床"),icon:"▣",w:1.5,d:1.9,h:0.55,color:"#ad91d7"},
+ {type:"single-bed",name:t("單人床"),icon:"▤",w:0.95,d:1.9,h:0.52,color:"#b19cd8"},
+ {type:"table",name:t("飯枱"),icon:"▦",w:1.4,d:0.8,h:0.76,color:"#d4a66d"},
+ {type:"chair",name:t("椅子"),icon:"▢",w:0.48,d:0.5,h:0.85,color:"#b7a18a"},
+ {type:"desk",name:t("書枱"),icon:"▥",w:1.2,d:0.6,h:0.75,color:"#bd926b"},
+ {type:"wardrobe",name:t("衣櫃"),icon:"▥",w:1.6,d:0.6,h:2.2,color:"#91a8c0"},
+ {type:"shelf",name:t("書架"),icon:"▤",w:0.85,d:0.35,h:1.8,color:"#ba9971"},
+ {type:"fridge",name:t("雪櫃"),icon:"▣",w:0.68,d:0.7,h:1.78,color:"#9aaebe"},
+ {type:"kitchen",name:t("廚櫃"),icon:"▦",w:1.8,d:0.6,h:0.9,color:"#82aab5"},
+ {type:"washer",name:t("洗衣機"),icon:"▧",w:0.6,d:0.6,h:0.85,color:"#95b8c9"},
+ {type:"custom",name:t("自訂方塊"),icon:"◇",w:1,d:1,h:1,color:"#72bca6"}
 ];
 const num=(n,def=0)=>typeof n==="number"&&Number.isFinite(n)?n:def;
 const clamp=(n,min,max)=>Math.min(max,Math.max(min,n));
@@ -87,11 +88,11 @@ function inPoly(pt,poly){
  return inside;
 }
 function empty(name){
- return {schema:SCHEMA,version:VERSION,name:name||"我的平面圖",wallHeight:2.7,wallThickness:0.13,floorCount:1,floorHeight:3,walls:[],openings:[],furniture:[],measurements:[]};
+ return {schema:SCHEMA,version:VERSION,name:name||t("我的平面圖"),wallHeight:2.7,wallThickness:0.13,floorCount:1,floorHeight:3,walls:[],openings:[],furniture:[],measurements:[]};
 }
 function wall(a,b,extra){return Object.assign({id:uid(),a:point(a[0],a[1]),b:point(b[0],b[1]),height:2.7,thickness:0.13,floor:0},extra||{});}
 function demo(name){
- const m=empty(name||"示範：6 × 4.5 米");
+ const m=empty(name||t("示範：6 × 4.5 米"));
  const coords=[[[0,0],[6,0]],[[6,0],[6,4.5]],[[6,4.5],[0,4.5]],[[0,4.5],[0,0]],[[2.5,0],[2.5,2.4]],[[0,2.4],[2.5,2.4]]];
  m.walls=coords.map(c=>wall(c[0],c[1]));
  m.openings=[
@@ -106,7 +107,7 @@ function demo(name){
 function home(opts){
  const o=opts||{},W=clamp(num(o.width,8),4,24),D=clamp(num(o.depth,6),4,24);
  const bedrooms=clamp(Math.round(num(o.bedrooms,2)),1,3);
- const safeName=s=>typeof s==="string"?s.slice(0,80):"我的新居";
+ const safeName=s=>typeof s==="string"?s.slice(0,80):t("我的新居");
  const m=empty(safeName(o.name));
  const splitY=round(D*.58,2),kitchenX=round(W*.32,2),bathX=round(W*.52,2);
  const putWall=(a,b)=>{const w=wall(a,b,{height:m.wallHeight,thickness:m.wallThickness});m.walls.push(w);return w;};
@@ -146,7 +147,7 @@ function home(opts){
  if(kitchenX>1.9)put("kitchen",round(kitchenX/2,2),.5);
  if(kitchenX>.9)put("fridge",Math.min(.5,kitchenX/2),round(splitY-.5,2));
  const bathCx=(kitchenX+bathX)/2;
- if(bathX-kitchenX>1.1){put("washer",bathCx,round(splitY-.45,2));put("custom",bathCx,.5,{name:"浴室櫃",w:.5,d:.45,h:.8});}
+ if(bathX-kitchenX>1.1){put("washer",bathCx,round(splitY-.45,2));put("custom",bathCx,.5,{name:t("浴室櫃"),w:.5,d:.45,h:.8});}
  for(let i=0;i<bedrooms;i++){
   const left=i*W/bedrooms,cx=(left+(i+1)*W/bedrooms)/2,roomW=W/bedrooms,bedW=Math.min(1.5,round(roomW-.35,2)),bedD=Math.min(1.9,round(D-splitY-.35,2));
   if(bedW>=1&&bedD>1.2){
@@ -161,7 +162,7 @@ function home(opts){
 function house(opts){
  const o=opts||{},W=clamp(num(o.width,10),4,24),D=clamp(num(o.depth,7),4,24);
  const floorHeight=clamp(num(o.floorHeight,3),2.4,4);
- const safeName=typeof o.name==="string"?o.name.slice(0,80):"我的兩層屋";
+ const safeName=typeof o.name==="string"?o.name.slice(0,80):t("我的兩層屋");
  const ground=home({...o,name:safeName,bedrooms:clamp(Math.round(num(o.groundBedrooms,1)),1,2)});
  const upper=home({...o,name:safeName,bedrooms:clamp(Math.round(num(o.bedrooms,3)),1,3)});
  const m=empty(safeName);
@@ -179,7 +180,7 @@ function house(opts){
  let common=null;
  search:for(const x of xs)for(const y of ys)if(fits(0,x,y)&&fits(1,x,y)){common={x,y};break search;}
  const p0=common||pick(0),p1=common||pick(1);
- if(p0&&p1)for(const [f,label,at] of [[0,"樓梯（地下）",p0],[1,"樓梯（一樓）",p1]])m.furniture.push({id:uid(),type:"custom",name:label,
+ if(p0&&p1)for(const [f,label,at] of [[0,t("樓梯（地下）"),p0],[1,t("樓梯（一樓）"),p1]])m.furniture.push({id:uid(),type:"custom",name:label,
   x:at.x,y:at.y,w:.9,d:stairD,h:stairH,rotation:0,locked:false,color:"#d8b26f",floor:f});
  return m;
 }
@@ -187,37 +188,37 @@ function validate(model){
  const issues=[],add=(severity,code,message,ids)=>issues.push({severity,code,message,ids:ids||[]});
  const m=model||{},walls=Array.isArray(m.walls)?m.walls:[],openings=Array.isArray(m.openings)?m.openings:[],furniture=Array.isArray(m.furniture)?m.furniture:[];
  const floorOf=v=>clamp(Math.round(num(v.floor,0)),0,Math.max(0,num(m.floorCount,1)-1));
- if(!walls.length){add("warning","empty","圖則尚沒有牆身，先畫第一間房。");return issues;}
- for(const w of walls)if(length(w.a,w.b)<.1)add("error","short-wall","有牆身短於 0.1 米。",[w.id]);
+ if(!walls.length){add("warning","empty",t("圖則尚沒有牆身，先畫第一間房。"));return issues;}
+ for(const w of walls)if(length(w.a,w.b)<.1)add("error","short-wall",t("有牆身短於 0.1 米。"),[w.id]);
  const ends=[];walls.forEach(w=>{ends.push({p:w.a,id:w.id,wall:w});ends.push({p:w.b,id:w.id,wall:w});});
  const dangling=new Set();
  for(const e of ends)if(!walls.some(w=>w.id!==e.id&&floorOf(w)===floorOf(e.wall)&&distancePointSegment(e.p,w.a,w.b).distance<.03))dangling.add(e.id);
- if(dangling.size)add("warning","open-end",dangling.size+" 幅牆有未接合的端點，房間可能未封閉。",[...dangling]);
+ if(dangling.size)add("warning","open-end",dangling.size+t(" 幅牆有未接合的端點，房間可能未封閉。"),[...dangling]);
  for(const o of openings){
   const w=walls.find(v=>v.id===o.wallId);
-  if(!w){add("error","orphan-opening","有門窗依附的牆身已被刪除。",[o.id]);continue;}
+  if(!w){add("error","orphan-opening",t("有門窗依附的牆身已被刪除。"),[o.id]);continue;}
   const len=length(w.a,w.b);
-  if(o.offset-o.width/2<-.001||o.offset+o.width/2>len+.001)add("error","opening-outside","有門窗超出牆身範圍。",[o.id]);
-  if(num(o.sill)+num(o.height)>num(w.height,2.7)+.001)add("error","opening-too-tall","有門窗頂部高於牆身。",[o.id]);
+  if(o.offset-o.width/2<-.001||o.offset+o.width/2>len+.001)add("error","opening-outside",t("有門窗超出牆身範圍。"),[o.id]);
+  if(num(o.sill)+num(o.height)>num(w.height,2.7)+.001)add("error","opening-too-tall",t("有門窗頂部高於牆身。"),[o.id]);
   for(const other of openings){
    if(other.id===o.id||other.wallId!==o.wallId||o.id>other.id)continue;
-   if(!openingFits(o,[other]))add("error","opening-overlap","同一幅牆上的門窗重疊，或相距少於 5 cm。",[o.id,other.id]);
+   if(!openingFits(o,[other]))add("error","opening-overlap",t("同一幅牆上的門窗重疊，或相距少於 5 cm。"),[o.id,other.id]);
   }
  }
  for(let i=0;i<furniture.length;i++)for(let j=i+1;j<furniture.length;j++)
-  if(floorOf(furniture[i])===floorOf(furniture[j])&&furnitureOverlap(furniture[i],furniture[j]))add("warning","furniture-overlap","「"+furniture[i].name+"」與「"+furniture[j].name+"」在平面上重疊。",[furniture[i].id,furniture[j].id]);
+  if(floorOf(furniture[i])===floorOf(furniture[j])&&furnitureOverlap(furniture[i],furniture[j]))add("warning","furniture-overlap","「"+furniture[i].name+t("」與「")+furniture[j].name+t("」在平面上重疊。"),[furniture[i].id,furniture[j].id]);
  for(const f of furniture)for(const w of walls)
-  if(floorOf(f)===floorOf(w)&&furnitureIntersectsWall(f,w)){add("warning","furniture-wall","「"+f.name+"」與牆身重疊。",[f.id,w.id]);break;}
+  if(floorOf(f)===floorOf(w)&&furnitureIntersectsWall(f,w)){add("warning","furniture-wall","「"+f.name+t("」與牆身重疊。"),[f.id,w.id]);break;}
  return issues;
 }
 function sanitize(raw){
- if(!raw||typeof raw!=="object"||raw.schema!==SCHEMA||raw.version!==VERSION)throw new Error("不支援的圖則格式或版本");
- if(!Array.isArray(raw.walls)||!Array.isArray(raw.furniture)||!Array.isArray(raw.openings)||!Array.isArray(raw.measurements))throw new Error("圖則資料不完整");
- if(raw.walls.length>500||raw.furniture.length>500||raw.openings.length>250||raw.measurements.length>500)throw new Error("物件數量超出限制");
+ if(!raw||typeof raw!=="object"||raw.schema!==SCHEMA||raw.version!==VERSION)throw new Error(t("不支援的圖則格式或版本"));
+ if(!Array.isArray(raw.walls)||!Array.isArray(raw.furniture)||!Array.isArray(raw.openings)||!Array.isArray(raw.measurements))throw new Error(t("圖則資料不完整"));
+ if(raw.walls.length>500||raw.furniture.length>500||raw.openings.length>250||raw.measurements.length>500)throw new Error(t("物件數量超出限制"));
  const safePos=(v)=>clamp(num(v),-1000,1000);
  const safePoint=p=>point(safePos(p&&p.x),safePos(p&&p.y));
  const safeName=(s,fallback)=>typeof s==="string"?s.slice(0,80):fallback;
- const m=empty(safeName(raw.name,"匯入平面圖"));
+ const m=empty(safeName(raw.name,t("匯入平面圖")));
  m.wallHeight=clamp(num(raw.wallHeight,2.7),1.7,6);
  m.wallThickness=clamp(num(raw.wallThickness,.13),.05,.8);
  m.floorCount=clamp(Math.round(num(raw.floorCount,1)),1,5);
@@ -254,7 +255,7 @@ function getBounds(model,floor){
 }
 function fileExport(model){return JSON.stringify({format:SCHEMA,exportedAt:new Date().toISOString(),project:model},null,2);}
 function fileImport(text){
- if(text.length>3000000)throw new Error("檔案超過 3 MB 限制");
+ if(text.length>3000000)throw new Error(t("檔案超過 3 MB 限制"));
  const obj=JSON.parse(text);return sanitize(obj&&obj.format===SCHEMA?obj.project:obj);
 }
 const api={SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};

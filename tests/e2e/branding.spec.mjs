@@ -8,6 +8,9 @@ for (const path of ['/','/easy-home-3d-standalone.html']) {
     await expect(page.locator('h1')).toHaveText('Easy3DHome');
     await expect(page.locator('a.source-link')).toHaveAttribute('href', source);
     await expect(page.locator('#startRoom')).toBeVisible();
+    const size=await page.evaluate(()=>({scroll:document.documentElement.scrollHeight, viewport:innerHeight, width:document.documentElement.scrollWidth, viewportWidth:innerWidth}));
+    expect(size.scroll).toBeLessThanOrEqual(size.viewport+2);
+    expect(size.width).toBeLessThanOrEqual(size.viewportWidth+2);
     await page.screenshot({path: testInfo.outputPath(path === '/' ? 'editor-brand.png' : 'standalone-brand.png'), fullPage: true});
   });
 }
