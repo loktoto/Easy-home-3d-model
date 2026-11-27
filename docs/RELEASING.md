@@ -9,7 +9,7 @@
 3. Set the intended semantic version in `package.json` through a reviewed PR. Do not overwrite an existing release tag.
 4. Open [Actions → Publish versioned Easy3DHome release](https://github.com/loktoto/Easy3DHomeModel/actions/workflows/publish-release.yml). Select **Run workflow**, branch `main`. Enter the reviewed full SHA, the matching `vX.Y.Z` tag, and confirm that screenshot review and deployment verification are complete.
 
-The workflow tests and builds before it publishes. Only the manual confirmed main run can create a public GitHub Release. PR runs produce evidence and a dry-run artifact without changing releases or tags.
+All five acceptance workflows now run on every main commit (build, browser, isolated cloud, packaged browser, README). Before manual publication, the latest run of each workflow must have succeeded on the approved main SHA; stale or failed runs block publication. GitHub Pages is opt-in via the site workflow's manual `publish_pages` flag and exact reviewed SHA; normal pushes only build artifacts. The workflow tests and builds before it publishes. Only the manual confirmed main run can create a public GitHub Release. PR runs produce evidence and a dry-run artifact without changing releases or tags. The dedicated browser workflow runs two shards per browser (four independent jobs, fail-fast disabled). Each job saves its HTML report and raw screenshots/traces as separate artifacts with unique names; all jobs must pass and their evidence must be inspected. The versioned release dry run tests the packaged site separately. A manual publication rejects a main branch that has advanced past the reviewed SHA.
 
 ## Downloads
 
