@@ -173,3 +173,9 @@ html[lang="en"] .tool-scroll .tool{max-width:none}html[lang="en"] .start-buttons
 .plan-scale{display:flex;gap:5px;align-items:center;background:var(--panel);padding:6px 8px;border-radius:6px;border:1px solid var(--line)}.plan-scale i{display:inline-block;height:8px;border-bottom:2px solid var(--ink);border-left:2px solid var(--ink);border-right:2px solid var(--ink)}
 .plan-area-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}.plan-area-grid>div{display:grid;gap:6px;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:12px;min-width:0}.plan-area-grid strong{font-size:clamp(19px,4vw,28px);line-height:1.2;color:var(--ink)}.plan-area-grid small{color:var(--sub);overflow-wrap:anywhere}.plan-schedule{display:grid;gap:6px}.plan-schedule button{text-align:left;padding:9px 12px;min-height:44px;background:var(--bg);color:var(--ink)}.plan-schedule p{margin:0;padding:8px 0}.plan-schedule button:hover{border-color:var(--blue)}
 @media(max-width:420px){.plan-hud{left:8px;bottom:42px;max-width:calc(100% - 75px);font-size:10px}.plan-legend{gap:5px;padding:4px 6px}.plan-compass{right:10px;bottom:205px}.plan-area-grid{gap:6px}.plan-area-grid>div{padding:9px}}
+
+/* Keep onboarding clear of the mobile viewport controls. */
+.viewport-controls{z-index:2}
+@media(max-width:780px){.start-tip{left:12px;right:68px;width:auto;max-width:none;transform:translateY(-50%);max-height:calc(100% - 64px);overflow-y:auto}.start-buttons{flex-wrap:wrap}.start-buttons button{min-height:44px}}
+button.issue{width:100%;text-align:left;align-items:flex-start;min-height:44px}
+button.issue:hover{border-color:var(--blue)}
