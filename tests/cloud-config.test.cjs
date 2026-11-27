@@ -1,0 +1,10 @@
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const {readFileSync}=require('node:fs');
+const vm=require('node:vm');
+const src=readFileSync(require('node:path').join(__dirname,'../cloud.js'),'utf8');
+const fakePublishable='sb_publishable_qa_only_not_a_real_key';
+const jwt=role=>[Buffer.from(JSON.stringify({alg:'HS256',typ:'JWT'})).toString('base64url'),Buffer.from(JSON.stringify({role})).toString('base64url'),'synthetic_signature'].join('.');
+function client(config){const window={Easy3DHomeCloudConfig:config};let requests=0;vm.runInNewContext(src,{window,URL,atob,fetch:async()=>{requests++;return {ok:true,text:async()=>'{"ok":true}'};}});return {api:window.Easy3DHomeCloud,count:()=>requests};}
+for(const [label,url,key] of [['publishable','https://example.invalid',fakePublishable],['legacy anon','https://example.invalid',jwt('anon')],['local IPv4','http://127.0.0.1:54321',jwt('anon')],['local IPv6','http://[::1]:54321',fakePublishable]])test('accepts '+label,async()=>{const {api,count}=client({url,key});assert.equal(api.configured(),true);assert.equal((await api.call('/health')).ok,true);assert.equal(count(),1);});
+for(const [label,config] of [['unconfigured',null],['secret',{url:'https://example.invalid',key:'sb_secret_qa_only_not_a_real_key'}],['legacy service role',{url:'https://example.invalid',key:jwt('service_role')}],['authenticated JWT',{url:'https://example.invalid',key:jwt('authenticated')}],['unknown key',{url:'https://example.invalid',key:'qa-only-not-a-real-service-key'}],['malformed JWT',{url:'https://example.invalid',key:'abc.def.ghi'}],['nonlocal HTTP',{url:'http://example.invalid',key:fakePublishable}],['URL credentials',{url:'https://u:p@example.invalid',key:fakePublishable}],['URL query',{url:'https://example.invalid/?foo=bar',key:fakePublishable}],['URL fragment',{url:'https://example.invalid/#key',key:fakePublishable}]])test('rejects '+label+' before network',async()=>{const {api,count}=client(config);assert.equal(api.configured(),false);await assert.rejects(api.call('/health'),/not configured/);assert.equal(count(),0);});

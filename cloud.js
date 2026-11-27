@@ -1,7 +1,17 @@
 /* Supabase Auth REST and PostgREST client. Tokens are memory-only. */
 (function(root){"use strict";
 const config=root.Easy3DHomeCloudConfig;let session=null;
-function configured(){try{const u=new URL(config?.url);return (u.protocol==="https:"||u.protocol==="http:"&&["127.0.0.1","localhost"].includes(u.hostname))&&typeof config.key==="string"&&config.key.length>20&&!config.key.startsWith("sb_secret_");}catch(e){return false;}}
+// Prevent accidental use of privileged or unrecognized API keys in browser configuration.
+// This is a configuration guard, not JWT signature verification or a substitute for server RLS.
+function publicKey(key){
+ if(typeof key!=="string")return false;
+ if(/^sb_publishable_[A-Za-z0-9_-]{16,}$/.test(key))return true;
+ if(!/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(key))return false;
+ try{return JSON.parse(atob(key.split(".")[1].replace(/-/g,"+").replace(/_/g,"/")))?.role==="anon";}catch(e){return false;}
+}
+function configured(){
+ try{const u=new URL(config?.url);return !u.username&&!u.password&&!u.search&&!u.hash&&(u.protocol==="https:"||u.protocol==="http:"&&["127.0.0.1","localhost","[::1]"].includes(u.hostname))&&publicKey(config.key);}catch(e){return false;}
+}
 async function call(path,options={},auth=false){
  if(!configured())throw new Error("Cloud service is not configured");
  if(auth&&!session)throw new Error("Sign in first");
