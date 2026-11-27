@@ -1,4 +1,4 @@
-# Contributing to Easy Home 3D
+# Contributing to Easy3DHome
 
 Pull requests and issues are welcome. Keep the project free, self-hostable, dependency-light, privacy-first, mobile-friendly, and available in Traditional Chinese.
 
