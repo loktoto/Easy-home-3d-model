@@ -6,7 +6,7 @@ root=Path(__file__).resolve().parents[1]
 out=root/'dist'/'site'
 if out.exists(): shutil.rmtree(out)
 out.mkdir(parents=True)
-public=['index.html','style.css','core.js','renderer.js','app.js','i18n.js','cloud.js','cloud-config.js','robots.txt','sitemap.xml','welcome/index.html','welcome/landing.css','welcome/zh-hant/index.html','welcome/zh-hans/index.html']
+public=['.nojekyll','index.html','style.css','core.js','renderer.js','app.js','i18n.js','cloud.js','cloud-config.js','robots.txt','sitemap.xml','welcome/index.html','welcome/landing.css','welcome/zh-hant/index.html','welcome/zh-hans/index.html']
 for rel in public:
     src=root/rel
     if not src.is_file(): raise SystemExit(f'Missing public asset: {rel}')
