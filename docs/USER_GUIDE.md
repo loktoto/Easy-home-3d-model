@@ -4,7 +4,7 @@
 
 ## Open the planner
 
-Try the [existing online demo](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/), whose current deployment is not yet verified. On a computer you can instead [download the ZIP](https://github.com/loktoto/Easy3DHomeModel/archive/refs/heads/main.zip), extract it and open `index.html`. Do not open the HTML directly inside the ZIP or move it away from the accompanying files. No GitHub account or terminal is required.
+Try the [official online planner](https://easy3dhome.pages.dev/). On a computer you can instead [download the ZIP](https://github.com/loktoto/Easy3DHomeModel/releases/latest/download/Easy3DHome-offline.zip), extract it and open `index.html`. Do not open the HTML directly inside the ZIP or move it away from the accompanying files. No GitHub account or terminal is required.
 
 ## Your first design
 
@@ -26,7 +26,7 @@ Under **Projects**, choose a language, theme and measurement unit. English, Trad
 
 ## More tools
 
-Open **Projects** to find the advanced tools. The following are present in the current source; the public demo may run an older build.
+Open **Projects** to find the advanced tools. The following are included in the public local-first release.
 
 | Task | How to start |
 | --- | --- |
@@ -63,3 +63,7 @@ Never rely on area estimates, collision checks or PDF scale as a certified surve
 [Report a problem or request a feature](https://github.com/loktoto/Easy3DHomeModel/issues/new/choose). Sign in to GitHub, describe what happened and how to reproduce it, and include only synthetic examples or redacted screenshots. Never post private home plans or personal details.
 
 [Back to home](../README.md)
+
+## Moving from the legacy site
+
+Open the [legacy site](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/), select each project and export JSON. On [the new site](https://easy3dhome.pages.dev/), open Projects and import each backup. Local storage is origin-specific; opening the new URL will not automatically transfer your projects. Keep the original backups.

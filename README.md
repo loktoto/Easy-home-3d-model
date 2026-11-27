@@ -6,8 +6,8 @@
 
 A free, open-source home planner for everyone.
 
-[![Open planner](https://img.shields.io/badge/OPEN-ONLINE%20DEMO-167D6B?style=for-the-badge)](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/)
-[![Download](https://img.shields.io/badge/DOWNLOAD-OFFLINE%20ZIP-34495E?style=for-the-badge)](https://github.com/loktoto/Easy3DHomeModel/archive/refs/heads/main.zip)
+[![Open planner](https://img.shields.io/badge/OPEN-ONLINE%20DEMO-167D6B?style=for-the-badge)](https://easy3dhome.pages.dev/)
+[![Download](https://img.shields.io/badge/DOWNLOAD-OFFLINE%20ZIP-34495E?style=for-the-badge)](https://github.com/loktoto/Easy3DHomeModel/releases/latest/download/Easy3DHome-offline.zip)
 
 [User guide](docs/USER_GUIDE.md) · [繁體中文教學](docs/USER_GUIDE.zh-Hant.md) · [Help](#need-help) · [Support](#support-the-project)
 
@@ -25,10 +25,10 @@ A free, open-source home planner for everyone.
 
 | Online | Offline |
 | --- | --- |
-| [Open the existing demo](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/) | [Download the ZIP](https://github.com/loktoto/Easy3DHomeModel/archive/refs/heads/main.zip) |
+| [Open Easy3DHome](https://easy3dhome.pages.dev/) | [Download the ZIP](https://github.com/loktoto/Easy3DHomeModel/releases/latest/download/Easy3DHome-offline.zip) |
 | Use a modern browser. No account required. | Extract the entire folder, then open `index.html`. |
 
-The online demo may be behind the current source. [Deployment status](https://github.com/loktoto/Easy3DHomeModel/issues/30).
+The [public release](https://github.com/loktoto/Easy3DHomeModel/releases/latest) is hosted at [easy3dhome.pages.dev](https://easy3dhome.pages.dev/). [Deployment status](https://easy3dhome.pages.dev/version.json). Existing users of the [legacy URL](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/) should export their projects as JSON there and import them on the new site; browser storage is isolated by origin. The legacy site remains available.
 
 ## Everything you need to plan a space
 

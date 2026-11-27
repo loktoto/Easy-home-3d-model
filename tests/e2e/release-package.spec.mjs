@@ -4,7 +4,7 @@ test('packaged site has public revision, no backend source, and working editor',
 test('all nine packaged landing pages have consistent social cards and canonical routes',async({page,request},info)=>{
  test.skip(!process.env.TEST_PACKAGED_SITE,'Run against allow-listed release artifact');
  const paths=['','zh-hant/','zh-hans/','es/','ja/','de/','fr/','ko/','pt/'];
- const origin='https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev';
+ const origin='https://easy3dhome.pages.dev';
  const image=origin+'/welcome/social-card.png';
  const res=await request.get('/welcome/social-card.png');expect(res.ok()).toBeTruthy();expect(res.headers()['content-type']).toContain('image/png');
  const body=await res.body();expect(body.subarray(0,8).toString('hex')).toBe('89504e470d0a1a0a');expect(body.readUInt32BE(16)).toBe(1200);expect(body.readUInt32BE(20)).toBe(630);

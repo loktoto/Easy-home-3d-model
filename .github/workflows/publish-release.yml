@@ -154,7 +154,7 @@ jobs:
           test "$APPROVED_SHA" = "$GITHUB_SHA"
           (cd release && sha256sum -c SHA256SUMS)
           curl --fail --silent --show-error --location --max-time 30 \
-            https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/version.json \
+            https://easy3dhome.pages.dev/version.json \
             -o deployed-version.json
           python3 - <<'PY'
           import json, os

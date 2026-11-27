@@ -5,11 +5,11 @@
 ## Before publishing
 
 1. Merge the integrated free release only after required unit, desktop/mobile browser, packaged-site and applicable backend checks pass. Inspect real screenshots from that exact revision; record findings on the PR.
-2. Confirm the public Worker is serving the approved main commit. Its `/version.json` must match the full commit SHA. Do not publish a newer source ZIP against an older website.
+2. Confirm the primary Cloudflare Pages site (https://easy3dhome.pages.dev/) is serving the approved main commit. Its `/version.json` must match the full commit SHA. Do not publish a newer source ZIP against an older website.
 3. Set the intended semantic version in `package.json` through a reviewed PR. Do not overwrite an existing release tag.
 4. Open [Actions → Publish versioned Easy3DHome release](https://github.com/loktoto/Easy3DHomeModel/actions/workflows/publish-release.yml). Select **Run workflow**, branch `main`. Enter the reviewed full SHA, the matching `vX.Y.Z` tag, and confirm that screenshot review and deployment verification are complete.
 
-All five acceptance workflows now run on every main commit (build, browser, isolated cloud, packaged browser, README). Before manual publication, the latest run of each workflow must have succeeded on the approved main SHA; stale or failed runs block publication. GitHub Pages is opt-in via the site workflow's manual `publish_pages` flag and exact reviewed SHA; normal pushes only build artifacts. The workflow tests and builds before it publishes. Only the manual confirmed main run can create a public GitHub Release. PR runs produce evidence and a dry-run artifact without changing releases or tags. The dedicated browser workflow runs two shards per browser (four independent jobs, fail-fast disabled). Each job saves its HTML report and raw screenshots/traces as separate artifacts with unique names; all jobs must pass and their evidence must be inspected. The versioned release dry run tests the packaged site separately. A manual publication rejects a main branch that has advanced past the reviewed SHA.
+All five acceptance workflows now run on every main commit (build, browser, isolated cloud, packaged browser, README). Before manual publication, the latest run of each workflow must have succeeded on the approved main SHA; stale or failed runs block publication. GitHub Pages is opt-in via the site workflow's manual `publish_pages` flag and exact reviewed SHA; normal pushes only build artifacts. The workflow tests and builds before it publishes. Only an explicitly authorized main run can create a public GitHub Release. PR runs produce evidence and a dry-run artifact without changing releases or tags. The dedicated browser workflow runs two shards per browser (four independent jobs, fail-fast disabled). Each job saves its HTML report and raw screenshots/traces as separate artifacts with unique names; all jobs must pass and their evidence must be inspected. The versioned release dry run tests the packaged site separately. A manual publication rejects a main branch that has advanced past the reviewed SHA.
 
 ## Downloads
 
@@ -26,10 +26,14 @@ The About description was verified as configured on 27 November 2026:
 
 > Free, open-source 2D floor plan and 3D home planner. Design rooms, arrange furniture and plan renovations. No account required.
 
-The Website field is still blank; set it to the verified public URL after the current deployment is accepted. Suggested topics: `floor-plan`, `room-planner`, `interior-design`, `3d-modeling`, `home-design`, `furniture-planner`, `offline-first`, `open-source`, `javascript`. GitHub repository settings require authorized administration access; do not add admin tokens to CI.
+Set the repository Website field to https://easy3dhome.pages.dev/ (repository admin setting). Suggested topics: `floor-plan`, `room-planner`, `interior-design`, `3d-modeling`, `home-design`, `furniture-planner`, `offline-first`, `open-source`, `javascript`. GitHub repository settings require authorized administration access; do not add admin tokens to CI.
 
 See [GitHub Releases](https://github.com/loktoto/Easy3DHomeModel/releases) after successful publication.
 
 ## Owner-approved release command
 
 After reviewing all five exact-main acceptance runs and confirming the public deployment, the repository owner may post `/release FULL_40_CHARACTER_SHA vX.Y.Z` as the entire body of a new comment on issue #30. Non-owner comments, other issues, edited comments, malformed commands and stale revisions cannot authorize publication. The command uses the same packaging, checksum, immutable-tag and live deployment checks as manual dispatch. Pull requests remain dry runs.
+
+## Cloudflare Pages hosting
+
+Build from the approved SHA and deploy only the public allow-listed output. Prefer a static Direct Upload deployment once Pages asset-upload authorization works. The current Pages deployment uses the verified self-contained Worker module in Pages Advanced Mode; it consumes Pages Functions request quota. The legacy Worker remains available for origin-specific local project data. Do not redirect its editor or delete it before migration. Verify production Pages routes, version.json, exports, screenshots and rollback before triggering the release workflow.
