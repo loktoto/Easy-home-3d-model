@@ -97,6 +97,30 @@ jobs:
           name: easy3dhome-release-source-report
           path: playwright-report/
           if-no-files-found: warn
+      - name: Preserve Chromium source regression evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: easy3dhome-release-source-chromium
+          path: test-results/*-desktop-chromium*/**
+          if-no-files-found: error
+          retention-days: 14
+      - name: Preserve WebKit source regression evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: easy3dhome-release-source-webkit
+          path: test-results/*-mobile-webkit*/**
+          if-no-files-found: error
+          retention-days: 14
+      - name: Preserve source regression HTML report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: easy3dhome-release-source-report
+          path: playwright-report/
+          if-no-files-found: error
+          retention-days: 14
       - name: Package release assets
         run: |
           python3 scripts/package-release.py
@@ -114,7 +138,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: easy3dhome-versioned-release-evidence
+          name: easy3dhome-versioned-release-package-evidence
           path: |
             playwright-report/
             test-results/
@@ -155,6 +179,11 @@ jobs:
           set -euo pipefail
           [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
           test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)" = "$APPROVED_SHA"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')" = "$GITHUB_SHA" || { echo 'Main advanced after review; refusing publication' >&2; exit 1; }
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" >/dev/null 2>&1; then
+            echo 'Tag already exists; refusing to reuse it' >&2
+            exit 1
+          fi
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             echo "Release already exists; refusing to overwrite" >&2
             exit 1
