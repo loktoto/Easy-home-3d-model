@@ -15,9 +15,9 @@ A free, open-source home planner for everyone.
 [![Build](https://github.com/loktoto/Easy3DHomeModel/actions/workflows/site.yml/badge.svg)](https://github.com/loktoto/Easy3DHomeModel/actions/workflows/site.yml)
 [![Browser tests](https://github.com/loktoto/Easy3DHomeModel/actions/workflows/e2e.yml/badge.svg)](https://github.com/loktoto/Easy3DHomeModel/actions/workflows/e2e.yml)
 
-<img src="evidence/07-two-floor-3d.png" alt="Actual 3D editor showing a two-floor home" width="900">
+<img src="evidence/v1.1.0-two-floor-3d.png" alt="Actual 3D editor showing a two-floor home" width="900">
 
-*Historical browser-test capture (before the Easy3DHome rebrand). For the current interface, open the live planner above.*
+*Actual Easy3DHome v1.1.0 editor: synthetic two-floor example captured on the public site (commit `bfc413b`).*
 
 </div>
 
@@ -43,9 +43,9 @@ The [public release](https://github.com/loktoto/Easy3DHomeModel/releases/latest)
 | **Check your layout** — clearance and collision warnings | **Plan annotations** — area estimates, north arrow, scale and openings |
 | **Choose your preferences** — light/dark themes and m/cm/mm/ft-in units | **Work in your language** — nine editor language options (six in beta) |
 
-<img src="evidence/03-ground-floor-2d.png" alt="Actual dimensioned 2D floor plan with furniture" width="900">
+<img src="evidence/v1.1.0-ground-floor-2d.png" alt="Actual dimensioned 2D floor plan with furniture" width="900">
 
-*Historical 2D browser-test capture (before the Easy3DHome rebrand). [See testing evidence and current CI results](docs/TESTING.md).*
+*Actual v1.1.0 ground-floor example from the same synthetic layout. [See testing evidence and current CI results](docs/TESTING.md).*
 
 **Languages:** English · 繁體中文 · 简体中文 · Español (beta) · 日本語 (beta) · Deutsch (beta) · Français (beta) · 한국어 (beta) · Português (beta). See [landing pages](welcome/README.md).
 
