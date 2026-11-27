@@ -51,9 +51,10 @@ function record(before){
  history.push(before);if(history.length>65)history.shift();future=[];scheduleSave();refresh();return true;
 }
 function commit(fn){
- const before=snapshot();fn();return record(before);
+ const before=snapshot();try{fn();}catch(err){active().data=JSON.parse(before);retainSelection();refresh();throw err;}return record(before);
 }
 function retainSelection(){
+ ui.floor=G.clamp(ui.floor,0,Math.max(0,(model().floorCount||1)-1));
  if(!ui.selected)return;
  const m=model(),array=ui.selected.kind==="wall"?m.walls:ui.selected.kind==="opening"?m.openings:
   ui.selected.kind==="furniture"?m.furniture:m.measurements;
