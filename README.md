@@ -2,76 +2,85 @@
 
 # Easy3DHome
 
-**Plan your home in 2D. Explore it in 3D.**
+**Measure your space. Design your home. See it in 3D.**
 
-Free, open-source home and furniture planner · No account required
+A free, open-source home planner for everyone.
 
-免費開源 2D／3D 家居設計工具，毋須註冊。
+[![Open planner](https://img.shields.io/badge/OPEN-ONLINE%20DEMO-167D6B?style=for-the-badge)](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/)
+[![Download](https://img.shields.io/badge/DOWNLOAD-OFFLINE%20ZIP-34495E?style=for-the-badge)](https://github.com/loktoto/Easy3DHomeModel/archive/refs/heads/main.zip)
 
-### [Open web demo](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/) · [Download for offline use](https://github.com/loktoto/Easy3DHomeModel/archive/refs/heads/main.zip)
+[User guide](docs/USER_GUIDE.md) · [繁體中文教學](docs/USER_GUIDE.zh-Hant.md) · [Help](#need-help) · [Support](#support-the-project)
 
-[User guide](docs/USER_GUIDE.md) · [繁體中文教學](docs/USER_GUIDE.zh-Hant.md) · [Help & feedback](#help--feedback) · [MIT License](LICENSE)
+[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Build](https://github.com/loktoto/Easy3DHomeModel/actions/workflows/site.yml/badge.svg)](https://github.com/loktoto/Easy3DHomeModel/actions/workflows/site.yml)
+[![Browser tests](https://github.com/loktoto/Easy3DHomeModel/actions/workflows/e2e.yml/badge.svg)](https://github.com/loktoto/Easy3DHomeModel/actions/workflows/e2e.yml)
+
+<img src="evidence/07-two-floor-3d.png" alt="Actual 3D editor showing a two-floor home" width="900">
+
+*Actual editor example from browser testing.*
 
 </div>
 
-> The existing online demo has not yet been verified against the current source. For a local copy, download the ZIP below. [Deployment status](https://github.com/loktoto/Easy3DHomeModel/issues/30).
+## Start designing
 
-## Get started
-
-**No GitHub account, coding or installation is needed to use the editor.**
-
-1. [Open the web demo](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/) if available (phone, tablet or computer).
-2. Or [download the ZIP](https://github.com/loktoto/Easy3DHomeModel/archive/refs/heads/main.zip) on your computer, extract the entire folder, then double-click `index.html`. Keep all extracted files together.
-
-If you need help, see the [user guide](docs/USER_GUIDE.md). GitHub Pages is not enabled as of 27 November 2026.
-
-![Example of a two-floor home in the Easy3DHome 3D editor](evidence/07-two-floor-3d.png)
-
-*Example from earlier browser testing, not a screenshot of the latest release.*
-
-## Design a room in three steps
-
-1. Choose **Draw first room** or **Home wizard** and enter your measurements.
-2. Add doors, windows and furniture; adjust sizes and positions.
-3. Switch to **3D model** to explore the layout, then **Export JSON** to keep a backup.
-
-[![Example 2D floor plan with dimensions and furniture](evidence/03-ground-floor-2d.png)](evidence/03-ground-floor-2d.png)
-
-*Earlier 2D editor screenshot. [More screenshots and test reports](docs/TESTING.md).*
-
-## What you can do
-
-| Design | Organize |
+| Online | Offline |
 | --- | --- |
-| Draw rooms and dimensioned walls | Manage multiple local projects |
-| Place doors, windows and furniture | Save automatically in your browser |
-| Explore 2D and 3D, up to five floors | Undo, redo, lock and duplicate items |
-| Generate a one- or two-floor layout | Export and restore JSON backups |
-| Measure distances and run basic plan checks | Use a mouse or touch controls |
+| [Open the existing demo](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/) | [Download the ZIP](https://github.com/loktoto/Easy3DHomeModel/archive/refs/heads/main.zip) |
+| Use a modern browser. No account required. | Extract the entire folder, then open `index.html`. |
 
-The editor offers English, Traditional Chinese and Simplified Chinese language options. Full localization is still being validated. Future features are tracked in [Issues](https://github.com/loktoto/Easy3DHomeModel/issues); they are not promised as part of the current main branch.
+The online demo may be behind the current source. [Deployment status](https://github.com/loktoto/Easy3DHomeModel/issues/30).
 
-## Help & feedback
+## Everything you need to plan a space
 
-| I want to… | Where to go |
+| | |
 | --- | --- |
-| Learn to use the editor | [User guide](docs/USER_GUIDE.md) · [繁體中文教學](docs/USER_GUIDE.zh-Hant.md) |
-| Recover a plan or fix a problem | [Troubleshooting and FAQ](docs/USER_GUIDE.md#troubleshooting-and-faq) |
-| Report a bug or suggest an idea | [Open an issue](https://github.com/loktoto/Easy3DHomeModel/issues/new/choose) |
-| See what is being developed | [Open issues](https://github.com/loktoto/Easy3DHomeModel/issues) |
-| Build or self-host the app | [Developer guide](docs/DEVELOPMENT.md) |
-| Contribute code | [Contributing](CONTRIBUTING.md) |
+| **Draw in 2D** — rooms, walls, doors and windows | **Explore in 3D** — rotate and inspect your layout |
+| **Use real dimensions** — edit sizes and positions | **Arrange furniture** — move, rotate, lock and duplicate |
+| **Build multiple floors** — up to five levels | **Start faster** — home wizard and design templates |
+| **Save your work** — local autosave and JSON backups | **Share a picture** — high-resolution PNG export |
 
-A free GitHub account is needed to submit feedback, but not to download or use the editor. Do not attach private home plans, addresses or credentials to public issues.
+<img src="evidence/03-ground-floor-2d.png" alt="Actual dimensioned 2D floor plan with furniture" width="900">
 
-## Privacy and accuracy
+*Actual 2D editor example. [See more screenshots and testing evidence](docs/TESTING.md).*
 
-The current local editor stores plans in your browser, not a cloud account. Export JSON regularly; clearing browser storage or using a different browser or site may make your plans inaccessible.
+## Your first room, in three steps
 
-Easy3DHome is a planning aid, not a certified construction drawing or structural assessment. Verify dimensions, clearances, building regulations and actual site conditions with qualified professionals before purchasing or building.
+1. Draw a room or use the home wizard.
+2. Add furniture, doors and windows; enter your measurements.
+3. Switch to 3D, then export a JSON backup.
 
-## Project information
+[Read the beginner guide →](docs/USER_GUIDE.md)
 
-[Documentation index](docs/README.md) · [Test history](docs/TESTING.md) · [GitHub Actions](https://github.com/loktoto/Easy3DHomeModel/actions) · [MIT License](LICENSE)
+## Free and open source. Always.
 
-Copyright © 2026 loktoto.
+Easy3DHome is licensed under [MIT](LICENSE). There are no paid feature tiers or subscription requirements. The local editor works without an account, and your plans stay in your browser by default.
+
+Optional cloud features are being developed for self-hosting. [See the roadmap](https://github.com/loktoto/Easy3DHomeModel/issues).
+
+## Support the project
+
+If Easy3DHome is useful, a star, bug report, translation or contribution is appreciated. A voluntary coffee-style donation link will be added when the maintainer provides a verified account. Donations will never be required to unlock features.
+
+[Star on GitHub](https://github.com/loktoto/Easy3DHomeModel) · [Contribute](CONTRIBUTING.md)
+
+## Need help?
+
+| I want to… | Go here |
+| --- | --- |
+| Learn the editor | [User guide](docs/USER_GUIDE.md) · [繁體中文](docs/USER_GUIDE.zh-Hant.md) |
+| Fix a problem | [FAQ and troubleshooting](docs/USER_GUIDE.md#troubleshooting-and-faq) |
+| Report a bug or request a feature | [Get help on GitHub](https://github.com/loktoto/Easy3DHomeModel/issues/new/choose) |
+| Build, self-host or contribute | [Developer guide](docs/DEVELOPMENT.md) · [Contributing](CONTRIBUTING.md) |
+| Check project quality | [Testing](docs/TESTING.md) · [CI](https://github.com/loktoto/Easy3DHomeModel/actions) |
+
+**Privacy:** Export JSON backups regularly. Clearing browser data can erase local plans. **Accuracy:** This is a planning aid, not certified construction or structural advice. Verify measurements on site.
+
+---
+
+<div align="center">
+
+Made for anyone who wants to make better use of their space.
+
+[Documentation](docs/README.md) · [MIT License](LICENSE)
+
+</div>
