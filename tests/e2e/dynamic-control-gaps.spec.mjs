@@ -12,8 +12,10 @@ for(const locale of locales){
   test.setTimeout(90000);await page.goto('/?lang='+locale);
   await expect(page.locator('html')).toHaveAttribute('lang',locale);
   const initial=await state(page);const initialId=initial.activeId;
-  await page.locator('#startWall').click();await expect(page.locator('[data-tool=wall]')).toHaveAttribute('aria-pressed','true');
-  await page.locator('#startRoom').click();await expect(page.locator('[data-tool=room]')).toHaveAttribute('aria-pressed','true');
+  await page.locator('#startWall').click({timeout:10000});await expect(page.locator('[data-tool=wall]')).toHaveAttribute('aria-pressed','true');
+  await expect(page.locator('#startTip')).toBeHidden();await page.locator('[data-tool=select]').click();await expect(page.locator('#startTip')).toBeVisible();
+  await page.locator('#startRoom').click({timeout:10000});await expect(page.locator('[data-tool=room]')).toHaveAttribute('aria-pressed','true');
+  await expect(page.locator('#startTip')).toBeHidden();await page.locator('[data-tool=select]').click();await expect(page.locator('#startTip')).toBeVisible();
   page.once('dialog',d=>d.dismiss());await page.locator('#loadDemo').click();expect((await model(page)).walls).toHaveLength(0);
   page.once('dialog',d=>d.accept());await page.locator('#loadDemo').click();await expect.poll(async()=> (await model(page)).walls.length).toBeGreaterThan(0);
   await open(page,'newDemo');await expect.poll(async()=> (await state(page)).projects.length).toBe(initial.projects.length+1);
