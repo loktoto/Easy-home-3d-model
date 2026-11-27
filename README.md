@@ -65,7 +65,7 @@ Optional cloud sync, sharing and version history are available for [self-hosted 
 
 ## Support the project
 
-If Easy3DHome is useful, a star, bug report, translation or contribution is appreciated. A voluntary coffee-style donation link will be added when the maintainer provides a verified account. Donations will never be required to unlock features.
+If Easy3DHome is useful, a star, bug report, translation or contribution is appreciated. [Support the project directly](support/README.md) via PayMe, FPS, Binance Pay or network-specific crypto. Donations are voluntary and never unlock features.
 
 [Star on GitHub](https://github.com/loktoto/Easy3DHomeModel) · [Contribute](CONTRIBUTING.md)
 
