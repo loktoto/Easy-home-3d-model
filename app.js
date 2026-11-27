@@ -516,12 +516,16 @@ function renderInspector(){
  box.innerHTML=html;
 }
 function showDialog(id){const d=$(id);if(!d.open)d.showModal();}
+const clientStatusLabel=status=>t(({draft:"草稿",active:"進行中",completed:"已完成",archived:"已封存"})[status]||"草稿");
+function showClient(){const c=G.cleanClient(model().client);$("projectsDialog").close();$("clientName").value=c.client;$("clientReference").value=c.reference;$("clientStatus").value=c.status;$("clientNotes").value=c.notes;showDialog("clientDialog");}
+function saveClient(){commit(()=>{model().client=G.cleanClient({client:$("clientName").value.trim(),reference:$("clientReference").value.trim(),status:$("clientStatus").value,notes:$("clientNotes").value});});$("clientDialog").close();refresh();}
 function renderProjects(){
- const box=$("projectList");box.textContent="";
- for(const p of state.projects){
+ const box=$("projectList"),query=$("projectSearch").value.trim().toLocaleLowerCase(),filter=$("projectStatus").value;box.textContent="";
+ for(const p of state.projects){const client=G.cleanClient(p.data.client);if(filter&&client.status!==filter||query&&![p.name,client.client,client.reference].some(s=>s.toLocaleLowerCase().includes(query)))continue;
   const item=document.createElement("div");item.className="project-item"+(p.id===state.activeId?" current":"");
   const txt=document.createElement("div");txt.className="project-text";
   const name=document.createElement("strong");name.textContent=p.name;const sub=document.createElement("small");sub.textContent=(p.id===state.activeId?t("目前使用 · "):"")+p.data.walls.length+t(" 幅牆 · ")+p.data.furniture.length+t(" 件傢俬");
+  if(client.client||client.reference)sub.textContent+=" · "+[client.client,client.reference,clientStatusLabel(client.status)].filter(Boolean).join(" · ");
   txt.append(name,sub);const buttons=document.createElement("div");buttons.className="buttons";
   if(p.id!==state.activeId){const b=document.createElement("button");b.textContent=t("開啟");b.onclick=()=>switchProject(p.id);buttons.append(b);}
   const remove=document.createElement("button");remove.textContent=t("刪除");remove.className="danger";remove.disabled=state.projects.length===1;
@@ -531,6 +535,7 @@ function renderProjects(){
   };
   buttons.append(remove);item.append(txt,buttons);box.append(item);
  }
+ if(!box.children.length)box.textContent=t("沒有符合搜尋的專案");
 }
 function switchProject(id){
  if(!state.projects.some(p=>p.id===id))return;
@@ -732,6 +737,7 @@ function bind(){
  $("homeBedrooms").addEventListener("change",previewHome);$("homeFloors").addEventListener("change",previewHome);
  $("buildHome").onclick=buildHome;
  $("exportButton").onclick=exportJSON;
+ $("clientButton").onclick=showClient;$("clientSave").onclick=saveClient;$("projectSearch").oninput=renderProjects;$("projectStatus").onchange=renderProjects;
  $("versionsButton").onclick=showVersions;$("versionSave").onclick=()=>{if(saveVersion($("versionName").value.trim()||new Date().toISOString())){$("versionName").value="";renderVersions();}};
  $("traceButton").onclick=showTrace;$("traceFile").onchange=loadTrace;$("tracePreview").onclick=selectTracePoint;$("traceApply").onclick=applyTrace;$("traceRemove").onclick=()=>{commit(()=>{model().traces=(model().traces||[]).filter(q=>q.floor!==ui.floor);});$("traceDialog").close();refresh();toast(t("已移除描繪圖片"));};
  $("pdfButton").onclick=()=>{$("projectsDialog").close();showDialog("pdfDialog");renderPdf();};$("pdfPaper").onchange=renderPdf;$("pdfScale").onchange=renderPdf;$("pdfDownload").onclick=downloadPdf;
