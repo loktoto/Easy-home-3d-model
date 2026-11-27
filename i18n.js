@@ -2,6 +2,7 @@
 (function(){
 "use strict";
 const messages={
+"傢俬購物清單":["Furniture shopping list","家具购物清单"],"同款同尺寸自動合併數量；價格由你輸入，未定價不計入合計。":["Identical items are grouped. Enter your own prices; unpriced items are excluded from totals.","同款同尺寸自动合并数量；价格由你输入，未定价不计入合计。"],"貨幣":["Currency","货币"],"下載 CSV":["Download CSV","下载 CSV"],"數量":["Quantity","数量"],"單價":["Unit price","单价"],"小計":["Subtotal","小计"],"已定價合計":["Priced subtotal","已定价合计"],"未定價件數":["Unpriced items","未定价件数"],"未定價":["Unpriced","未定价"],"沒有傢俬":["No furniture","没有家具"],"改變貨幣會清除現有價格，不會自動換算。繼續？":["Changing currency clears prices; no conversion. Continue?","改变货币会清除现有价格，不会自动换算。继续？"],
 "最小建議淨距 (cm)":["Suggested minimum clearance (cm)","最小建议净距 (cm)"],"淨距提示":["Clearance notices","净距提示"],"沒有低於設定值的淨距。":["No gaps below the chosen threshold.","没有低于设定值的净距。"],"與牆身":["to wall","与墙体"],"傢俬之間":["between furniture","家具之间"],"只檢查同層平面幾何，不代表通行或消防合規。":["Same-floor planar geometry only; not a circulation or fire compliance check.","仅检查同层平面几何，不代表通行或消防合规。"],
 "尺寸單位":["Measurement units","尺寸单位"],"目前單位：":["Units: ","当前单位："],
 "外觀":["Appearance","外观"],

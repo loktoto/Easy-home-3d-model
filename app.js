@@ -540,6 +540,21 @@ function createProject(demoMode=false){
  state.projects.push(p);state.activeId=p.id;clearUndo();saveNow();$("projectsDialog").close();fit();refresh();
  toast(demoMode?t("已新增示範圖則"):t("已新增空白平面圖"));
 }
+function currencyAmount(cents,currency){return new Intl.NumberFormat(window.EasyHomeI18n.locale,{style:"currency",currency,minimumFractionDigits:currency==="JPY"?0:2,maximumFractionDigits:currency==="JPY"?0:2}).format(cents/100);}
+function downloadText(content,type,name){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
+function shoppingTotals(){const s=G.shoppingSummary(model());$("shoppingTotal").textContent=t("已定價合計")+" "+currencyAmount(s.total,s.currency)+" · "+t("未定價件數")+": "+s.unpriced;}
+function renderShopping(){
+ const s=G.shoppingSummary(model()),box=$("shoppingRows");$("shoppingCurrency").value=s.currency;box.replaceChildren();
+ for(const row of s.rows){const line=document.createElement("div");line.className="report-row";
+ const desc=document.createElement("div"),name=document.createElement("strong"),detail=document.createElement("small");name.textContent=row.name;detail.textContent=[row.w,row.d,row.h].map(fmt).join(" × ")+" · "+t("數量")+": "+row.count;desc.append(name,detail);
+ const price=document.createElement("input");price.type="number";price.min="0";price.max="10000000";price.step=s.currency==="JPY"?"1":".01";price.inputMode="decimal";price.value=row.price===null?"":String(row.price/100);price.placeholder=t("未定價");price.setAttribute("aria-label",row.name+" "+t("單價"));
+ const total=document.createElement("span");total.className="report-subtotal";total.textContent=row.total===null?"—":currencyAmount(row.total,s.currency);
+ price.onchange=()=>{const value=price.value.trim(),n=Number(value);if(price.validity.badInput||value!==""&&(!Number.isFinite(n)||n<0||n>10000000||!Number.isInteger(Math.round(n*100))||s.currency==="JPY"&&!Number.isInteger(n))){price.value=row.price===null?"":String(row.price/100);return;}commit(()=>{const shop=G.cleanShopping(model().shopping);if(value==="")delete shop.prices[row.key];else shop.prices[row.key]=Math.round(n*100);model().shopping=shop;});total.textContent=value===""?"—":currencyAmount(Math.round(n*100)*row.count,s.currency);shoppingTotals();};
+ line.append(desc,price,total);box.append(line);}
+ if(!s.rows.length)box.textContent=t("沒有傢俬");shoppingTotals();
+}
+function showShopping(){$("projectsDialog").close();renderShopping();showDialog("shoppingDialog");}
+function shoppingCsv(){const s=G.shoppingSummary(model()),rows=[["Name","Width (m)","Depth (m)","Height (m)","Quantity","Currency","Unit price","Subtotal"],...s.rows.map(r=>[r.name,r.w,r.d,r.h,r.count,s.currency,r.price===null?"":r.price/100,r.total===null?"":r.total/100])];downloadText("\uFEFF"+rows.map(r=>r.map(G.csvCell).join(",")).join("\r\n"),"text/csv;charset=utf-8","easy3dhome-shopping.csv");}
 function exportJSON(){
  saveNow();
  const data=G.fileExport(model()),blob=new Blob([data],{type:"application/json;charset=utf-8"});
@@ -654,6 +669,7 @@ function bind(){
  $("homeBedrooms").addEventListener("change",previewHome);$("homeFloors").addEventListener("change",previewHome);
  $("buildHome").onclick=buildHome;
  $("exportButton").onclick=exportJSON;
+ $("shoppingButton").onclick=showShopping;$("shoppingCsv").onclick=shoppingCsv;$("shoppingCurrency").onchange=e=>{const old=G.cleanShopping(model().shopping);if(Object.keys(old.prices).length&&!confirm(t("改變貨幣會清除現有價格，不會自動換算。繼續？"))){e.target.value=old.currency;return;}commit(()=>{model().shopping={currency:e.target.value,prices:{}};});renderShopping();};
  $("helpButton").onclick=()=>showDialog("helpDialog");
  $("addFurnitureButton").onclick=()=>showDialog("furnitureDialog");
  $("startWall").onclick=()=>tool("wall");

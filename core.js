@@ -254,6 +254,7 @@ function sanitize(raw){
    return {id:id(f.id),type:c.type,name:safeName(f.name,c.name),x:safePos(f.x),y:safePos(f.y),w:clamp(num(f.w,c.w),.1,15),d:clamp(num(f.d,c.d),.1,15),h:clamp(num(f.h,c.h),.1,6),rotation:clamp(num(f.rotation),-Math.PI*100,Math.PI*100),locked:f.locked===true,color:/^#[0-9a-f]{6}$/i.test(f.color||"")?f.color:c.color,floor:safeFloor(f)};
  });
  m.measurements=raw.measurements.map(q=>({id:id(q.id),a:safePoint(q.a),b:safePoint(q.b),floor:safeFloor(q)}));
+ if(raw.shopping)m.shopping=cleanShopping(raw.shopping);
  return m;
 }
 function getBounds(model,floor){
@@ -285,7 +286,21 @@ function parseUnit(value,unit){
 }
 function formatLength(m,unit="m"){if(unit==="ft-in"){const sign=m<0?"-":"",inch=Math.abs(m)/.0254;let feet=Math.floor(inch/12),rest=round(inch-feet*12,2);if(rest>=12){feet++;rest=0;}return sign+feet+"' "+rest+'"';}return (unit==="m"?round(m,2).toFixed(2):String(round(m*(factors[unit]||1),unit==="mm"?1:2)))+" "+unit;}
 function formatArea(m,unit="m"){const f=unit==="ft-in"?1/.3048:(factors[unit]||1);return round(m*f*f,2)+" "+(unit==="ft-in"?"ft":unit)+"²";}
-const api={furnitureGap,clearanceWarnings,units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
+const currencies=["HKD","USD","EUR","GBP","CNY","TWD","JPY"];
+function shoppingKey(f){return JSON.stringify([f.type,f.name,round(f.w,6),round(f.d,6),round(f.h,6)]);}
+function cleanShopping(raw){
+ const currency=currencies.includes(raw?.currency)?raw.currency:"HKD",prices=Object.create(null);
+ if(raw?.prices&&typeof raw.prices==="object")for(const [k,v] of Object.entries(raw.prices).slice(0,500)){if(k.length<=400&&Number.isSafeInteger(v)&&v>=0&&v<=1000000000)prices[k]=v;}
+ return {currency,prices};
+}
+function shoppingSummary(model){
+ const store=cleanShopping(model.shopping),groups=new Map();
+ for(const f of model.furniture){const key=shoppingKey(f);if(!groups.has(key))groups.set(key,{key,name:f.name,w:f.w,d:f.d,h:f.h,count:0,price:store.prices[key]??null});groups.get(key).count++;}
+ const rows=[...groups.values()].map(r=>({...r,total:r.price===null?null:r.count*r.price}));
+ return {currency:store.currency,rows,total:rows.reduce((n,r)=>n+(r.total??0),0),unpriced:rows.reduce((n,r)=>n+(r.price===null?r.count:0),0)};
+}
+function csvCell(v){let s=String(v??"");if(/^[\s]*[=+\-@\t\r]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';}
+const api={currencies,shoppingKey,cleanShopping,shoppingSummary,csvCell,furnitureGap,clearanceWarnings,units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.EasyHomeCore=api;
 })(typeof window!=="undefined"?window:globalThis);
