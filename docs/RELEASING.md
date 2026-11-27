@@ -29,3 +29,7 @@ The About description was verified as configured on 27 November 2026:
 The Website field is still blank; set it to the verified public URL after the current deployment is accepted. Suggested topics: `floor-plan`, `room-planner`, `interior-design`, `3d-modeling`, `home-design`, `furniture-planner`, `offline-first`, `open-source`, `javascript`. GitHub repository settings require authorized administration access; do not add admin tokens to CI.
 
 See [GitHub Releases](https://github.com/loktoto/Easy3DHomeModel/releases) after successful publication.
+
+## Owner-approved release command
+
+After reviewing all five exact-main acceptance runs and confirming the public deployment, the repository owner may post `/release FULL_40_CHARACTER_SHA vX.Y.Z` as the entire body of a new comment on issue #30. Non-owner comments, other issues, edited comments, malformed commands and stale revisions cannot authorize publication. The command uses the same packaging, checksum, immutable-tag and live deployment checks as manual dispatch. Pull requests remain dry runs.
