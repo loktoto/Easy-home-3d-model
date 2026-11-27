@@ -256,6 +256,7 @@ function sanitize(raw){
  m.measurements=raw.measurements.map(q=>({id:id(q.id),a:safePoint(q.a),b:safePoint(q.b),floor:safeFloor(q)}));
  if(raw.shopping)m.shopping=cleanShopping(raw.shopping);
  if(raw.budget)m.budget=cleanBudget(raw.budget);
+ if(raw.traces)m.traces=cleanTraces(raw.traces,m.floorCount);
  return m;
 }
 function getBounds(model,floor){
@@ -303,7 +304,8 @@ function shoppingSummary(model){
 function csvCell(v){let s=String(v??"");if(/^[\s]*[=+\-@\t\r]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';}
 function cleanBudget(raw){return {rows:Array.isArray(raw?.rows)?raw.rows.slice(0,100).map(row=>({id:String(row.id||uid()).slice(0,100),name:String(row.name||"").slice(0,80),qty:clamp(num(row.qty,1),0,100000),cost:row.cost===null||row.cost===undefined?null:clamp(Math.round(num(row.cost)),0,1000000000)})):[],contingency:clamp(num(raw?.contingency,0),0,100)};}
 function budgetSummary(m){const b=cleanBudget(m.budget),s=shoppingSummary(m),rows=b.rows.map(r=>({...r,total:r.cost===null?null:Math.round(r.qty*r.cost)})),work=rows.reduce((sum,r)=>sum+(r.total??0),0),subtotal=work+s.total,contingency=Math.round(subtotal*b.contingency/100);return {currency:s.currency,rows,work,furniture:s.total,unpriced:s.unpriced+rows.filter(r=>r.cost===null).length,subtotal,contingency,total:subtotal+contingency,rate:b.contingency};}
-const api={cleanBudget,budgetSummary,currencies,shoppingKey,cleanShopping,shoppingSummary,csvCell,furnitureGap,clearanceWarnings,units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
+function cleanTraces(raw,floors=5){const list=[];for(const v of Array.isArray(raw)?raw.slice(0,5):[]){if(!v||!Number.isInteger(v.floor)||v.floor<0||v.floor>=floors||list.some(x=>x.floor===v.floor)||typeof v.data!=="string"||v.data.length>450000||!/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(v.data)||!(v.w>0&&v.w<=1000&&v.h>0&&v.h<=1000))continue;list.push({floor:v.floor,data:v.data,w:num(v.w),h:num(v.h),x:clamp(num(v.x),-1000,1000),y:clamp(num(v.y),-1000,1000),opacity:clamp(num(v.opacity,.4),.05,1)});}return list;}
+const api={cleanTraces,cleanBudget,budgetSummary,currencies,shoppingKey,cleanShopping,shoppingSummary,csvCell,furnitureGap,clearanceWarnings,units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.EasyHomeCore=api;
 })(typeof window!=="undefined"?window:globalThis);

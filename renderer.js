@@ -31,6 +31,7 @@ function paint2D(ctx,w,h,model,opts){
  const walls=model.walls.filter(on),openings=model.openings.filter(on),furniture=model.furniture.filter(on),measurements=model.measurements.filter(on);
  const S=p=>({x:w/2+view.panX+p.x*sc,y:h/2+view.panY+p.y*sc});
  grid(ctx,w,h,view,S);
+ if(opts.trace&&opts.traceImage&&opts.traceImage.complete){const q=opts.trace,p=S({x:q.x,y:q.y});ctx.save();ctx.globalAlpha=q.opacity;ctx.drawImage(opts.traceImage,p.x,p.y,q.w*sc,q.h*sc);ctx.restore();}
  const chosen=opts.selected||{}, dims=opts.dimensions!==false, bounds=G.getBounds(model,floor);
  const wallOpening=new Map();
  for(const o of openings){const list=wallOpening.get(o.wallId)||[];list.push(o);wallOpening.set(o.wallId,list);}

@@ -96,7 +96,8 @@ function render(){
    canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
   }
   ctx.setTransform(dpr,0,0,dpr,0,0);
-  ui.hits=R.draw(canvas,ctx,model(),{...ui,floor:ui.floor,unit});
+  const trace=(model().traces||[]).find(q=>q.floor===ui.floor);const traceImage=trace?getTraceImage(trace.data):null;
+  ui.hits=R.draw(canvas,ctx,model(),{...ui,floor:ui.floor,unit,trace,traceImage});
  });
 }
 function refresh(){
@@ -588,6 +589,30 @@ function makePdf(jpeg,w,h,mm){
  const content="q "+wp+" 0 0 "+hp+" 0 0 cm /Plan Do Q\n";obj(5,"<< /Length "+enc.encode(content).length+" >>\nstream\n"+content+"endstream");const start=size;add("xref\n0 6\n0000000000 65535 f \n");for(let i=1;i<=5;i++)add(String(offsets[i]).padStart(10,"0")+" 00000 n \n");add("trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+start+"\n%%EOF\n");return new Blob(chunks,{type:"application/pdf"});
 }
 async function downloadPdf(){const p=pdfCanvas();if(!p.fits)return;const button=$("pdfDownload");button.disabled=true;try{const jpeg=await new Promise(resolve=>p.out.toBlob(resolve,"image/jpeg",.94));if(!jpeg)throw Error("JPEG");const blob=makePdf(new Uint8Array(await jpeg.arrayBuffer()),p.out.width,p.out.height,p.mm),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download="easy3dhome-floor-plan.pdf";document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}catch(e){$("pdfStatus").textContent=t("PDF 產生失敗");}finally{button.disabled=false;}}
+let traceDraft=null,tracePoints=[],traceSource=null,traceExisting=null;const traceImages=new Map();
+function getTraceImage(data){if(traceImages.has(data))return traceImages.get(data);if(traceImages.size>=8)traceImages.delete(traceImages.keys().next().value);const image=new Image();image.onload=render;image.src=data;traceImages.set(data,image);return image;}
+function paintTracePreview(){const c=$("tracePreview"),ctx=c.getContext("2d");ctx.clearRect(0,0,c.width,c.height);if(!traceSource)return;ctx.drawImage(traceSource,0,0,c.width,c.height);ctx.strokeStyle="#ea492d";ctx.fillStyle="#ea492d";ctx.lineWidth=3;if(tracePoints.length===2){ctx.beginPath();ctx.moveTo(tracePoints[0].x,tracePoints[0].y);ctx.lineTo(tracePoints[1].x,tracePoints[1].y);ctx.stroke();}for(const p of tracePoints){ctx.beginPath();ctx.arc(p.x,p.y,6,0,Math.PI*2);ctx.fill();}}
+function showTrace(){
+ $("projectsDialog").close();traceExisting=(model().traces||[]).find(q=>q.floor===ui.floor)||null;traceDraft=null;tracePoints=[];traceSource=null;$("traceFile").value="";$("traceApply").disabled=!traceExisting;$("traceRemove").disabled=!traceExisting;
+ $("traceOpacity").value=Math.round((traceExisting?.opacity??.4)*100);$("traceX").value=traceExisting?.x??0;$("traceY").value=traceExisting?.y??0;$("traceDistance").value=3;$("traceStatus").textContent=traceExisting?t("已儲存圖片，可調整位置與透明度。"):t("請點選兩個不同位置");
+ const c=$("tracePreview");c.width=600;c.height=300;paintTracePreview();
+ if(traceExisting){const img=getTraceImage(traceExisting.data);const loaded=()=>{traceSource=img;c.width=Math.min(900,img.naturalWidth);c.height=Math.round(c.width*img.naturalHeight/img.naturalWidth);paintTracePreview();};if(img.complete&&img.naturalWidth)loaded();else img.addEventListener("load",loaded,{once:true});}
+ showDialog("traceDialog");
+}
+async function loadTrace(e){
+ const file=e.target.files?.[0];if(!file)return;traceDraft=null;traceSource=null;tracePoints=[];$("traceApply").disabled=true;
+ if(!["image/png","image/jpeg","image/webp"].includes(file.type)||file.size>10000000){$("traceStatus").textContent=t("圖片無效或太大");return;}
+ const url=URL.createObjectURL(file);try{const img=new Image();img.src=url;await img.decode();if(!img.naturalWidth||!img.naturalHeight||img.naturalWidth*img.naturalHeight>50000000)throw Error("size");
+ const c=document.createElement("canvas"),scale=Math.min(1,1400/Math.max(img.naturalWidth,img.naturalHeight));c.width=Math.round(img.naturalWidth*scale);c.height=Math.round(img.naturalHeight*scale);const ctx=c.getContext("2d");ctx.fillStyle="white";ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);
+ const data=c.toDataURL("image/jpeg",.72);if(data.length>450000)throw Error("size");traceDraft={data};traceSource=c;const p=$("tracePreview");p.width=Math.min(900,c.width);p.height=Math.round(p.width*c.height/c.width);paintTracePreview();$("traceStatus").textContent=t("請點選兩個不同位置");
+ }catch(err){$("traceStatus").textContent=t("圖片無效或太大");}finally{URL.revokeObjectURL(url);}
+}
+function selectTracePoint(e){if(!traceDraft)return;const c=$("tracePreview"),r=c.getBoundingClientRect();if(tracePoints.length===2)tracePoints=[];tracePoints.push({x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height});paintTracePreview();const ready=tracePoints.length===2&&Math.hypot(tracePoints[0].x-tracePoints[1].x,tracePoints[0].y-tracePoints[1].y)>=2;$("traceApply").disabled=!ready;$("traceStatus").textContent=t(ready?"比例校準完成":"請點選兩個不同位置");}
+function applyTrace(){const x=Number($("traceX").value),y=Number($("traceY").value),opacity=Number($("traceOpacity").value)/100;let q;
+ if(!Number.isFinite(x)||!Number.isFinite(y)||Math.abs(x)>1000||Math.abs(y)>1000||opacity<.05||opacity>1)return;
+ if(traceDraft&&tracePoints.length===2){const distance=Number($("traceDistance").value),c=$("tracePreview"),d=Math.hypot(tracePoints[0].x-tracePoints[1].x,tracePoints[0].y-tracePoints[1].y);if(!(distance>=.01&&distance<=1000&&d>=2))return;const s=distance/d;q={floor:ui.floor,data:traceDraft.data,w:c.width*s,h:c.height*s,x:x-tracePoints[0].x*s,y:y-tracePoints[0].y*s,opacity};}else if(traceExisting)q={...traceExisting,x,y,opacity};else return;
+ const cleaned=G.cleanTraces([q],model().floorCount);if(!cleaned.length){$("traceStatus").textContent=t("圖片尺寸超出限制");return;}commit(()=>{model().traces=G.cleanTraces([...(model().traces||[]).filter(q=>q.floor!==ui.floor),...cleaned],model().floorCount);});$("traceDialog").close();ui.mode="2d";refresh();toast(t("已載入描繪圖片"));
+}
 function exportJSON(){
  saveNow();
  const data=G.fileExport(model()),blob=new Blob([data],{type:"application/json;charset=utf-8"});
@@ -671,7 +696,7 @@ function removeFloor(){
  commit(()=>{
   const m=model();
   for(const key of ["walls","openings","furniture","measurements"])m[key]=m[key].filter(v=>(Number(v.floor)||0)!==top);
-  m.floorCount=top;
+  m.floorCount=top;if(m.traces)m.traces=G.cleanTraces(m.traces,top);
  });
  ui.floor=Math.min(ui.floor,top-1);refresh();toast(t("已刪除")+floorLabel(top));
 }
@@ -702,6 +727,7 @@ function bind(){
  $("homeBedrooms").addEventListener("change",previewHome);$("homeFloors").addEventListener("change",previewHome);
  $("buildHome").onclick=buildHome;
  $("exportButton").onclick=exportJSON;
+ $("traceButton").onclick=showTrace;$("traceFile").onchange=loadTrace;$("tracePreview").onclick=selectTracePoint;$("traceApply").onclick=applyTrace;$("traceRemove").onclick=()=>{commit(()=>{model().traces=(model().traces||[]).filter(q=>q.floor!==ui.floor);});$("traceDialog").close();refresh();toast(t("已移除描繪圖片"));};
  $("pdfButton").onclick=()=>{$("projectsDialog").close();showDialog("pdfDialog");renderPdf();};$("pdfPaper").onchange=renderPdf;$("pdfScale").onchange=renderPdf;$("pdfDownload").onclick=downloadPdf;
  $("budgetButton").onclick=showBudget;$("budgetCsv").onclick=budgetCsv;$("budgetAdd").onclick=()=>{const b=G.cleanBudget(model().budget);if(b.rows.length>=100)return;commit(()=>{b.rows.push({id:G.uid(),name:t("新工程項目"),qty:1,cost:null});model().budget=b;});renderBudget();};$("budgetContingency").onchange=e=>{if(!e.target.checkValidity())return;commit(()=>{const b=G.cleanBudget(model().budget);b.contingency=Number(e.target.value);model().budget=b;});budgetTotals();};
  $("shoppingButton").onclick=showShopping;$("shoppingCsv").onclick=shoppingCsv;$("shoppingCurrency").onchange=e=>{const old=G.cleanShopping(model().shopping);if((Object.keys(old.prices).length||G.cleanBudget(model().budget).rows.some(r=>r.cost!==null))&&!confirm(t("改變貨幣會清除現有價格，不會自動換算。繼續？"))){e.target.value=old.currency;return;}commit(()=>{model().shopping={currency:e.target.value,prices:{}};if(model().budget){const b=G.cleanBudget(model().budget);b.rows.forEach(r=>r.cost=null);model().budget=b;}});renderShopping();};
