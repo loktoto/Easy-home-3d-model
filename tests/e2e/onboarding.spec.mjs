@@ -1,0 +1,5 @@
+import {test,expect} from '@playwright/test';
+test('wizard rejects invalid sizes, cancel preserves project, creation makes new project',async({page},info)=>{
+ await page.goto('/');await page.locator('#startBuild').click();await expect(page.locator('#homeDialog')).toBeVisible();await page.locator('#homeWidth').fill('0');await expect(page.locator('#buildHome')).toBeDisabled();await expect(page.locator('#homePreview')).toContainText('4 至 24');await page.locator('[data-close=homeDialog]').last().click();await expect(page.locator('#startTip')).toBeVisible();
+ await page.locator('#startBuild').click();await page.locator('#homeWidth').fill('8');await expect(page.locator('#buildHome')).toBeEnabled();await page.screenshot({path:info.outputPath('wizard-valid.png')});await page.locator('#buildHome').click();await expect(page.locator('#saveStatus')).toContainText('本機已儲存');const s=await page.evaluate(()=>JSON.parse(localStorage.getItem('easy-home-3d:projects:v1')));expect(s.projects).toHaveLength(2);expect(s.projects[0].data.walls).toHaveLength(0);expect(s.projects.find(p=>p.id===s.activeId).data.walls.length).toBeGreaterThan(0);
+});

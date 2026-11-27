@@ -1,4 +1,4 @@
-/* Easy Home 3D — offline canvas renderer (2D + perspective 3D). MIT © 2026 loktoto */
+/* Easy3DHome — offline canvas renderer (2D + perspective 3D). MIT © 2026 loktoto */
 (function(root){
 "use strict";
 const G=root.EasyHomeCore;
@@ -98,8 +98,9 @@ function projectFactory(w,h,bounds,opts){
  const orbit=opts.orbit||{azimuth:-.65,elevation:.82,distance:1};
  const cx=bounds.cx,cy=bounds.cy,span=Math.max(bounds.width,bounds.height,4);
  const dist=span*1.85*orbit.distance+4,el=G.clamp(orbit.elevation,.15,1.48),az=orbit.azimuth;
- const camera=[cx+dist*Math.cos(el)*Math.sin(az),cy+dist*Math.cos(el)*Math.cos(az),dist*Math.sin(el)+2];
- const target=[cx,cy,1];
+ const targetZ=Number.isFinite(orbit.targetZ)?orbit.targetZ:1;
+ const camera=[cx+dist*Math.cos(el)*Math.sin(az),cy+dist*Math.cos(el)*Math.cos(az),targetZ+dist*Math.sin(el)+1];
+ const target=[cx,cy,targetZ];
  function normalize(a){const m=Math.hypot(...a)||1;return a.map(v=>v/m);}
  function cross(a,b){return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
  function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
@@ -207,5 +208,15 @@ function draw(canvas,ctx,model,opts){
 function projectPoint(canvas,model,orbit,xyz){
  return projectFactory(canvas.clientWidth,canvas.clientHeight,G.getBounds(model),{orbit})(xyz);
 }
-root.EasyHomeRenderer={draw,toWorld,screenToFloor,projectPoint};
+function fitOrbit(canvas,model,orbit){
+ const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return {...orbit};
+ const b=G.getBounds(model),floorH=Number(model.floorHeight)||3;
+ const top=Math.max(1,((model.floorCount||1)-1)*floorH,...model.walls.map(v=>(Number(v.floor)||0)*floorH+v.height),...model.furniture.map(v=>(Number(v.floor)||0)*floorH+v.h));
+ const fitted={...orbit,targetZ:top/2,distance:.65},pad=Math.max(b.width,b.height)>18?3.5:2;
+ const points=[];for(const x of [b.minX-pad,b.maxX+pad])for(const y of [b.minY-pad,b.maxY+pad])for(const z of [-.25,top])points.push([x,y,z]);
+ const margin=Math.min(32,Math.min(w,h)*.09);
+ for(let i=0;i<70;i++){const project=projectFactory(w,h,b,{orbit:fitted});if(points.map(project).every(p=>p.valid&&p.x>=margin&&p.x<=w-margin&&p.y>=margin&&p.y<=h-margin))break;fitted.distance*=1.12;}
+ return fitted;
+}
+root.EasyHomeRenderer={draw,toWorld,screenToFloor,projectPoint,fitOrbit};
 })(window);
