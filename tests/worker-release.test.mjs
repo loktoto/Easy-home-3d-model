@@ -12,3 +12,16 @@ test('public worker serves only explicit routes and exact release bytes',async()
  assert.equal((await get('/','POST')).status,405);assert.equal(await(await get('/','HEAD')).text(),'');
  assert.equal((await get('/version.json')).headers.get('Cache-Control'),'no-store');
 });
+
+import {readFile} from 'node:fs/promises';
+test('Worker preserves actual PNG social card bytes and image MIME',async()=>{
+ const image=await readFile(new URL('../welcome/social-card.png',import.meta.url));
+ assert.equal(image.subarray(0,8).toString('hex'),'89504e470d0a1a0a');
+ assert.equal(image.readUInt32BE(16),1200);assert.equal(image.readUInt32BE(20),630);
+ const source=makeWorkerSource({'/welcome/social-card.png':['image/png',image.toString('base64')]},'b'.repeat(40));
+ const worker=(await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'))).default;
+ const url='https://example.com/welcome/social-card.png';
+ const response=await worker.fetch(new Request(url));assert.equal(response.headers.get('Content-Type'),'image/png');
+ assert.deepEqual(Buffer.from(await response.arrayBuffer()),image);
+ const head=await worker.fetch(new Request(url,{method:'HEAD'}));assert.equal(head.status,200);assert.equal((await head.arrayBuffer()).byteLength,0);
+});
