@@ -21,7 +21,7 @@ for(const locale of locales){
   const demoId=(await state(page)).activeId;
   await open(page,'clientButton');await page.locator('#clientName').fill('QA client '+locale);
   await page.locator('#clientStatus').selectOption('completed');await page.locator('#clientSave').click();
-  await expect.poll(async()=> (await model(page)).client.status).toBe('completed');
+  await expect.poll(async()=> (await model(page)).client?.status).toBe('completed');
   await open(page,'newBlank');await expect.poll(async()=> (await state(page)).projects.length).toBe(initial.projects.length+2);
   await page.locator('#projectsButton').click();
   for(const [filter,count] of [['draft',2],['active',0],['completed',1],['archived',0],['',3]]){
@@ -42,17 +42,17 @@ for(const locale of locales){
   test.setTimeout(90000);await page.goto('/?lang='+locale);
   await page.locator('#addFurnitureButton').click();await page.locator('#furnitureCatalog button').first().click();await dismissInspector(page);
   await open(page,'shoppingButton');await edit(page,'#shoppingRows .report-row input',100);
-  await expect.poll(async()=>Object.values((await model(page)).shopping.prices)).toContain(10000);
+  await expect.poll(async()=>Object.values((await model(page)).shopping?.prices||{})).toContain(10000);
   page.once('dialog',d=>d.dismiss());await page.locator('#shoppingCurrency').selectOption('USD');await expect(page.locator('#shoppingCurrency')).toHaveValue('HKD');
   expect(Object.values((await model(page)).shopping.prices)).toContain(10000);
-  page.once('dialog',d=>d.accept());await page.locator('#shoppingCurrency').selectOption('USD');await expect.poll(async()=> (await model(page)).shopping.currency).toBe('USD');
+  page.once('dialog',d=>d.accept());await page.locator('#shoppingCurrency').selectOption('USD');await expect.poll(async()=> (await model(page)).shopping?.currency).toBe('USD');
   expect((await model(page)).shopping.prices).toEqual({});
   for(const cur of ['EUR','GBP','CNY','TWD','JPY','HKD','USD']){
    await page.locator('#shoppingCurrency').selectOption(cur);await expect.poll(async()=> (await model(page)).shopping.currency).toBe(cur);
   }
   await page.screenshot({path:info.outputPath(locale+'-currency-options.png')});await close(page,'shoppingDialog','bottom');
   await open(page,'budgetButton');await page.locator('#budgetAdd').click();await edit(page,'[data-budget-prop=name]','QA work');await edit(page,'[data-budget-prop=cost]',100);
-  await expect.poll(async()=> (await model(page)).budget.rows.length).toBe(1);
+  await expect.poll(async()=> (await model(page)).budget?.rows?.length).toBe(1);
   await page.locator('#budgetRows button.danger').click();await expect.poll(async()=> (await model(page)).budget.rows.length).toBe(0);
   await page.screenshot({path:info.outputPath(locale+'-budget-remove.png')});await close(page,'budgetDialog','bottom');
   await open(page,'brandButton');
@@ -68,11 +68,11 @@ test('actual locale dropdown cycles all languages without project data loss',asy
  test.setTimeout(90000);await page.goto('/?lang=zh-Hant');
  await page.locator('#addFurnitureButton').click();await page.locator('#furnitureCatalog button').first().click();await dismissInspector(page);
  await expect.poll(async()=> (await model(page)).furniture.length).toBe(1);
- const before=await model(page);
+ const before=await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('easy-home-3d:projects:v1'));return EasyHomeCore.sanitize(s.projects.find(p=>p.id===s.activeId).data)});
  for(const locale of ['en','zh-Hans','es','ja','de','fr','ko','pt','zh-Hant']){
   await page.locator('#projectsButton').click();await page.locator('#localeSelect').selectOption(locale);
   await expect(page.locator('html')).toHaveAttribute('lang',locale);
-  await expect(page.locator('#projectsDialog')).not.toBeVisible();expect(await model(page)).toEqual(before);
+  await expect(page.locator('#projectsDialog')).not.toBeVisible();expect(await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('easy-home-3d:projects:v1'));return EasyHomeCore.sanitize(s.projects.find(p=>p.id===s.activeId).data)})).toEqual(before);
   await page.screenshot({path:info.outputPath('actual-switch-'+locale+'.png')});
  }
 });
