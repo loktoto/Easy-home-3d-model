@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/sitemap.xml

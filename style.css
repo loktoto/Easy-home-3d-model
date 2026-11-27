@@ -87,3 +87,8 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
 }
 @media(max-width:360px){.floor-label{display:none}.floor-tab{padding:6px 8px;font-size:10px}}
 
+
+/* Brand launch: consistent accent and visible keyboard focus; preserve existing geometry and layout. */
+:root{--mint:#8CE0C1;--blue:#9BC5FF;--sub:#B0C3D8;--danger:#FFAAAA}
+.mark{background:#11685A;color:#fff}
+:where(button,a,input,select):focus-visible{outline:3px solid #9BC5FF;outline-offset:3px}
