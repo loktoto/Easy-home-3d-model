@@ -114,3 +114,21 @@ test('UAT-009b unreadable storage is never overwritten and offers raw backup',as
  expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(raw);await page.locator('#projectsButton').click();const button=page.locator('#recoveryBackup');await expect(button).toBeVisible();await shot(page,info,'recovery-download');
  const download=page.waitForEvent('download');await button.click();expect((await download).suggestedFilename()).toBe('easy3dhome-local-recovery.json');await page.reload();expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(raw);
 });
+
+test('UAT-009c 99 to 100 projects succeeds; alternative creation routes cannot exceed capacity',async({page},info)=>{
+ const fixture=projectFixture(await state(page),99);await seedNextLoad(page,JSON.stringify(fixture));await page.reload();
+ await page.locator('#projectsButton').click();await page.locator('#newBlank').click();await expect.poll(async()=>(await state(page)).projects.length).toBe(100);
+ const ids=(await state(page)).projects.map(p=>p.id);
+ const reject=async action=>{const dialog=page.waitForEvent('dialog');const pending=action();const alert=await dialog;expect(alert.message()).toMatch(/project limit/i);await alert.accept();await pending;expect((await state(page)).projects.map(p=>p.id)).toEqual(ids);};
+ await page.locator('#projectsButton').click();await reject(()=>page.locator('#newDemo').click());await shot(page,info,'demo-capacity');
+ await page.locator('#templatesButton').click();await reject(()=>page.locator('#templateList button').first().click());await shot(page,info,'template-capacity');await close(page,'templatesDialog');
+ await page.locator('#buildButton').click();await page.locator('#homeWidth').fill('8');await page.locator('#homeDepth').fill('6');await reject(()=>page.locator('#buildHome').click());await shot(page,info,'wizard-capacity');await close(page,'homeDialog');
+ await page.locator('#projectsButton').click();const data=JSON.stringify((await model(page)));await reject(()=>page.locator('#importFile').setInputFiles({name:'valid.json',mimeType:'application/json',buffer:Buffer.from(data)}));await shot(page,info,'import-capacity');await close(page,'projectsDialog');
+ await page.reload();expect((await state(page)).projects.map(p=>p.id)).toEqual(ids);
+});
+
+test('UAT-009d a partially unreadable collection preserves the original bytes and valid project',async({page},info)=>{
+ const fixture=projectFixture(await state(page),2);fixture.projects[1].data=null;const raw=JSON.stringify(fixture);await seedNextLoad(page,raw);await page.reload();
+ await expect(page.locator('#projectName')).toHaveValue('UAT 0');await expect(page.locator('#saveStatus')).toHaveClass(/error/);await page.locator('#projectsButton').click();await expect(page.locator('#recoveryBackup')).toBeVisible();await shot(page,info,'partial-collection-recovery');
+ await page.reload();expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(raw);
+});
