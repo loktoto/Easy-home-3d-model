@@ -21,8 +21,7 @@ jobs:
       - name: Prepare isolated Supabase schema
         run: |
           supabase init
-          supabase migration new easy3d_cloud
-          cp backend/001-cloud.sql "$(find supabase/migrations -name '*_easy3d_cloud.sql' -print -quit)"
+          for f in backend/[0-9]*.sql; do name=$(basename "$f" .sql | tr "-" "_"); supabase migration new "$name"; cp "$f" "$(find supabase/migrations -name "*_$name.sql" -print -quit)"; sleep 1; done
           supabase start
           supabase db reset --local
           supabase status -o json > /tmp/easy3d-supabase-status.json
@@ -30,7 +29,7 @@ jobs:
       - run: npm install --no-audit --no-fund
       - run: npx playwright install --with-deps chromium webkit
       - name: Actual cloud browser end-to-end tests
-        run: npx playwright test tests/e2e/cloud.spec.mjs
+        run: npx playwright test tests/e2e/cloud*.spec.mjs
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:

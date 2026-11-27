@@ -28,5 +28,15 @@ async function put(owner,id,name,doc,expected){
  if(!result?.length)throw Error("Revision conflict or permission denied. Pull the remote version first.");return result[0];
 }
 async function remove(owner,id,revision){const result=await call("/rest/v1/easy3d_projects?owner="+eq(owner)+"&id="+eq(id)+"&revision="+eq(revision),{method:"DELETE",headers:{Prefer:"return=representation"}},true);if(!result?.length)throw Error("Revision conflict or permission denied.");return true;}
-root.Easy3DHomeCloud={configured,user,login,signup,logout,list,get,put,remove,call};
+async function memberships(){return call("/rest/v1/easy3d_members?select=owner,project_id,member,role,expires_at",{},true);}
+async function createInvite(owner,id,role,days){
+ const raw=Array.from(crypto.getRandomValues(new Uint8Array(32)),x=>x.toString(16).padStart(2,"0")).join("");
+ const digest=Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(raw))),x=>x.toString(16).padStart(2,"0")).join("");
+ await call("/rest/v1/easy3d_invites",{method:"POST",body:JSON.stringify({owner,project_id:id,token_hash:digest,role,expires_at:new Date(Date.now()+days*86400000).toISOString()})},true);return raw;
+}
+async function claimInvite(raw){return call("/rest/v1/rpc/easy3d_claim_invite",{method:"POST",body:JSON.stringify({p_token:raw})},true);}
+async function invites(owner,id){return call("/rest/v1/easy3d_invites?owner="+eq(owner)+"&project_id="+eq(id)+"&select=token_hash,role,expires_at,claimed_at",{},true);}
+async function revokeInvite(hash){return call("/rest/v1/easy3d_invites?token_hash="+eq(hash),{method:"DELETE"},true);}
+async function revokeMember(owner,id,member){return call("/rest/v1/easy3d_members?owner="+eq(owner)+"&project_id="+eq(id)+"&member="+eq(member),{method:"DELETE"},true);}
+root.Easy3DHomeCloud={memberships,createInvite,claimInvite,invites,revokeInvite,revokeMember,configured,user,login,signup,logout,list,get,put,remove,call};
 })(window);
