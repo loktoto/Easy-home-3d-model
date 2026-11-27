@@ -2,7 +2,7 @@
 
 [Home](../README.md) · [Contributing](../CONTRIBUTING.md) · [QA acceptance](QA_ACCEPTANCE.md)
 
-This map describes the repository at commit `1b1cd88` (27 November 2026). It helps newcomers find the relevant files without understanding Git internals.
+This map describes the repository at commit `5560777` (27 November 2026). It helps newcomers find the relevant files without understanding Git internals.
 
 ## I just want to use Easy3DHome
 
@@ -19,6 +19,8 @@ Open [the project homepage](../README.md). To use a local copy, [download ZIP](h
 | [core.js](../core.js) | Geometry and serialization |
 | [renderer.js](../renderer.js) | 2D / 3D rendering |
 | [i18n.js](../i18n.js) | Language catalog |
+| [cloud.js](../cloud.js), [cloud-config.js](../cloud-config.js) | Optional cloud client/configuration |
+| [backend/](../backend/) | Self-hosted database schema; excluded from public site |
 | [welcome/](../welcome/) | Public landing pages |
 | [docs/](../docs/) | Guides, QA and plans |
 | [evidence/](../evidence/README.md) | Historical screenshots and reports |

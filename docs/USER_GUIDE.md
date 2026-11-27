@@ -8,9 +8,9 @@ Try the [existing online demo](https://easy-home-3d-open-source.bballinbrowser-l
 
 ## Your first design
 
-1. Start with a blank project, a demo plan or the **Home wizard**. Back up an existing design before replacing it.
+1. Start with a blank project, a demo plan, a design template or the **Home wizard**. Back up an existing design before replacing it.
 2. Select **Draw room**, then click or tap two opposite corners. For irregular rooms, use **Draw walls**.
-3. Select a wall to edit its length, thickness, height and endpoints. Dimensions are in metres in the main-branch editor.
+3. Select a wall to edit its length, thickness, height and endpoints. Choose metres, centimetres, millimetres or feet/inches under **Projects**; the underlying geometry remains in metres.
 4. Choose **Door** or **Window**, then select a wall. Adjust the opening's width and position in properties.
 5. Choose **Furniture**, select an item and drag it into place. Select it again to change width, depth, height, angle or position; lock it to prevent accidental moves.
 6. Use **Measure** to check a distance and **Check** for basic geometry warnings. Select **3D model** to inspect the result.
@@ -22,7 +22,23 @@ The floor tabs select the active 2D floor; plus/minus add or remove the top floo
 
 On a phone, scroll the editing toolbar to reach more tools, use the properties button to open the inspector, and pinch to zoom. On a computer, use the mouse wheel to zoom, drag an empty area to pan and use the fit control to show the full layout. Ctrl/Command+Z undoes changes; Escape cancels wall drawing. Arrow keys nudge selected furniture.
 
-Language options are under **Projects**. Translation coverage is still being validated.
+Under **Projects**, choose a language, theme and measurement unit. English, Traditional Chinese and Simplified Chinese are established options; Spanish, Japanese, German, French, Korean and Portuguese are labeled beta.
+
+## More tools
+
+Open **Projects** to find the advanced tools. The following are present in the current source; the public demo may run an older build.
+
+| Task | How to start |
+| --- | --- |
+| Start from an existing floor plan | Open image tracing, select a local picture, mark two points at a known distance, set scale and opacity. |
+| Estimate costs | Open the shopping list or renovation budget; enter prices, quantities and contingency, then export CSV. |
+| Export a picture or print | Choose PNG export or the scaled PDF tool, select size/scale, preview and check the printed calibration. |
+| Inspect geometry | Open Check for clearance/collision warnings; use plan annotations for area estimates, compass, scale and openings. |
+| Save alternatives | Use local version history to save a snapshot before a major edit, compare or restore. |
+| Organize client work | Enter client/project details; optional branding adds your logo to reports. |
+| Sync or share online | Configure a dedicated self-hosted backend using [Cloud setup](CLOUD_SETUP.md). The public build leaves cloud disabled. |
+
+Never rely on area estimates, collision checks or PDF scale as a certified survey. Verify actual site dimensions.
 
 ## Troubleshooting and FAQ
 
@@ -40,7 +56,7 @@ Language options are under **Projects**. Translation coverage is still being val
 
 **Can I use the plan for construction?** It is a planning preview only. Geometry checks are not guarantees of clearance, structural integrity, code compliance or safety. Always verify real dimensions and consult qualified professionals.
 
-**Is it free?** The current MIT-licensed local editor is free to use, without an account. No cloud sync is required or included in the current main-branch editor.
+**Is it free?** The current MIT-licensed local editor is free to use, without an account. No cloud sync is required. Optional self-hosted cloud is included in the source but not enabled in the public build by default.
 
 ## Feedback
 
