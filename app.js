@@ -131,8 +131,10 @@ function refresh(){
  renderInspector();render();
 }
 function fit(){
- const bounds=G.getBounds(ui.mode==="3d"?model():visibleModel(),ui.mode==="3d"?undefined:ui.floor),w=canvas.clientWidth||800,h=canvas.clientHeight||550;
- ui.view.scale=G.clamp(Math.min(w/(bounds.width+2.5),h/(bounds.height+2.5)),18,145);
+ let bounds=G.getBounds(ui.mode==="3d"?model():visibleModel(),ui.mode==="3d"?undefined:ui.floor);const w=canvas.clientWidth||800,h=canvas.clientHeight||550;
+ const trace=ui.mode==="2d"&&(model().traces||[]).find(q=>q.floor===ui.floor);
+ if(trace){const minX=bounds.empty?trace.x:Math.min(bounds.minX,trace.x),maxX=bounds.empty?trace.x+trace.w:Math.max(bounds.maxX,trace.x+trace.w),minY=bounds.empty?trace.y:Math.min(bounds.minY,trace.y),maxY=bounds.empty?trace.y+trace.h:Math.max(bounds.maxY,trace.y+trace.h);bounds={minX,maxX,minY,maxY,width:maxX-minX,height:maxY-minY,cx:(minX+maxX)/2,cy:(minY+maxY)/2};}
+ ui.view.scale=G.clamp(Math.min(w/(bounds.width+2.5),h/(bounds.height+2.5)),trace?.w?0.05:18,145);
  ui.view.panX=-bounds.cx*ui.view.scale;ui.view.panY=-bounds.cy*ui.view.scale;
  ui.orbit.distance=1;render();
 }
@@ -611,7 +613,7 @@ function selectTracePoint(e){if(!traceDraft)return;const c=$("tracePreview"),r=c
 function applyTrace(){const x=Number($("traceX").value),y=Number($("traceY").value),opacity=Number($("traceOpacity").value)/100;let q;
  if(!Number.isFinite(x)||!Number.isFinite(y)||Math.abs(x)>1000||Math.abs(y)>1000||opacity<.05||opacity>1)return;
  if(traceDraft&&tracePoints.length===2){const distance=Number($("traceDistance").value),c=$("tracePreview"),d=Math.hypot(tracePoints[0].x-tracePoints[1].x,tracePoints[0].y-tracePoints[1].y);if(!(distance>=.01&&distance<=1000&&d>=2))return;const s=distance/d;q={floor:ui.floor,data:traceDraft.data,w:c.width*s,h:c.height*s,x:x-tracePoints[0].x*s,y:y-tracePoints[0].y*s,opacity};}else if(traceExisting)q={...traceExisting,x,y,opacity};else return;
- const cleaned=G.cleanTraces([q],model().floorCount);if(!cleaned.length){$("traceStatus").textContent=t("圖片尺寸超出限制");return;}commit(()=>{model().traces=G.cleanTraces([...(model().traces||[]).filter(q=>q.floor!==ui.floor),...cleaned],model().floorCount);});$("traceDialog").close();ui.mode="2d";refresh();toast(t("已載入描繪圖片"));
+ const cleaned=G.cleanTraces([q],model().floorCount);if(!cleaned.length){$("traceStatus").textContent=t("圖片尺寸超出限制");return;}commit(()=>{model().traces=G.cleanTraces([...(model().traces||[]).filter(q=>q.floor!==ui.floor),...cleaned],model().floorCount);});$("traceDialog").close();ui.mode="2d";fit();refresh();toast(t("已載入描繪圖片"));
 }
 function exportJSON(){
  saveNow();
