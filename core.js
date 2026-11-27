@@ -255,6 +255,7 @@ function sanitize(raw){
  });
  m.measurements=raw.measurements.map(q=>({id:id(q.id),a:safePoint(q.a),b:safePoint(q.b),floor:safeFloor(q)}));
  if(raw.shopping)m.shopping=cleanShopping(raw.shopping);
+ if(raw.budget)m.budget=cleanBudget(raw.budget);
  return m;
 }
 function getBounds(model,floor){
@@ -300,7 +301,9 @@ function shoppingSummary(model){
  return {currency:store.currency,rows,total:rows.reduce((n,r)=>n+(r.total??0),0),unpriced:rows.reduce((n,r)=>n+(r.price===null?r.count:0),0)};
 }
 function csvCell(v){let s=String(v??"");if(/^[\s]*[=+\-@\t\r]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';}
-const api={currencies,shoppingKey,cleanShopping,shoppingSummary,csvCell,furnitureGap,clearanceWarnings,units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
+function cleanBudget(raw){return {rows:Array.isArray(raw?.rows)?raw.rows.slice(0,100).map(row=>({id:String(row.id||uid()).slice(0,100),name:String(row.name||"").slice(0,80),qty:clamp(num(row.qty,1),0,100000),cost:row.cost===null||row.cost===undefined?null:clamp(Math.round(num(row.cost)),0,1000000000)})):[],contingency:clamp(num(raw?.contingency,0),0,100)};}
+function budgetSummary(m){const b=cleanBudget(m.budget),s=shoppingSummary(m),rows=b.rows.map(r=>({...r,total:r.cost===null?null:Math.round(r.qty*r.cost)})),work=rows.reduce((sum,r)=>sum+(r.total??0),0),subtotal=work+s.total,contingency=Math.round(subtotal*b.contingency/100);return {currency:s.currency,rows,work,furniture:s.total,unpriced:s.unpriced+rows.filter(r=>r.cost===null).length,subtotal,contingency,total:subtotal+contingency,rate:b.contingency};}
+const api={cleanBudget,budgetSummary,currencies,shoppingKey,cleanShopping,shoppingSummary,csvCell,furnitureGap,clearanceWarnings,units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.EasyHomeCore=api;
 })(typeof window!=="undefined"?window:globalThis);
