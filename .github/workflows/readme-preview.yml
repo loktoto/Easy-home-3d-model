@@ -1,0 +1,22 @@
+name: README visual review
+on: [pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  readme-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund --no-save marked
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npx playwright test -c playwright.docs.config.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: easy3dhome-readme-preview
+          path: test-results/
