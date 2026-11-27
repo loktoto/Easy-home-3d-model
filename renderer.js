@@ -2,11 +2,13 @@
 (function(root){
 "use strict";
 const G=root.EasyHomeCore;
+const light=()=>document.documentElement.dataset.theme==="light";
+const C=(dark,day)=>light()?day:dark;
 const rgba=(hex,alpha)=>{const v=parseInt((hex||"#82a8bb").replace("#",""),16);return "rgba("+((v>>16)&255)+","+((v>>8)&255)+","+(v&255)+","+alpha+")";};
 function line(ctx,a,b,color,width=1,dash=[]){
  ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([]);
 }
-function pill(ctx,text,x,y,fg="#e9f2ff",bg="#173049"){
+function pill(ctx,text,x,y,fg=C("#e9f2ff","#193c35"),bg=C("#173049","#e2eee6")){
  ctx.font="700 11px system-ui,sans-serif";const w=ctx.measureText(text).width+13;
  ctx.fillStyle=bg;ctx.beginPath();ctx.roundRect(x-w/2,y-10,w,19,5);ctx.fill();
  ctx.fillStyle=fg;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(text,x,y);
@@ -15,11 +17,11 @@ function grid(ctx,w,h,view,toScreen){
  const s=view.scale;let step=s>105?.25:s>48?.5:s>24?1:2;
  const min=toWorld({x:0,y:0},view,w,h),max=toWorld({x:w,y:h},view,w,h);
  const a=Math.floor(min.x/step)*step,b=Math.ceil(max.x/step)*step,c=Math.floor(min.y/step)*step,d=Math.ceil(max.y/step)*step;
- ctx.strokeStyle="#203249";ctx.lineWidth=1;ctx.beginPath();
+ ctx.strokeStyle=C("#203249","#dce5dd");ctx.lineWidth=1;ctx.beginPath();
  for(let x=a;x<=b+.00001;x+=step){const p=toScreen({x,y:0});ctx.moveTo(Math.round(p.x)+.5,0);ctx.lineTo(Math.round(p.x)+.5,h);}
  for(let y=c;y<=d+.00001;y+=step){const p=toScreen({x:0,y});ctx.moveTo(0,Math.round(p.y)+.5);ctx.lineTo(w,Math.round(p.y)+.5);}
  ctx.stroke();
- const origin=toScreen({x:0,y:0});line(ctx,{x:origin.x,y:0},{x:origin.x,y:h},"#2a4761",1);line(ctx,{x:0,y:origin.y},{x:w,y:origin.y},"#2a4761",1);
+ const origin=toScreen({x:0,y:0});line(ctx,{x:origin.x,y:0},{x:origin.x,y:h},C("#2a4761","#aabdb2"),1);line(ctx,{x:0,y:origin.y},{x:w,y:origin.y},C("#2a4761","#aabdb2"),1);
 }
 function toWorld(p,view,w,h){return G.point((p.x-w/2-view.panX)/view.scale,(p.y-h/2-view.panY)/view.scale);}
 function paint2D(ctx,w,h,model,opts){
@@ -36,19 +38,19 @@ function paint2D(ctx,w,h,model,opts){
   const a=S(wall.a),b=S(wall.b),len=G.length(wall.a,wall.b);
   if(len<.01)continue;
   const intervals=(wallOpening.get(wall.id)||[]).map(o=>({start:G.clamp((o.offset-o.width/2)/len,0,1),end:G.clamp((o.offset+o.width/2)/len,0,1)})).sort((a,b)=>a.start-b.start);
-  let cursor=0;const col=chosen.kind==="wall"&&chosen.id===wall.id?"#ffcb7f":"#ddebf4";
+  let cursor=0;const col=chosen.kind==="wall"&&chosen.id===wall.id?C("#ffcb7f","#a35b00"):C("#ddebf4","#344e46");
   for(const interval of intervals){if(interval.start>cursor){line(ctx,S(G.lerp(wall.a,wall.b,cursor)),S(G.lerp(wall.a,wall.b,interval.start)),col,Math.max(4,wall.thickness*sc));}cursor=Math.max(cursor,interval.end);}
   if(cursor<1)line(ctx,S(G.lerp(wall.a,wall.b,cursor)),b,col,Math.max(4,wall.thickness*sc));
-  if(chosen.kind==="wall"&&chosen.id===wall.id){for(const p of [a,b]){ctx.fillStyle="#ffcb7f";ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fill();}}
+  if(chosen.kind==="wall"&&chosen.id===wall.id){for(const p of [a,b]){ctx.fillStyle=C("#ffcb7f","#a35b00");ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fill();}}
   if(dims){const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2,nx=-(b.y-a.y)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y)),ny=(b.x-a.x)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y));pill(ctx,G.round(len,2).toFixed(2)+" m",cx+nx*18,cy+ny*18);}
  }
  for(const o of openings){
   const wall=walls.find(v=>v.id===o.wallId);if(!wall)continue;
   const len=G.length(wall.a,wall.b);if(len<.1)continue;
   const a=S(G.lerp(wall.a,wall.b,(o.offset-o.width/2)/len)),b=S(G.lerp(wall.a,wall.b,(o.offset+o.width/2)/len)),mid={x:(a.x+b.x)/2,y:(a.y+b.y)/2};
-  const c=chosen.kind==="opening"&&chosen.id===o.id?"#ffd17e":o.type==="window"?"#6ee6ec":"#ebad68";
+  const c=chosen.kind==="opening"&&chosen.id===o.id?C("#ffd17e","#9a5600"):o.type==="window"?C("#6ee6ec","#007b87"):C("#ebad68","#986020");
   if(o.type==="window"){
-   line(ctx,a,b,c,6);line(ctx,a,b,"#18314d",2);
+   line(ctx,a,b,c,6);line(ctx,a,b,C("#18314d","#e1f1e9"),2);
   }else{
    line(ctx,a,b,c,2,[4,4]);
    const dx=b.x-a.x,dy=b.y-a.y,midWall=G.midpoint(wall.a,wall.b);
@@ -56,36 +58,36 @@ function paint2D(ctx,w,h,model,opts){
    const sign=(bounds.cx-midWall.x)*nx+(bounds.cy-midWall.y)*ny>=0?1:-1;
    const hinge=a,edge={x:a.x-dy*sign,y:a.y+dx*sign};
    line(ctx,hinge,edge,c,1);
-   ctx.beginPath();ctx.arc(hinge.x,hinge.y,Math.hypot(dx,dy),Math.atan2(edge.y-hinge.y,edge.x-hinge.x),Math.atan2(b.y-hinge.y,b.x-hinge.x),true);ctx.strokeStyle=rgba("#ebad68",.5);ctx.lineWidth=1;ctx.stroke();
+   ctx.beginPath();ctx.arc(hinge.x,hinge.y,Math.hypot(dx,dy),Math.atan2(edge.y-hinge.y,edge.x-hinge.x),Math.atan2(b.y-hinge.y,b.x-hinge.x),true);ctx.strokeStyle=rgba(C("#ebad68","#986020"),.5);ctx.lineWidth=1;ctx.stroke();
   }
   if(dims&&sc>35)pill(ctx,G.round(o.width,2).toFixed(2)+" m",mid.x,mid.y-12,c);
  }
  for(const f of furniture){
   const corners=G.furnitureCorners(f).map(S);
   ctx.beginPath();corners.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();
-  ctx.fillStyle=rgba(f.color,.62);ctx.fill();ctx.strokeStyle=chosen.kind==="furniture"&&chosen.id===f.id?"#ffdd89":f.locked?"#edca96":"#b9dbea";ctx.lineWidth=chosen.id===f.id&&chosen.kind==="furniture"?3:1.5;ctx.stroke();
-  const center=S(f);ctx.font="700 12px system-ui,sans-serif";ctx.textBaseline="middle";ctx.textAlign="center";ctx.fillStyle="#f5f9ff";
+  ctx.fillStyle=rgba(f.color,.62);ctx.fill();ctx.strokeStyle=chosen.kind==="furniture"&&chosen.id===f.id?C("#ffdd89","#9a5600"):f.locked?C("#edca96","#745322"):C("#b9dbea","#355b52");ctx.lineWidth=chosen.id===f.id&&chosen.kind==="furniture"?3:1.5;ctx.stroke();
+  const center=S(f);ctx.font="700 12px system-ui,sans-serif";ctx.textBaseline="middle";ctx.textAlign="center";ctx.fillStyle=C("#f5f9ff","#172b2a");
   if(Math.min(f.w,f.d)*sc>39){ctx.fillText((f.locked?"🔒 ":"")+f.name.slice(0,10),center.x,center.y-6);if(dims)ctx.fillText(G.round(f.w,2)+" × "+G.round(f.d,2)+" m",center.x,center.y+11);}
   else ctx.fillText(f.locked?"🔒":"▣",center.x,center.y);
  }
  for(const q of measurements){
   const a=S(q.a),b=S(q.b),active=chosen.kind==="measurement"&&chosen.id===q.id;
-  line(ctx,a,b,active?"#ffd17e":"#7ee5bb",1.6,[4,4]);
-  for(const p of [a,b]){ctx.fillStyle=active?"#ffd17e":"#8fe7c8";ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();}
-  pill(ctx,G.round(G.length(q.a,q.b),2).toFixed(2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-12,"#92e4ca");
+  line(ctx,a,b,active?C("#ffd17e","#9a5600"):C("#7ee5bb","#12684d"),1.6,[4,4]);
+  for(const p of [a,b]){ctx.fillStyle=active?C("#ffd17e","#9a5600"):"#8fe7c8";ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();}
+  pill(ctx,G.round(G.length(q.a,q.b),2).toFixed(2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-12,C("#92e4ca","#075c45"));
  }
  if(opts.pending&&opts.cursor){
   const a=S(opts.pending),b=S(opts.cursor);
   if(opts.tool==="room"){
    const x=Math.min(a.x,b.x),y=Math.min(a.y,b.y),rw=Math.abs(a.x-b.x),rh=Math.abs(a.y-b.y);
-   ctx.fillStyle="#479cdb24";ctx.strokeStyle="#86ceff";ctx.lineWidth=2;ctx.setLineDash([8,5]);
+   ctx.fillStyle="#479cdb24";ctx.strokeStyle=C("#86ceff","#12684d");ctx.lineWidth=2;ctx.setLineDash([8,5]);
    ctx.fillRect(x,y,rw,rh);ctx.strokeRect(x,y,rw,rh);ctx.setLineDash([]);
    const width=G.round(Math.abs(opts.pending.x-opts.cursor.x),2).toFixed(2);
    const depth=G.round(Math.abs(opts.pending.y-opts.cursor.y),2).toFixed(2);
    pill(ctx,width+" m",x+rw/2,y-13);pill(ctx,depth+" m",x-28,y+rh/2);
    pill(ctx,G.round(Math.abs(opts.pending.x-opts.cursor.x)*Math.abs(opts.pending.y-opts.cursor.y),2)+" m²",x+rw/2,y+rh/2,"#e0fff1","#215c50");
   }else{
-   line(ctx,a,b,"#7dc3ff",2,[7,5]);
+   line(ctx,a,b,C("#7dc3ff","#12684d"),2,[7,5]);
    pill(ctx,G.round(G.length(opts.pending,opts.cursor),2).toFixed(2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-15);
   }
   ctx.beginPath();ctx.arc(a.x,a.y,5,0,Math.PI*2);ctx.fillStyle="#b2e2ff";ctx.fill();
@@ -150,13 +152,13 @@ function boxOnWall(model,proj,faces,wall,t0,t1,z,h){
 function paint3D(ctx,w,h,model,opts){
  const bounds=G.getBounds(model),project=projectFactory(w,h,bounds,opts),hits=[],faces=[];
  const pad=1.5,minX=bounds.minX-pad,maxX=bounds.maxX+pad,minY=bounds.minY-pad,maxY=bounds.maxY+pad;
- polygon(ctx,[[minX,minY,-.2],[maxX,minY,-.2],[maxX,maxY,-.2],[minX,maxY,-.2]].map(project),"#172c3d","#365267");
+ polygon(ctx,[[minX,minY,-.2],[maxX,minY,-.2],[maxX,maxY,-.2],[minX,maxY,-.2]].map(project),C("#172c3d","#dbe5db"),C("#365267","#829a89"));
  const step=Math.max(bounds.width,bounds.height)>18?2:.5;
  for(let x=Math.floor(minX/step)*step;x<=maxX;x+=step){
-  const a=project([x,minY,-.19]),b=project([x,maxY,-.19]);line(ctx,a,b,"#2a465b",.8);
+  const a=project([x,minY,-.19]),b=project([x,maxY,-.19]);line(ctx,a,b,C("#2a465b","#aebfb2"),.8);
  }
  for(let y=Math.floor(minY/step)*step;y<=maxY;y+=step){
-  const a=project([minX,y,-.19]),b=project([maxX,y,-.19]);line(ctx,a,b,"#2a465b",.8);
+  const a=project([minX,y,-.19]),b=project([maxX,y,-.19]);line(ctx,a,b,C("#2a465b","#aebfb2"),.8);
  }
  const floorCount=G.clamp(Math.round(Number(model.floorCount)||1),1,5);
  const floorH=Number(model.floorHeight)||3;
@@ -187,7 +189,7 @@ function paint3D(ctx,w,h,model,opts){
   for(const f of furniture)boxFaces(model,project,faces,{x:f.x,y:f.y,z:z0,w:f.w,d:f.d,h:f.h,rot:f.rotation,color:f.color,kind:"furniture",id:f.id});
   for(const q of measurements){
    const a=project([q.a.x,q.a.y,z0+.05]),b=project([q.b.x,q.b.y,z0+.05]);
-   line(ctx,a,b,"#81e7b6",2,[5,5]);pill(ctx,G.round(G.length(q.a,q.b),2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-8,"#9af5ce");
+   line(ctx,a,b,"#81e7b6",2,[5,5]);pill(ctx,G.round(G.length(q.a,q.b),2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-8,C("#9af5ce","#12684d"));
   }
  }
  faces.sort((a,b)=>b.depth-a.depth);
@@ -200,7 +202,7 @@ function paint3D(ctx,w,h,model,opts){
 }
 function draw(canvas,ctx,model,opts){
  const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return [];
- ctx.clearRect(0,0,w,h);ctx.fillStyle="#0b1727";ctx.fillRect(0,0,w,h);
+ ctx.clearRect(0,0,w,h);ctx.fillStyle=C("#0b1727","#f7f7f2");ctx.fillRect(0,0,w,h);
  if(opts.mode==="3d")return paint3D(ctx,w,h,model,opts);
  paint2D(ctx,w,h,model,opts);return [];
 }

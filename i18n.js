@@ -2,6 +2,10 @@
 (function(){
 "use strict";
 const messages={
+"外觀":["Appearance","外观"],
+"深色":["Dark","深色"],
+"淺色":["Light","浅色"],
+"跟隨系統":["System","跟随系统"],
  "Easy Home 3D · 免費開源裝修圖": [
   "Easy3DHome · Free open-source floor planner",
   "Easy3DHome · 免费开源装修图"
