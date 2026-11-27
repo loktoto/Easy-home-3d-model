@@ -1,0 +1,125 @@
+name: Publish versioned Easy3DHome release
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/publish-release.yml'
+      - 'scripts/package-release.py'
+      - 'docs/RELEASING.md'
+  workflow_dispatch:
+    inputs:
+      approved_sha:
+        description: 'Exact reviewed main commit SHA (40 characters)'
+        required: true
+        type: string
+      tag:
+        description: 'Release tag matching package.json (example v1.1.0)'
+        required: true
+        type: string
+      confirm:
+        description: 'I reviewed exact-commit desktop/mobile screenshots and public deployment'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+concurrency:
+  group: easy3dhome-versioned-release
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate manual release inputs
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          APPROVED_SHA: ${{ inputs.approved_sha }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          CONFIRMED: ${{ inputs.confirm }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          test "$CONFIRMED" = true
+          [[ "$APPROVED_SHA" =~ ^[0-9a-f]{40}$ ]]
+          test "$APPROVED_SHA" = "$GITHUB_SHA"
+          test "$RELEASE_TAG" = "v$(node -p "require('./package.json').version")"
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          test -f scripts/build-site.py
+          test -f tests/e2e/release-package.spec.mjs
+      - name: Check syntax and unit tests
+        run: |
+          for file in app.js core.js renderer.js i18n.js; do node --check "$file"; done
+          npm run test:unit
+      - run: npm install --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Browser regression
+        run: npx playwright test
+      - name: Package release assets
+        run: python3 scripts/package-release.py
+      - name: Verify packaged site
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          TEST_PACKAGED_SITE: '1'
+        run: npx playwright test tests/e2e/release-package.spec.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: easy3dhome-versioned-release
+          path: dist/release/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: easy3dhome-versioned-release-evidence
+          path: |
+            playwright-report/
+            test-results/
+  publish:
+    if: github.event_name == 'workflow_dispatch' && inputs.confirm && github.ref == 'refs/heads/main'
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: easy3dhome-versioned-release
+          path: release
+      - name: Verify checksum and deployed revision
+        env:
+          APPROVED_SHA: ${{ inputs.approved_sha }}
+        run: |
+          set -euo pipefail
+          test "$APPROVED_SHA" = "$GITHUB_SHA"
+          (cd release && sha256sum -c SHA256SUMS)
+          curl --fail --silent --show-error --location --max-time 30 \
+            https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/version.json \
+            -o deployed-version.json
+          python3 - <<'PY'
+          import json, os
+          with open('deployed-version.json') as f:
+              version = json.load(f)
+          assert version['commit'] == os.environ['APPROVED_SHA'], 'Public deployment does not match approved release'
+          PY
+      - name: Create public release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Release already exists; refusing to overwrite" >&2
+            exit 1
+          fi
+          gh release create "$RELEASE_TAG" release/* --target "$GITHUB_SHA" \
+            --title "Easy3DHome $RELEASE_TAG" \
+            --notes "Free, open-source local-first home planner. Download the standalone HTML or ZIP and open index.html in a modern browser. Verified source commit: $GITHUB_SHA. The packaged public website is provided for self-hosting; hosted cloud sync is not enabled by default." \
+            --latest
