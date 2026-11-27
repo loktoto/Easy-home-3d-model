@@ -2,7 +2,7 @@
 (function(){
 "use strict";
 const messages={
- "Easy Home 3D · 免費開源裝修圖": [
+ "Easy3DHome · 免費開源裝修圖": [
   "Easy3DHome · Free open-source floor planner",
   "Easy3DHome · 免费开源装修图"
  ],
@@ -306,7 +306,7 @@ const messages={
   "Done",
   "知道了"
  ],
- "Easy Home 3D — 免費開源的 2D 平面圖與 3D 裝修規劃工具。畫牆、加門窗、放傢俬、量尺寸、自動儲存。": [
+ "Easy3DHome — 免費開源的 2D 平面圖與 3D 裝修規劃工具。畫牆、加門窗、放傢俬、量尺寸、自動儲存。": [
   "Easy3DHome — free open-source 2D floor plan and 3D home planner. Draw walls, add openings and furniture, measure, and save locally.",
   "Easy3DHome — 免费开源的 2D 平面图与 3D 装修规划工具。画墙、添加门窗、放家具、测量尺寸、自动保存。"
  ],
@@ -946,7 +946,7 @@ const messages={
   "Import failed: ",
   "导入失败："
  ],
- "只接受 Easy Home 3D 匯出的 JSON。": [
+ "只接受 Easy3DHome 匯出的 JSON。": [
   "Only Easy3DHome JSON exports are supported.",
   "仅支持 Easy3DHome 导出的 JSON。"
  ],

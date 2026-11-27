@@ -1,4 +1,4 @@
-/* Easy Home 3D — geometry and document format. MIT © 2026 loktoto */
+/* Easy3DHome — geometry and document format. MIT © 2026 loktoto */
 (function(root){
 "use strict";
 const t=s=>root.EasyHomeI18n?root.EasyHomeI18n.t(s):s;

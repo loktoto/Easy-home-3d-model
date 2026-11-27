@@ -1,4 +1,4 @@
-/* Easy Home 3D — offline canvas renderer (2D + perspective 3D). MIT © 2026 loktoto */
+/* Easy3DHome — offline canvas renderer (2D + perspective 3D). MIT © 2026 loktoto */
 (function(root){
 "use strict";
 const G=root.EasyHomeCore;
