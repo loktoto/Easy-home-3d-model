@@ -564,6 +564,30 @@ function renderBudget(){const b=G.cleanBudget(model().budget),box=$("budgetRows"
  budgetTotals();}
 function showBudget(){$("projectsDialog").close();renderBudget();showDialog("budgetDialog");}
 function budgetCsv(){const s=G.budgetSummary(model()),rows=[["Item","Quantity","Currency","Unit cost","Subtotal"],...s.rows.map(r=>[r.name,r.qty,s.currency,r.cost===null?"":r.cost/100,r.total===null?"":r.total/100]),["Furniture","",s.currency,"",s.furniture/100],["Contingency",s.rate+"%",s.currency,"",s.contingency/100],["Total","",s.currency,"",s.total/100],["Unpriced count",s.unpriced]];downloadText("\uFEFF"+rows.map(r=>r.map(G.csvCell).join(",")).join("\r\n"),"text/csv;charset=utf-8","easy3dhome-budget.csv");}
+function pdfCanvas(){
+ const paper=$("pdfPaper").value,ratio=Number($("pdfScale").value),mm=paper==="A3"?[420,297]:[297,210],ppm=200/25.4,w=Math.round(mm[0]*ppm),h=Math.round(mm[1]*ppm);
+ const out=document.createElement("canvas");out.width=w;out.height=h;const c=out.getContext("2d"),margin=Math.round(12*ppm),top=Math.round(30*ppm),bottom=Math.round(24*ppm),pw=w-2*margin,ph=h-top-bottom;
+ const m=model(),b=G.getBounds(m,ui.floor),s=1000*ppm/ratio;const fits=(b.width+.8)*s<=pw&&(b.height+.8)*s<=ph;
+ c.fillStyle="#fff";c.fillRect(0,0,w,h);c.fillStyle="#172b2a";c.font="bold "+Math.round(4.5*ppm)+"px system-ui";c.fillText("Easy3DHome · "+active().name.slice(0,55),margin,Math.round(11*ppm),w-2*margin);
+ c.font=Math.round(3.3*ppm)+"px system-ui";c.fillText(floorLabel(ui.floor)+"   |   "+paper+"   |   1:"+ratio+"   |   "+new Date().toISOString().slice(0,10),margin,Math.round(18*ppm));
+ if(fits){
+  const surface={clientWidth:pw,clientHeight:ph},old=document.documentElement.dataset.theme;document.documentElement.dataset.theme="light";
+  try{c.save();c.translate(margin,top);c.beginPath();c.rect(0,0,pw,ph);c.clip();R.draw(surface,c,m,{...ui,mode:"2d",unit:"m",selected:null,pending:null,cursor:null,drag:null,view:{scale:s,panX:-b.cx*s,panY:-b.cy*s},floor:ui.floor,dimensions:true});c.restore();}finally{document.documentElement.dataset.theme=old;}
+ }else{c.fillStyle="#a52131";c.fillText(t("圖則太大，請選較小比例或較大紙張。"),margin,top+30);}
+ const y=h-Math.round(14*ppm),bar=50*ppm;c.strokeStyle="#172b2a";c.lineWidth=2;c.beginPath();c.moveTo(margin,y);c.lineTo(margin+bar,y);c.moveTo(margin,y-12);c.lineTo(margin,y+12);c.moveTo(margin+bar,y-12);c.lineTo(margin+bar,y+12);c.stroke();
+ c.font=Math.round(3*ppm)+"px system-ui";c.fillStyle="#172b2a";c.fillText("50 mm calibration · Print at 100% · Verify dimensions on site",margin,y-18,w-2*margin);
+ return {out,mm,fits};
+}
+function renderPdf(){const p=pdfCanvas(),preview=$("pdfPreview");preview.width=1000;preview.height=Math.round(1000*p.out.height/p.out.width);preview.getContext("2d").drawImage(p.out,0,0,preview.width,preview.height);$("pdfStatus").textContent=t(p.fits?"圖則已按比例置中。":"圖則太大，請選較小比例或較大紙張。");$("pdfDownload").disabled=!p.fits;}
+function makePdf(jpeg,w,h,mm){
+ const enc=new TextEncoder(),chunks=[],offsets=[0];let size=0;
+ const add=x=>{const b=typeof x==="string"?enc.encode(x):x;chunks.push(b);size+=b.length;};
+ const obj=(id,body)=>{offsets[id]=size;add(id+" 0 obj\n");add(body);add("\nendobj\n");};
+ const wp=(mm[0]*72/25.4).toFixed(4),hp=(mm[1]*72/25.4).toFixed(4);add("%PDF-1.4\n%Easy3DHome\n");obj(1,"<< /Type /Catalog /Pages 2 0 R >>");obj(2,"<< /Type /Pages /Kids [3 0 R] /Count 1 >>");obj(3,"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+wp+" "+hp+"] /Resources << /XObject << /Plan 4 0 R >> >> /Contents 5 0 R >>");
+ offsets[4]=size;add("4 0 obj\n<< /Type /XObject /Subtype /Image /Width "+w+" /Height "+h+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+jpeg.length+" >>\nstream\n");add(jpeg);add("\nendstream\nendobj\n");
+ const content="q "+wp+" 0 0 "+hp+" 0 0 cm /Plan Do Q\n";obj(5,"<< /Length "+enc.encode(content).length+" >>\nstream\n"+content+"endstream");const start=size;add("xref\n0 6\n0000000000 65535 f \n");for(let i=1;i<=5;i++)add(String(offsets[i]).padStart(10,"0")+" 00000 n \n");add("trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+start+"\n%%EOF\n");return new Blob(chunks,{type:"application/pdf"});
+}
+async function downloadPdf(){const p=pdfCanvas();if(!p.fits)return;const button=$("pdfDownload");button.disabled=true;try{const jpeg=await new Promise(resolve=>p.out.toBlob(resolve,"image/jpeg",.94));if(!jpeg)throw Error("JPEG");const blob=makePdf(new Uint8Array(await jpeg.arrayBuffer()),p.out.width,p.out.height,p.mm),url=URL.createObjectURL(blob),link=document.createElement("a");link.href=url;link.download="easy3dhome-floor-plan.pdf";document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}catch(e){$("pdfStatus").textContent=t("PDF 產生失敗");}finally{button.disabled=false;}}
 function exportJSON(){
  saveNow();
  const data=G.fileExport(model()),blob=new Blob([data],{type:"application/json;charset=utf-8"});
@@ -678,6 +702,7 @@ function bind(){
  $("homeBedrooms").addEventListener("change",previewHome);$("homeFloors").addEventListener("change",previewHome);
  $("buildHome").onclick=buildHome;
  $("exportButton").onclick=exportJSON;
+ $("pdfButton").onclick=()=>{$("projectsDialog").close();showDialog("pdfDialog");renderPdf();};$("pdfPaper").onchange=renderPdf;$("pdfScale").onchange=renderPdf;$("pdfDownload").onclick=downloadPdf;
  $("budgetButton").onclick=showBudget;$("budgetCsv").onclick=budgetCsv;$("budgetAdd").onclick=()=>{const b=G.cleanBudget(model().budget);if(b.rows.length>=100)return;commit(()=>{b.rows.push({id:G.uid(),name:t("新工程項目"),qty:1,cost:null});model().budget=b;});renderBudget();};$("budgetContingency").onchange=e=>{if(!e.target.checkValidity())return;commit(()=>{const b=G.cleanBudget(model().budget);b.contingency=Number(e.target.value);model().budget=b;});budgetTotals();};
  $("shoppingButton").onclick=showShopping;$("shoppingCsv").onclick=shoppingCsv;$("shoppingCurrency").onchange=e=>{const old=G.cleanShopping(model().shopping);if((Object.keys(old.prices).length||G.cleanBudget(model().budget).rows.some(r=>r.cost!==null))&&!confirm(t("改變貨幣會清除現有價格，不會自動換算。繼續？"))){e.target.value=old.currency;return;}commit(()=>{model().shopping={currency:e.target.value,prices:{}};if(model().budget){const b=G.cleanBudget(model().budget);b.rows.forEach(r=>r.cost=null);model().budget=b;}});renderShopping();};
  $("helpButton").onclick=()=>showDialog("helpDialog");
