@@ -29,7 +29,7 @@ async function drawRectangle(page){
 test('no blank-screen, no console exceptions and safe first-run empty plan',async({page})=>{
  const errors=[];page.on('pageerror',err=>errors.push(err.message));
  await page.goto('/');
- await expect(page.getByRole('heading',{name:/Easy Home/})).toBeVisible();
+ await expect(page.getByRole('heading',{name:/Easy\s*3D\s*Home/})).toBeVisible();
  await expect(page.locator('#startTip')).toBeVisible();
  const p=await saved(page);
  expect(p.model.walls).toHaveLength(0);

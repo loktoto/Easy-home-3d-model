@@ -1,4 +1,4 @@
-name: Validate, bundle and publish Easy Home 3D
+name: Validate, bundle and publish Easy3DHome
 on:
   push:
     branches: [main]

@@ -172,6 +172,10 @@ html[lang="en"] .tool-scroll .tool{max-width:none}html[lang="en"] .start-buttons
 
 [data-theme=light] :is(.tab.active,.tool.active,.floor-tab.active){background:#11685a!important;color:#fff!important}
 
+/* Preserve contrast for selected controls after generic light-mode text styles. */
+[data-theme="light"] :is(.tab.active,.tool.active,.floor-tab.active,.primary){color:#fff;background:#11685a;border-color:#11685a}
+[data-theme="light"] :is(.tab.active,.tool.active,.floor-tab.active,.primary) :is(span,b,small){color:inherit}
+
 </style>
 </head>
 <body>
@@ -381,7 +385,7 @@ const projects=document.getElementById("projectsButton");projects.dataset.shortL
 window.EasyHomeI18n={t,locale,missing,key};staticUI();
 })();
 ;
-/* Easy Home 3D — geometry and document format. MIT © 2026 loktoto */
+/* Easy3DHome — geometry and document format. MIT © 2026 loktoto */
 (function(root){
 "use strict";
 const t=s=>root.EasyHomeI18n?root.EasyHomeI18n.t(s):s;
@@ -1082,8 +1086,10 @@ function refresh(){
 }
 function fit3D(){ui.orbit=R.fitOrbit(canvas,model(),ui.orbit);}
 function fit(){
- const bounds=G.getBounds(ui.mode==="3d"?model():visibleModel(),ui.mode==="3d"?undefined:ui.floor),w=canvas.clientWidth||800,h=canvas.clientHeight||550;
- ui.view.scale=G.clamp(Math.min(w/(bounds.width+2.5),h/(bounds.height+2.5)),18,145);
+ let bounds=G.getBounds(ui.mode==="3d"?model():visibleModel(),ui.mode==="3d"?undefined:ui.floor);const w=canvas.clientWidth||800,h=canvas.clientHeight||550;
+ const trace=ui.mode==="2d"&&(model().traces||[]).find(q=>q.floor===ui.floor);
+ if(trace){const minX=bounds.empty?trace.x:Math.min(bounds.minX,trace.x),maxX=bounds.empty?trace.x+trace.w:Math.max(bounds.maxX,trace.x+trace.w),minY=bounds.empty?trace.y:Math.min(bounds.minY,trace.y),maxY=bounds.empty?trace.y+trace.h:Math.max(bounds.maxY,trace.y+trace.h);bounds={minX,maxX,minY,maxY,width:maxX-minX,height:maxY-minY,cx:(minX+maxX)/2,cy:(minY+maxY)/2};}
+ ui.view.scale=G.clamp(Math.min(w/(bounds.width+2.5),h/(bounds.height+2.5)),trace?.w?0.05:18,145);
  ui.view.panX=-bounds.cx*ui.view.scale;ui.view.panY=-bounds.cy*ui.view.scale;
  if(ui.mode==="3d")fit3D();else {ui.orbit.distance=1;delete ui.orbit.targetZ;}render();
 }
@@ -1575,7 +1581,7 @@ function selectTracePoint(e){if(!traceDraft)return;const c=$("tracePreview"),r=c
 function applyTrace(){const x=Number($("traceX").value),y=Number($("traceY").value),opacity=Number($("traceOpacity").value)/100;let q;
  if(!Number.isFinite(x)||!Number.isFinite(y)||Math.abs(x)>1000||Math.abs(y)>1000||opacity<.05||opacity>1)return;
  if(traceDraft&&tracePoints.length===2){const distance=Number($("traceDistance").value),c=$("tracePreview"),d=Math.hypot(tracePoints[0].x-tracePoints[1].x,tracePoints[0].y-tracePoints[1].y);if(!(distance>=.01&&distance<=1000&&d>=2))return;const s=distance/d;q={floor:ui.floor,data:traceDraft.data,w:c.width*s,h:c.height*s,x:x-tracePoints[0].x*s,y:y-tracePoints[0].y*s,opacity};}else if(traceExisting)q={...traceExisting,x,y,opacity};else return;
- const cleaned=G.cleanTraces([q],model().floorCount);if(!cleaned.length){$("traceStatus").textContent=t("圖片尺寸超出限制");return;}commit(()=>{model().traces=G.cleanTraces([...(model().traces||[]).filter(q=>q.floor!==ui.floor),...cleaned],model().floorCount);});$("traceDialog").close();ui.mode="2d";refresh();toast(t("已載入描繪圖片"));
+ const cleaned=G.cleanTraces([q],model().floorCount);if(!cleaned.length){$("traceStatus").textContent=t("圖片尺寸超出限制");return;}commit(()=>{model().traces=G.cleanTraces([...(model().traces||[]).filter(q=>q.floor!==ui.floor),...cleaned],model().floorCount);});$("traceDialog").close();ui.mode="2d";fit();refresh();toast(t("已載入描繪圖片"));
 }
 function renderVersions(){const box=$("versionRows");box.replaceChildren();const m=model(),versions=cleanVersions(active().versions);if(!versions.length)box.textContent=t("未有版本");for(const v of versions){const item=document.createElement("div");item.className="project-item";const content=document.createElement("div"),name=document.createElement("strong"),small=document.createElement("small");content.className="project-text";name.textContent=v.label||v.at;const delta=[["牆身",v.data.walls.length-m.walls.length],["門窗",v.data.openings.length-m.openings.length],["傢俬",v.data.furniture.length-m.furniture.length]].map(([k,n])=>t(k)+" "+(n>0?"+":"")+n).join(" · ");small.textContent=v.at.slice(0,16).replace("T"," ")+" · "+t("與目前差異")+": "+delta;content.append(name,small);const b=document.createElement("button");b.textContent=t("還原");b.dataset.restore=v.id;b.onclick=()=>restoreVersion(v.id);item.append(content,b);box.append(item);}}
 function saveVersion(label){const p=active(),v={id:G.uid(),label:label.slice(0,80),at:new Date().toISOString(),data:JSON.parse(snapshot())},versions=cleanVersions([v,...(p.versions||[])]);if(!versions.some(x=>x.id===v.id)){$("versionStatus").textContent=t("版本大小超出限制，請匯出 JSON。");return false;}const old=p.versions;p.versions=versions;saveNow();if($("saveStatus").classList.contains("error")){p.versions=old;$("versionStatus").textContent=t("版本大小超出限制，請匯出 JSON。");return false;}$("versionStatus").textContent=t("版本已儲存");return true;}
@@ -1658,7 +1664,7 @@ async function importJSON(e){
   const data=G.fileImport(await file.text());
   const p=newProject(data);state.projects.push(p);state.activeId=p.id;clearUndo();
   saveNow();$("projectsDialog").close();fit();refresh();toast(t("成功匯入：")+p.name);
- }catch(err){alert(t("匯入失敗：")+err.message+t("\n\n只接受 Easy Home 3D 匯出的 JSON。"));}
+ }catch(err){alert(t("匯入失敗：")+err.message+t("\n\n只接受 Easy3DHome 匯出的 JSON。"));}
 }
 function wizardOptions(){
  return {width:G.parseUnit($("homeWidth").value,unit),depth:G.parseUnit($("homeDepth").value,unit),

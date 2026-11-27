@@ -162,3 +162,7 @@ html[lang="en"] .tool-scroll .tool{max-width:none}html[lang="en"] .start-buttons
 }
 
 [data-theme=light] :is(.tab.active,.tool.active,.floor-tab.active){background:#11685a!important;color:#fff!important}
+
+/* Preserve contrast for selected controls after generic light-mode text styles. */
+[data-theme="light"] :is(.tab.active,.tool.active,.floor-tab.active,.primary){color:#fff;background:#11685a;border-color:#11685a}
+[data-theme="light"] :is(.tab.active,.tool.active,.floor-tab.active,.primary) :is(span,b,small){color:inherit}
