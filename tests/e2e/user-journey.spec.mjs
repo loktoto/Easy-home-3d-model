@@ -230,6 +230,9 @@ test('published standalone one-file HTML: create room, furniture, save, reload w
  const external=[];
  page.on('request',req=>{if(/^https?:/.test(req.url())&&!req.url().startsWith('http://127.0.0.1:4173/'))external.push(req.url());});
  await page.goto('/easy-home-3d-standalone.html');
+ await expect(page).toHaveTitle(/^Easy3DHome/);
+ await expect(page.locator('h1')).toHaveText('Easy3DHome');
+ await expect(page.locator('a.source-link')).toHaveAttribute('href','https://github.com/loktoto/Easy3DHomeModel');
  await expect(page.locator('#startRoom')).toBeVisible();
  await page.locator('#startRoom').click();
  const stage=page.locator('#stage'),r=await stage.boundingBox();
@@ -250,4 +253,5 @@ test('published standalone one-file HTML: create room, furniture, save, reload w
  expect(restored.model.walls).toHaveLength(4);
  expect(restored.model.furniture).toHaveLength(1);
  expect(external).toEqual([]);
+ await page.screenshot({path:testInfo.outputPath('standalone-restored.png'),fullPage:true});
 });
