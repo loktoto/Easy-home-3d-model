@@ -1,0 +1,30 @@
+name: Packaged release browser E2E
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  packaged-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium webkit
+      - run: python3 scripts/build-site.py
+      - run: npx playwright test tests/e2e/release-package.spec.mjs
+        env:
+          TEST_PACKAGED_SITE: '1'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: easy3dhome-packaged-release-evidence
+          path: |
+            playwright-report/
+            test-results/
+            dist/site/
