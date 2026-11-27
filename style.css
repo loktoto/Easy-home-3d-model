@@ -92,3 +92,15 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
 :root{--mint:#8CE0C1;--blue:#9BC5FF;--sub:#B0C3D8;--danger:#FFAAAA}
 .mark{background:#11685A;color:#fff}
 :where(button,a,input,select):focus-visible{outline:3px solid #9BC5FF;outline-offset:3px}
+
+/* P0 mobile target size and reachable inspector */
+@media(max-width:780px){
+ .toolbar .tab,.toolbar .tool,.floor-tab,.floor-act,.viewport-controls button,.panel-close,.close-dialog,.head-actions button{min-height:44px;min-width:44px}
+ .tool-top{gap:4px;overflow-x:auto;scrollbar-width:thin;justify-content:flex-start;flex-shrink:0}
+ .tool-scroll{mask-image:none;scroll-padding-inline:8px}
+ .inspector{max-height:55dvh;padding-bottom:max(15px,env(safe-area-inset-bottom));overscroll-behavior:contain}
+ .inspector:not(.open){visibility:hidden;pointer-events:none}
+ .inspector.open{visibility:visible;pointer-events:auto}
+ .project-head{min-width:45px}
+ .head-actions .subtle{min-width:44px}
+}
