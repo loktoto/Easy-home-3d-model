@@ -12,7 +12,7 @@ const rows=[
 ];
 for(const [locale,workspace,email,days,error] of rows){
  test('localized visible cloud validation and labels '+locale,async({page},info)=>{
-  await page.addInitScript(()=>{window.Easy3DHomeCloudConfig={url:'http://127.0.0.1:4173',key:'qa-only-not-a-real-service-key'};});
+  await page.addInitScript(()=>{window.Easy3DHomeCloudConfig={url:'http://127.0.0.1:4173',key:'sb_publishable_qa_only_not_a_real_key'};});
   await page.goto('/?lang='+locale);
   await expect(page.locator('#inspector .eyebrow')).toHaveText(workspace);
   await expect(page.locator('#shareDays option[value="7"]')).toHaveText(days);
