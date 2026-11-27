@@ -2,6 +2,8 @@
 (function(){
 "use strict";
 const messages={
+ "尺寸必須在 0.1 至 6 米之間":["Dimension must be between 0.1 and 6 m","尺寸必须在 0.1 至 6 米之间"],
+ "尺寸必須在 0.1 至 15 米之間":["Dimension must be between 0.1 and 15 m","尺寸必须在 0.1 至 15 米之间"],
  "Easy3DHome · 免費開源裝修圖": [
   "Easy3DHome · Free open-source floor planner",
   "Easy3DHome · 免费开源装修图"
