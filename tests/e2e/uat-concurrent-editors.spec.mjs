@@ -1,0 +1,24 @@
+import { test, expect } from '@playwright/test';
+import {readFile} from 'node:fs/promises';
+const key='easy-home-3d:projects:v1';
+const saved=page=>page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
+const name=async(page,value)=>{await page.locator('#projectName').fill(value);await page.locator('#projectName').press('Tab');};
+test('UAT-070 two same-context tabs cannot overwrite newer projects; stale edits can be exported',async({page,context},info)=>{
+ await page.goto('/?lang=en');await expect(page.locator('#saveStatus')).toHaveText(/Saved locally/i);
+ const initial=await saved(page),original=initial.activeId;
+ const stale=await context.newPage();await stale.goto('/?lang=en');await expect(stale.locator('#projectsButton')).toBeVisible();
+ await page.locator('#projectsButton').click();await page.locator('#newBlank').click();await name(page,'New project from writer');
+ await expect.poll(async()=> (await saved(page)).projects.length).toBe(2);
+ await expect.poll(async()=> (await saved(page)).projects.find(p=>p.id!==original)?.name).toBe('New project from writer');
+ const newer=await saved(page);await name(stale,'Stale unsaved edit');
+ await expect(stale.locator('#saveStatus')).toHaveClass(/error/);await expect(stale.locator('#saveStatus')).toContainText(/Another editor/i);
+ await stale.waitForTimeout(350);expect(await saved(page)).toEqual(newer);
+ await stale.locator('#projectsButton').click();const backup=stale.locator('#conflictBackup');await expect(backup).toBeVisible();
+ await stale.screenshot({path:info.outputPath('stale-editor-conflict.png'),fullPage:true});
+ const download=stale.waitForEvent('download');await backup.click();const d=await download;expect(d.suggestedFilename()).toBe('easy3dhome-unsaved-editor.json');
+ const copy=JSON.parse(await readFile(await d.path(),'utf8'));expect(copy.projects.find(p=>p.id===original).name).toBe('Stale unsaved edit');
+ stale.on('dialog',d=>d.accept());await stale.close({runBeforeUnload:true});
+ await expect.poll(async()=>await saved(page)).toEqual(newer);
+ await page.reload();await expect(page.locator('#saveStatus')).toHaveText(/Saved locally/i);expect((await saved(page)).projects.map(p=>p.id)).toEqual(newer.projects.map(p=>p.id));
+ await page.screenshot({path:info.outputPath('writer-reloaded-projects-preserved.png'),fullPage:true});
+});

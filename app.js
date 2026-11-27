@@ -22,11 +22,14 @@ function newProject(data){return {id:G.uid(),name:data.name,data,createdAt:new D
 function cleanCloudRef(ref){return ref&&typeof ref.owner==="string"&&typeof ref.id==="string"&&Number.isInteger(ref.revision)&&ref.revision>0?{owner:ref.owner.slice(0,80),id:ref.id.slice(0,100),revision:ref.revision}:null;}
 function cleanVersions(raw){const rows=[];let size=0;for(const v of Array.isArray(raw)?raw.slice(0,12):[]){try{const data=G.sanitize(v.data),len=JSON.stringify(data).length;if(size+len>1000000)continue;size+=len;rows.push({id:String(v.id||G.uid()).slice(0,100),label:String(v.label||"").slice(0,80),at:String(v.at||"").slice(0,40),data});}catch(e){}}return rows;}
 const MAX_LOCAL_PROJECTS=100;
-let storageReadOnly=false,recoveryRaw=null;
+let storageReadOnly=false,recoveryRaw=null,lastStoredRaw=null,lastSavedState=null,storageConflict=false;
+// Web Locks keeps a single writer per origin in supported browsers. The raw-value
+// guard also rejects already-stale documents where Web Locks is unavailable.
+let writerHeld=false,writerPending=!!navigator.locks;
 function readStore(){
  let saved=null;
  try{
-  saved=localStorage.getItem(STORAGE);
+  saved=localStorage.getItem(STORAGE);lastStoredRaw=saved;
   const raw=saved===null?null:JSON.parse(saved);
   if(raw&&Array.isArray(raw.projects)&&raw.projects.length){
    const projects=[];
@@ -43,19 +46,47 @@ function readStore(){
  }catch(e){storageReadOnly=true;recoveryRaw=saved;console.warn("Local storage unavailable or invalid",e);}
  const p=newProject(G.empty());return {projects:[p],activeId:p.id};
 }
-state=readStore();
+state=readStore();lastSavedState=JSON.stringify(state);
 const active=()=>state.projects.find(p=>p.id===state.activeId)||state.projects[0];
 const model=()=>active().data;
+function markStorageConflict(){
+ const first=!storageConflict;storageConflict=true;
+ $("saveStatus").textContent=t("Another editor is open or changed local storage. Export your work, then close other editors and reload.");
+ $("saveStatus").classList.add("error");
+ if(first&&$("projectsDialog").open)renderProjects();
+}
 function saveNow(){
  clearTimeout(saveTimer);saveTimer=null;
+ if(storageConflict){markStorageConflict();return false;}
+ if(writerPending)return false;
  try{
   if(storageReadOnly)throw Error("Original local storage preserved for recovery");
-  localStorage.setItem(STORAGE,JSON.stringify(state));
-  $("saveStatus").textContent=t("✓ 本機已儲存");$("saveStatus").classList.remove("error");
- }catch(e){$("saveStatus").textContent=t("⚠ 未能儲存，請匯出備份");$("saveStatus").classList.add("error");}
+  if(navigator.locks&&!writerHeld||localStorage.getItem(STORAGE)!==lastStoredRaw){markStorageConflict();return false;}
+  const next=JSON.stringify(state);
+  if(next!==lastStoredRaw){localStorage.setItem(STORAGE,next);lastStoredRaw=next;}
+  lastSavedState=next;
+  $("saveStatus").textContent=t("✓ 本機已儲存");$("saveStatus").classList.remove("error");return true;
+ }catch(e){$("saveStatus").textContent=t("⚠ 未能儲存，請匯出備份");$("saveStatus").classList.add("error");return false;}
+}
+function startLocalWriter(){
+ if(!navigator.locks){saveNow();return;}
+ // Do not release a live document's writer lock on visibility changes.
+ // Closing/navigating the document releases its lock; a blocked editor
+ // must explicitly reload rather than silently persisting a stale snapshot.
+ navigator.locks.request(STORAGE+":writer",{mode:"exclusive",ifAvailable:true},lock=>{
+  writerPending=false;
+  if(!lock){markStorageConflict();return;}
+  writerHeld=true;saveNow();
+  return new Promise(()=>{});
+ }).catch(()=>{writerPending=false;markStorageConflict();});
+}
+function checkExternalStorage(e){
+ if(e.storageArea!==localStorage||(e.key!==STORAGE&&e.key!==null))return;
+ try{if(localStorage.getItem(STORAGE)!==lastStoredRaw)markStorageConflict();}catch(err){markStorageConflict();}
 }
 function scheduleSave(){
  active().updatedAt=new Date().toISOString();
+ if(storageConflict){markStorageConflict();return;}
  $("saveStatus").textContent=t("儲存中…");$("saveStatus").classList.remove("error");clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,250);
 }
 function snapshot(){return JSON.stringify(model());}
@@ -583,6 +614,7 @@ function renderProjects(){
   buttons.append(remove);item.append(txt,buttons);box.append(item);
  }
  if(!box.children.length)box.textContent=t("沒有符合搜尋的專案");
+ if(storageConflict){const note=document.createElement("p");note.className="muted";note.textContent=t("Another editor is open or changed local storage. Export your work, then close other editors and reload.");const backup=document.createElement("button");backup.id="conflictBackup";backup.textContent=t("Download unsaved editor backup");backup.onclick=()=>downloadText(JSON.stringify(state,null,2),"application/json","easy3dhome-unsaved-editor.json");box.prepend(note,backup);}
  if(recoveryRaw!==null){const recover=document.createElement("button");recover.id="recoveryBackup";recover.textContent=t("Download recovery backup");recover.onclick=()=>downloadText(recoveryRaw,"application/json","easy3dhome-local-recovery.json");box.prepend(recover);}
 }
 function switchProject(id){
@@ -966,7 +998,8 @@ function bind(){
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="z"){e.preventDefault();e.shiftKey?redo():undo();return;}
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();redo();}
  });
- window.addEventListener("beforeunload",saveNow);
+ window.addEventListener("storage",checkExternalStorage);
+ window.addEventListener("beforeunload",e=>{saveNow();if(storageConflict&&JSON.stringify(state)!==lastSavedState){e.preventDefault();e.returnValue="";}});
  window.addEventListener("pagehide",()=>{if(saveTimer!==null)saveNow();});
  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&saveTimer!==null)saveNow();});
  const resizeView=()=>{if(ui.mode==="3d")fit3D();render();};
@@ -982,5 +1015,5 @@ function zoom(factor,at){
  ui.view.panY=loc.y-h/2-before.y*ui.view.scale;
  render();
 }
-bind();fit();refresh();saveNow();
+bind();fit();refresh();startLocalWriter();
 })();
