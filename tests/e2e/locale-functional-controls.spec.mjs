@@ -94,11 +94,13 @@ for(const locale of locales){
   for(const id of ['zoomIn','zoomOut','fitBottom','fitButton'])await page.locator('#'+id).click();
   await page.locator('#view3d').click();await expect(page.locator('#view3d')).toHaveAttribute('aria-pressed','true');await qa.shot(locale+'-built-3d');
   await page.locator('#view2d').click();await expect(page.locator('#view2d')).toHaveAttribute('aria-pressed','true');
+  await page.emulateMedia({colorScheme:'dark'});
   for(const theme of ['light','dark','system']){
    await page.locator('#projectsButton').click();await page.locator('#themeSelect').selectOption(theme);
    await closeDialog(page,'projectsDialog');await expect(page.locator('html')).toHaveAttribute('data-theme',theme==='system'?'dark':theme);
    await qa.shot(locale+'-theme-'+theme);
   }
+  await page.emulateMedia({colorScheme:'light'});await expect(page.locator('html')).toHaveAttribute('data-theme','light');await qa.shot(locale+'-theme-system-light');
   const before=await readModel(page);
   for(const unit of ['cm','mm','ft-in','m']){
    await page.locator('#projectsButton').click();await page.locator('#unitSelect').selectOption(unit);
