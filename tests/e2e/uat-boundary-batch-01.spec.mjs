@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { test, expect } from '@playwright/test';
 
 const key = 'easy-home-3d:projects:v1';
@@ -73,12 +74,12 @@ test('UAT-007 locale switch must not lose unsaved work on quota failure',async({
 
 test('UAT-008 invalid contingency must not leave misleading visible value',async({page},info)=>{
  await open(page,'budgetButton');const field=page.locator('#budgetContingency');await field.fill('10');await field.press('Tab');
- await expect.poll(async()=> (await model(page)).budget.contingency).toBe(10);const before=await page.locator('#budgetSummary').innerText();
+ await expect.poll(async()=> (await model(page)).budget?.contingency).toBe(10);const before=await page.locator('#budgetSummary').innerText();
  for(const [i,value] of ['101','-1','','1.5'].entries()){
   await field.fill(value);await field.press('Tab');await expect(field).toHaveValue('10');await expect(page.locator('#budgetContingencyStatus')).toHaveText(/previous value restored/i);
-  expect((await model(page)).budget.contingency).toBe(10);expect(await page.locator('#budgetSummary').innerText()).toBe(before);await shot(page,info,'invalid-contingency-'+i);
+  expect((await model(page)).budget?.contingency).toBe(10);expect(await page.locator('#budgetSummary').innerText()).toBe(before);await shot(page,info,'invalid-contingency-'+i);
  }
- await field.fill('20');await field.press('Tab');await expect.poll(async()=> (await model(page)).budget.contingency).toBe(20);await expect(page.locator('#budgetContingencyStatus')).toBeEmpty();await close(page,'budgetDialog');await page.reload();await open(page,'budgetButton');await expect(field).toHaveValue('20');await shot(page,info,'valid-contingency-reloaded');
+ await field.fill('20');await field.press('Tab');await expect.poll(async()=> (await model(page)).budget?.contingency).toBe(20);await expect(page.locator('#budgetContingencyStatus')).toBeEmpty();await close(page,'budgetDialog');await page.reload();await open(page,'budgetButton');await expect(field).toHaveValue('20');await shot(page,info,'valid-contingency-reloaded');
 });
 
 test('UAT-009 project capacity must never erase existing data on reload',async({page},info)=>{
@@ -131,4 +132,21 @@ test('UAT-009d a partially unreadable collection preserves the original bytes an
  const fixture=projectFixture(await state(page),2);fixture.projects[1].data=null;const raw=JSON.stringify(fixture);await seedNextLoad(page,raw);await page.reload();
  await expect(page.locator('#projectName')).toHaveValue('UAT 0');await expect(page.locator('#saveStatus')).toHaveClass(/error/);await page.locator('#projectsButton').click();await expect(page.locator('#recoveryBackup')).toBeVisible();await shot(page,info,'partial-collection-recovery');
  await page.reload();expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe(raw);
+});
+
+test('UAT-011 Unicode project exports portable JSON filename and exact original name',async({page},info)=>{
+ for(const name of ['我的測試屋','日本語の家','한국어 집','Maison été']){
+  await nameProject(page,name);const pending=page.waitForEvent('download');await page.locator('#exportButton').click();const d=await pending;
+  expect(d.suggestedFilename()).toMatch(/^easy-home-3d-[A-Za-z0-9_-]+\.json$/);
+  const doc=JSON.parse(await readFile(await d.path(),'utf8'));expect(doc.project.name).toBe(name);
+  await shot(page,info,'json-export-'+encodeURIComponent(name).replaceAll('%',''));
+ }
+});
+test('UAT-012 check issues navigate to correct floor and select opening',async({page},info)=>{
+ const fixture=await state(page),p=fixture.projects[0],m=p.data;m.floorCount=2;
+ m.walls=[{id:'uat-wall',a:{x:1,y:1},b:{x:6,y:1},height:2.7,thickness:.13,floor:1}];
+ m.openings=[{id:'uat-door-a',wallId:'uat-wall',type:'door',width:.8,offset:2,height:2.1,sill:0,floor:1},{id:'uat-door-b',wallId:'uat-wall',type:'door',width:1,offset:2.1,height:2.1,sill:0,floor:1}];
+ await seedNextLoad(page,JSON.stringify(fixture));await page.reload();
+ await page.locator('#checkButton').click();const issue=page.locator('#checkList button[data-issue-target="uat-door-a"]');await expect(issue).toBeVisible();await shot(page,info,'opening-overlap-before');
+ await issue.click();await expect(page.locator('#checkDialog')).not.toBeVisible();await expect(page.locator('#view2d')).toHaveAttribute('aria-pressed','true');await expect(page.locator('#prop-width')).toHaveValue('0.8');await expect(page.locator('#prop-offset')).toHaveValue('2');await shot(page,info,'opening-overlap-selected');
 });
