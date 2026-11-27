@@ -76,27 +76,6 @@ jobs:
       - run: npx playwright install --with-deps chromium webkit
       - name: Browser regression
         run: npx playwright test
-      - name: Preserve desktop-chromium source E2E evidence
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: easy3dhome-release-source-chromium
-          path: test-results/*-desktop-chromium*/**
-          if-no-files-found: warn
-      - name: Preserve mobile-webkit source E2E evidence
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: easy3dhome-release-source-webkit
-          path: test-results/*-mobile-webkit*/**
-          if-no-files-found: warn
-      - name: Preserve source HTML report before packaged tests
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: easy3dhome-release-source-report
-          path: playwright-report/
-          if-no-files-found: warn
       - name: Preserve Chromium source regression evidence
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
@@ -178,8 +157,7 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
-          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)" = "$APPROVED_SHA"
-          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')" = "$GITHUB_SHA" || { echo 'Main advanced after review; refusing publication' >&2; exit 1; }
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')" = "$APPROVED_SHA" || { echo 'Main advanced after review; refusing publication' >&2; exit 1; }
           if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" >/dev/null 2>&1; then
             echo 'Tag already exists; refusing to reuse it' >&2
             exit 1
