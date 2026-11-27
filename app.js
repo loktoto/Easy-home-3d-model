@@ -387,7 +387,7 @@ function escapeAction(){
 function editNumber(prop,value){
  if(!ui.selected)return;
  const obj=getObject();if(!obj)return;
- const n=Number(value);if(!Number.isFinite(n))return toast("請輸入有效數字");
+ const n=Number(value);if(String(value).trim()===""||!Number.isFinite(n))return toast("請輸入有效數字");
  const type=ui.selected.kind;
  commit(()=>{
   if(type==="wall"){
@@ -428,9 +428,9 @@ function editNumber(prop,value){
    if(!G.openingFits(candidate,model().openings))throw new Error("門窗位置重疊，請縮窄或移動至少 5 cm");
    Object.assign(obj,candidate);
   }else if(type==="furniture"){
-   if(["w","d","h"].includes(prop))obj[prop]=G.clamp(n,.1,15);
+   if(["w","d","h"].includes(prop)){const max=prop==="h"?6:15;if(n<.1||n>max)throw new Error("尺寸必須在 0.1 至 "+max+" 米之間");obj[prop]=n;}
    else if(["x","y"].includes(prop))obj[prop]=G.clamp(n,-1000,1000);
-   else if(prop==="rotation")obj.rotation=G.round(n*Math.PI/180,7);
+   else if(prop==="rotation")obj.rotation=G.round((((n%360)+360)%360)*Math.PI/180,7);
   }else if(type==="measurement"){
    if(["ax","ay","bx","by"].includes(prop)){const key=prop[0]==="a"?"a":"b",axis=prop[1]==="x"?"x":"y";obj[key][axis]=G.clamp(n,-1000,1000);}
   }
