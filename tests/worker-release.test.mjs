@@ -8,7 +8,7 @@ test('public worker serves only explicit routes and exact release bytes',async()
  const get=async(path,method='GET')=>worker.fetch(new Request('https://example.com'+path,{method}));
  for(const path of ['/','/index.html','/welcome/','/welcome','/version.json']){const r=await get(path);assert.equal(r.status,200);assert.equal(r.headers.get('X-Easy-Home-Commit'),sha);assert.equal(r.headers.get('X-Content-Type-Options'),'nosniff');}
  assert.equal(await (await get('/version.json')).json().then(x=>x.commit),sha);
- for(const path of ['/.git/config','/backend/001-cloud.sql','/tests/core.test.cjs','/unknown'])assert.equal((await get(path)).status,404);
+ for(const path of ['/.git/config','/backend/001-cloud.sql','/tests/core.test.cjs','/support','/support/','/support/index.html','/docs/support/README.md','/docs/support/binance-pay.svg','/unknown'])assert.equal((await get(path)).status,404);
  assert.equal((await get('/','POST')).status,405);assert.equal(await(await get('/','HEAD')).text(),'');
  assert.equal((await get('/version.json')).headers.get('Cache-Control'),'no-store');
 });
