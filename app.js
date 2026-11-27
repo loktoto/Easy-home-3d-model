@@ -43,7 +43,7 @@ function saveNow(){
 }
 function scheduleSave(){
  active().updatedAt=new Date().toISOString();
- $("saveStatus").textContent=t("儲存中…");clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,250);
+ $("saveStatus").textContent=t("儲存中…");$("saveStatus").classList.remove("error");clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,250);
 }
 function snapshot(){return JSON.stringify(model());}
 function record(before){
@@ -701,6 +701,8 @@ function bind(){
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="y"){e.preventDefault();redo();}
  });
  window.addEventListener("beforeunload",saveNow);
+ window.addEventListener("pagehide",()=>{if(saveTimer!==null)saveNow();});
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&saveTimer!==null)saveNow();});
  window.addEventListener("resize",render);
  if(window.ResizeObserver)new ResizeObserver(render).observe(canvas.parentElement);
 }
