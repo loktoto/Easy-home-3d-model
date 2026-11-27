@@ -9,7 +9,7 @@ permissions:
 jobs:
   browser-e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,12 +23,27 @@ jobs:
         run: npx playwright install --with-deps chromium webkit
       - name: Run browser E2E tests
         run: npx playwright test
-      - name: Upload browser traces, screenshots and HTML report
+      - name: Upload Chromium screenshots and traces
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: easy-home-3d-e2e-evidence
-          path: |
-            playwright-report/
-            test-results/
+          name: easy-home-3d-e2e-chromium
+          path: test-results/*-desktop-chromium*/**
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload WebKit screenshots and traces
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: easy-home-3d-e2e-webkit
+          path: test-results/*-mobile-webkit*/**
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload HTML report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: easy-home-3d-e2e-report
+          path: playwright-report/
+          if-no-files-found: error
           retention-days: 14
