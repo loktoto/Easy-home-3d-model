@@ -15,13 +15,12 @@ for p in filter(None,files):
     elif p.startswith("backend/"): group="backend"
     elif p.startswith("tests/"): group="tests"
     elif p.startswith("scripts/"): group="build"
-    elif p in {"support/index.html","support/binance-pay.svg"}: group="support assets"
     elif p.startswith("welcome/"): group="landing"
     elif p.startswith("evidence/"): group="historical evidence"
     else: raise SystemExit("Unclassified path: "+p)
     categories[group].append(p)
 site=root/"dist/site"
-expected=runtime|{"robots.txt","sitemap.xml",".nojekyll","version.json","easy-home-3d-standalone.html","easy-home-3d-convika.zip"}|{p for p in categories["landing"]}|{p for p in categories["support assets"]}
+expected=runtime|{"robots.txt","sitemap.xml",".nojekyll","version.json","easy-home-3d-standalone.html","easy-home-3d-convika.zip"}|{p for p in categories["landing"]}
 actual={p.relative_to(site).as_posix() for p in site.rglob("*") if p.is_file()}
 assert actual==expected,(actual-expected,expected-actual)
 standalone=(site/"easy-home-3d-standalone.html").read_bytes()

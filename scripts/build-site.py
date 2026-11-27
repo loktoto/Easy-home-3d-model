@@ -7,7 +7,7 @@ out=root/'dist'/'site'
 if out.exists(): shutil.rmtree(out)
 out.mkdir(parents=True)
 public=['.nojekyll','index.html','style.css','core.js','renderer.js','app.js','i18n.js','cloud.js','cloud-config.js','robots.txt','sitemap.xml','welcome/index.html','welcome/landing.css','welcome/zh-hant/index.html','welcome/zh-hans/index.html','welcome/es/index.html','welcome/ja/index.html','welcome/de/index.html','welcome/fr/index.html','welcome/ko/index.html','welcome/pt/index.html']
-public.extend(['welcome/social-card.png','support/index.html','support/binance-pay.svg'])
+public.append('welcome/social-card.png')
 for rel in public:
     src=root/rel
     if not src.is_file(): raise SystemExit(f'Missing public asset: {rel}')
