@@ -49,6 +49,6 @@ Production readiness is tracked in [#30](https://github.com/loktoto/Easy3DHomeMo
 
 ## Data and compatibility
 
-Internal geometry uses metres. Keep persisted schema, localStorage keys and import/export compatibility unless a tested migration is provided. Use only synthetic plans in tests. Do not include private original-prototype data, addresses, tokens or cloud credentials. Cloud features in open PRs do not change the current main-branch local-only policy.
+Internal geometry uses metres. Keep persisted schema, localStorage keys and import/export compatibility unless a tested migration is provided. Use only synthetic plans in tests. Do not include private original-prototype data, addresses, tokens or cloud credentials. Optional cloud features are free and self-hostable. The public build is local-only until a dedicated hosted Supabase instance is configured. See [Cloud setup](CLOUD_SETUP.md).
 
 Follow [QA acceptance](QA_ACCEPTANCE.md) before merging changes.

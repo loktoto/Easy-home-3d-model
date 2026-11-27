@@ -42,12 +42,13 @@ function grid(ctx,w,h,view,toScreen){
 }
 function toWorld(p,view,w,h){return G.point((p.x-w/2-view.panX)/view.scale,(p.y-h/2-view.panY)/view.scale);}
 function paint2D(ctx,w,h,model,opts){
- const view=opts.view,sc=view.scale;
+ const view=opts.view,sc=view.scale,F=n=>G.formatLength(n,opts.unit||"m");
  const floor=opts.floor===undefined?0:opts.floor;
  const on=v=>G.clamp(Math.round(Number(v.floor)||0),0,4)===floor;
  const walls=model.walls.filter(on),openings=model.openings.filter(on),furniture=model.furniture.filter(on),measurements=model.measurements.filter(on);
  const S=p=>({x:w/2+view.panX+p.x*sc,y:h/2+view.panY+p.y*sc});
  grid(ctx,w,h,view,S);
+ if(opts.trace&&opts.traceImage&&opts.traceImage.complete){const q=opts.trace,p=S({x:q.x,y:q.y});ctx.save();ctx.globalAlpha=q.opacity;ctx.drawImage(opts.traceImage,p.x,p.y,q.w*sc,q.h*sc);ctx.restore();}
  const chosen=opts.selected||{}, dims=opts.dimensions!==false, bounds=G.getBounds(model,floor);
  const labels=[],reserved=[];
  const annotate=(text,x,y,fg)=>opts.avoidLabelOverlap?labels.push({text,x,y,fg}):pill(ctx,text,x,y,fg);
@@ -61,7 +62,7 @@ function paint2D(ctx,w,h,model,opts){
   for(const interval of intervals){if(interval.start>cursor){line(ctx,S(G.lerp(wall.a,wall.b,cursor)),S(G.lerp(wall.a,wall.b,interval.start)),col,Math.max(4,wall.thickness*sc));}cursor=Math.max(cursor,interval.end);}
   if(cursor<1)line(ctx,S(G.lerp(wall.a,wall.b,cursor)),b,col,Math.max(4,wall.thickness*sc));
   if(chosen.kind==="wall"&&chosen.id===wall.id){for(const p of [a,b]){ctx.fillStyle=C("#ffcb7f","#a35b00");ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fill();}}
-  if(dims){const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2,nx=-(b.y-a.y)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y)),ny=(b.x-a.x)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y));annotate(G.round(len,2).toFixed(2)+" m",cx+nx*18,cy+ny*18);}
+  if(dims){const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2,nx=-(b.y-a.y)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y)),ny=(b.x-a.x)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y));annotate(F(len),cx+nx*18,cy+ny*18);}
  }
  for(const o of openings){
   const wall=walls.find(v=>v.id===o.wallId);if(!wall)continue;
@@ -79,7 +80,7 @@ function paint2D(ctx,w,h,model,opts){
    line(ctx,hinge,edge,c,1);
    ctx.beginPath();ctx.arc(hinge.x,hinge.y,Math.hypot(dx,dy),Math.atan2(edge.y-hinge.y,edge.x-hinge.x),Math.atan2(b.y-hinge.y,b.x-hinge.x),true);ctx.strokeStyle=rgba(C("#ebad68","#986020"),.5);ctx.lineWidth=1;ctx.stroke();
   }
-  if(dims&&sc>35)annotate(G.round(o.width,2).toFixed(2)+" m",mid.x,mid.y-12,c);
+  if(dims&&sc>35)annotate(F(o.width),mid.x,mid.y-12,c);
  }
  for(const f of furniture){
   const corners=G.furnitureCorners(f).map(S);
@@ -92,8 +93,8 @@ function paint2D(ctx,w,h,model,opts){
  for(const q of measurements){
   const a=S(q.a),b=S(q.b),active=chosen.kind==="measurement"&&chosen.id===q.id;
   line(ctx,a,b,active?C("#ffd17e","#9a5600"):C("#7ee5bb","#12684d"),1.6,[4,4]);
-  for(const p of [a,b]){ctx.fillStyle=active?C("#ffd17e","#9a5600"):C("#8fe7c8","#12684d");ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();}
-  annotate(G.round(G.length(q.a,q.b),2).toFixed(2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-12,C("#92e4ca","#075c45"));
+  for(const p of [a,b]){ctx.fillStyle=active?C("#ffd17e","#9a5600"):"#8fe7c8";ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();}
+  annotate(F(G.length(q.a,q.b)),(a.x+b.x)/2,(a.y+b.y)/2-12,C("#92e4ca","#075c45"));
  }
  if(opts.avoidLabelOverlap){for(const q of planLabelLayout(ctx,w,h,labels,reserved)){if(Math.hypot(q.x-q.anchorX,q.y-q.anchorY)>24)line(ctx,{x:q.anchorX,y:q.anchorY},{x:q.x,y:q.y},"#7896ac",.8);pill(ctx,q.text,q.x,q.y,q.fg);}}
  if(opts.pending&&opts.cursor){
@@ -104,11 +105,11 @@ function paint2D(ctx,w,h,model,opts){
    ctx.fillRect(x,y,rw,rh);ctx.strokeRect(x,y,rw,rh);ctx.setLineDash([]);
    const width=G.round(Math.abs(opts.pending.x-opts.cursor.x),2).toFixed(2);
    const depth=G.round(Math.abs(opts.pending.y-opts.cursor.y),2).toFixed(2);
-   pill(ctx,width+" m",x+rw/2,y-13);pill(ctx,depth+" m",x-28,y+rh/2);
+   pill(ctx,F(Number(width)),x+rw/2,y-13);pill(ctx,F(Number(depth)),x-28,y+rh/2);
    pill(ctx,G.round(Math.abs(opts.pending.x-opts.cursor.x)*Math.abs(opts.pending.y-opts.cursor.y),2)+" m²",x+rw/2,y+rh/2,"#e0fff1","#215c50");
   }else{
    line(ctx,a,b,C("#7dc3ff","#12684d"),2,[7,5]);
-   pill(ctx,G.round(G.length(opts.pending,opts.cursor),2).toFixed(2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-15);
+   pill(ctx,F(G.length(opts.pending,opts.cursor)),(a.x+b.x)/2,(a.y+b.y)/2-15);
   }
   ctx.beginPath();ctx.arc(a.x,a.y,5,0,Math.PI*2);ctx.fillStyle="#b2e2ff";ctx.fill();
  }
@@ -210,7 +211,7 @@ function paint3D(ctx,w,h,model,opts){
   for(const f of furniture)boxFaces(model,project,faces,{x:f.x,y:f.y,z:z0,w:f.w,d:f.d,h:f.h,rot:f.rotation,color:f.color,kind:"furniture",id:f.id});
   for(const q of measurements){
    const a=project([q.a.x,q.a.y,z0+.05]),b=project([q.b.x,q.b.y,z0+.05]);
-   line(ctx,a,b,"#81e7b6",2,[5,5]);pill(ctx,G.round(G.length(q.a,q.b),2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-8,C("#9af5ce","#12684d"));
+   line(ctx,a,b,"#81e7b6",2,[5,5]);pill(ctx,G.formatLength(G.length(q.a,q.b),opts.unit||"m"),(a.x+b.x)/2,(a.y+b.y)/2-8,C("#9af5ce","#12684d"));
   }
  }
  faces.sort((a,b)=>b.depth-a.depth);

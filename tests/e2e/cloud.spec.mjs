@@ -1,0 +1,12 @@
+import {test,expect} from '@playwright/test';
+const url=process.env.EASY3D_SUPABASE_URL,key=process.env.EASY3D_SUPABASE_KEY;
+test('unconfigured cloud remains disabled and local mode works',async({page},info)=>{await page.goto('/');await page.locator('#projectsButton').click();await page.locator('#cloudButton').click();await expect(page.locator('#cloudStatus')).toContainText('雲端服務未配置');await expect(page.locator('#cloudAuth')).toBeHidden();await page.screenshot({path:info.outputPath('cloud-offline.png')});});
+test('real local Supabase signup, sync, revision conflict and isolation',async({page,browser},info)=>{
+ test.skip(!url||!key,'Requires real disposable local Supabase stack');
+ const random=Date.now()+'-'+Math.random().toString(36).slice(2),email='qa-'+random+'@example.com',other='other-'+random+'@example.com',password='QA-pass-2026-Long';
+ async function configure(p){await p.addInitScript(({url,key})=>{window.Easy3DHomeCloudConfig={url,key};},{url,key});await p.goto('/');await p.locator('#projectsButton').click();await p.locator('#cloudButton').click();}
+ async function auth(p,e,signup=true){await p.locator('#cloudEmail').fill(e);await p.locator('#cloudPassword').fill(password);await p.locator(signup?'#cloudSignup':'#cloudLogin').click();await expect(p.locator('#cloudWorkspace')).toBeVisible({timeout:20000});}
+ await configure(page);await auth(page,email);await page.locator('#cloudPush').click();await expect(page.locator('#cloudStatus')).toContainText('雲端同步成功');await expect(page.locator('[data-cloud-pull]')).toHaveCount(1);await page.screenshot({path:info.outputPath('cloud-synced.png')});
+ const remote=await page.evaluate(()=>window.Easy3DHomeCloud.list());const ctx=await browser.newContext(),p2=await ctx.newPage();await configure(p2);await auth(p2,other);await expect(p2.locator('[data-cloud-pull]')).toHaveCount(0);expect(await p2.evaluate(async r=>window.Easy3DHomeCloud.get(r.owner,r.id),remote[0])).toBeNull();await p2.screenshot({path:info.outputPath('cloud-isolated.png')});
+ await p2.locator('#cloudLogout').click();await auth(p2,email,false);await p2.locator('[data-cloud-pull]').click();await expect(p2.locator('#cloudStatus')).toContainText('雲端同步成功');await p2.locator('#cloudPush').click();await expect(p2.locator('#cloudStatus')).toContainText('雲端同步成功');await page.locator('#cloudPush').click();await expect(page.locator('#cloudStatus')).toContainText('Revision conflict');await page.screenshot({path:info.outputPath('cloud-conflict.png')});await ctx.close();
+});
