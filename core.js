@@ -247,7 +247,7 @@ function sanitize(raw){
    const width=clamp(num(o.width,.8),.3,Math.min(3,len*.9));
    const sill=o.type==="door"?0:clamp(num(o.sill,.9),.2,Math.max(.2,w.height-.3));
   const height=clamp(num(o.height,o.type==="door"?2.1:1.1),.3,Math.max(.3,w.height-sill));
-  return {id:id(o.id),wallId:w.id,type:o.type,width,offset:clamp(num(o.offset,len/2),width/2,len-width/2),height,sill,floor:safeFloor(w)};
+  return {id:id(o.id),wallId:w.id,type:o.type,width,offset:clamp(num(o.offset,len/2),width/2,len-width/2),height,sill,floor:safeFloor(w),...(o.swingSide===1||o.swingSide===-1?{swingSide:o.swingSide}:{})};
  }).filter(o=>o.width>=.3);
  m.furniture=raw.furniture.map(f=>{
    const c=catalog.find(v=>v.type===f.type)||catalog[catalog.length-1];
@@ -259,6 +259,7 @@ function sanitize(raw){
  if(raw.traces)m.traces=cleanTraces(raw.traces,m.floorCount);
  if(raw.client)m.client=cleanClient(raw.client);
  if(raw.brand)m.brand=cleanBrand(raw.brand);
+ if(raw.details)m.details=cleanPlanDetails(raw.details);
  return m;
 }
 function getBounds(model,floor){
@@ -309,7 +310,34 @@ function budgetSummary(m){const b=cleanBudget(m.budget),s=shoppingSummary(m),row
 function cleanTraces(raw,floors=5){const list=[];for(const v of Array.isArray(raw)?raw.slice(0,5):[]){if(!v||!Number.isInteger(v.floor)||v.floor<0||v.floor>=floors||list.some(x=>x.floor===v.floor)||typeof v.data!=="string"||v.data.length>450000||!/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(v.data)||!(v.w>0&&v.w<=1000&&v.h>0&&v.h<=1000))continue;list.push({floor:v.floor,data:v.data,w:num(v.w),h:num(v.h),x:clamp(num(v.x),-1000,1000),y:clamp(num(v.y),-1000,1000),opacity:clamp(num(v.opacity,.4),.05,1)});}return list;}
 function cleanClient(raw){return {client:String(raw?.client||"").slice(0,100),reference:String(raw?.reference||"").slice(0,80),status:["draft","active","completed","archived"].includes(raw?.status)?raw.status:"draft",notes:String(raw?.notes||"").slice(0,1000)};}
 function cleanBrand(raw){return {company:String(raw?.company||"").slice(0,80),title:String(raw?.title||"").slice(0,80),color:/^#[0-9a-f]{6}$/i.test(raw?.color||"")?raw.color:"#11685a",logo:typeof raw?.logo==="string"&&raw.logo.length<=160000&&/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(raw.logo)?raw.logo:""};}
-const api={cleanBrand,cleanClient,cleanTraces,cleanBudget,budgetSummary,currencies,shoppingKey,cleanShopping,shoppingSummary,csvCell,furnitureGap,clearanceWarnings,units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
+function cleanPlanDetails(raw){return {north:((Math.round(num(raw?.north,0))%360)+360)%360,legend:raw?.legend!==false,swing:raw?.swing!==false,grid:raw?.grid===true};}
+function floorGeometry(model,floor){
+ const walls=model.walls.filter(w=>(Number(w.floor)||0)===floor);if(!walls.length)return null;
+ // Orthogonal plan only; do not advertise a legal saleable floor area.
+ if(walls.some(w=>Math.abs(w.a.x-w.b.x)>.001&&Math.abs(w.a.y-w.b.y)>.001))return null;
+ const xs=[...new Set(walls.flatMap(w=>[round(w.a.x,3),round(w.b.x,3)]))].sort((a,b)=>a-b),ys=[...new Set(walls.flatMap(w=>[round(w.a.y,3),round(w.b.y,3)]))].sort((a,b)=>a-b);
+ if(xs.length<2||ys.length<2||xs.length*ys.length>10000)return null;
+ const vertical=new Map(),horizontal=new Map();
+ for(const w of walls){const x=round(w.a.x,3),y=round(w.a.y,3),x2=round(w.b.x,3),y2=round(w.b.y,3),map=x===x2?vertical:horizontal,key=x===x2?x:y,lo=x===x2?Math.min(y,y2):Math.min(x,x2),hi=x===x2?Math.max(y,y2):Math.max(x,x2);const list=map.get(key)||[];list.push({lo,hi,t:w.thickness,h:w.height});map.set(key,list);}
+ const covering=(map,key,lo,hi)=>{const spans=(map.get(key)||[]).filter(v=>v.hi>lo+.0001&&v.lo<hi-.0001).sort((a,b)=>a.lo-b.lo);let p=lo,t=0,h=0;for(const v of spans){if(v.lo>p+.001)break;p=Math.max(p,v.hi);t=Math.max(t,v.t||.13);h=Math.max(h,v.h||2.7);if(p>=hi-.001)return {t,h};}return null;};
+ const nx=xs.length-1,ny=ys.length-1,id=(i,k)=>k*nx+i,seen=new Set(),rooms=[];
+ const boundaries=(i,k)=>[covering(vertical,xs[i],ys[k],ys[k+1]),covering(vertical,xs[i+1],ys[k],ys[k+1]),covering(horizontal,ys[k],xs[i],xs[i+1]),covering(horizontal,ys[k+1],xs[i],xs[i+1])];
+ for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){if(seen.has(id(x,y)))continue;const stack=[[x,y]],cells=[];seen.add(id(x,y));let outside=false;while(stack.length){const [i,k]=stack.pop(),b=boundaries(i,k);cells.push({i,k,b});for(let d=0;d<4;d++){if(b[d])continue;const u=i+[-1,1,0,0][d],v=k+[0,0,-1,1][d];if(u<0||u>=nx||v<0||v>=ny){outside=true;continue;}if(!seen.has(id(u,v))){seen.add(id(u,v));stack.push([u,v]);}}}if(outside)continue;
+ let gross=0,net=0,perimeter=0,wallArea=0,volume=0;for(const {i,k,b} of cells){const w=xs[i+1]-xs[i],d=ys[k+1]-ys[k],iw=Math.max(0,w-(b[0]?.t||0)/2-(b[1]?.t||0)/2),ih=Math.max(0,d-(b[2]?.t||0)/2-(b[3]?.t||0)/2);gross+=w*d;net+=iw*ih;const edge=[d,d,w,w];b.forEach((q,n)=>{if(q){perimeter+=edge[n];wallArea+=edge[n]*q.h;}});volume+=iw*ih*(model.wallHeight||2.7);}
+ rooms.push({gross,net,perimeter,wallArea,volume});}
+ return rooms.length?{rooms,gross:rooms.reduce((n,q)=>n+q.gross,0),net:rooms.reduce((n,q)=>n+q.net,0)}:null;
+}
+function doorSwing(model,door){
+ const wall=model.walls.find(w=>w.id===door.wallId);if(!wall||door.type!=="door")return null;const len=length(wall.a,wall.b);if(len<.1)return null;
+ const a=lerp(wall.a,wall.b,(door.offset-door.width/2)/len),b=lerp(wall.a,wall.b,(door.offset+door.width/2)/len),bounds=getBounds(model,Number(wall.floor)||0),mid=midpoint(wall.a,wall.b),dx=b.x-a.x,dy=b.y-a.y,auto=(bounds.cx-mid.x)*-dy+(bounds.cy-mid.y)*dx>=0?1:-1,sign=door.swingSide===1||door.swingSide===-1?door.swingSide:auto;
+ const start=Math.atan2(dy,dx),end=start+sign*Math.PI/2,poly=[a];for(let i=0;i<=24;i++){const t=start+(end-start)*i/24;poly.push({x:a.x+Math.cos(t)*door.width,y:a.y+Math.sin(t)*door.width});}return {a,b,edge:poly[poly.length-1],poly,start,end,sign};
+}
+function polygonIntersects(a,b){if(a.some(p=>inPoly(p,b))||b.some(p=>inPoly(p,a)))return true;for(let i=0;i<a.length;i++)for(let k=0;k<b.length;k++)if(segmentsIntersect(a[i],a[(i+1)%a.length],b[k],b[(k+1)%b.length]))return true;return false;}
+function doorSwingWarnings(model,floor){
+ const doors=model.openings.filter(o=>o.type==="door"&&(Number(o.floor)||0)===floor).map(o=>({o,s:doorSwing(model,o)})).filter(x=>x.s),out=[];
+ for(let i=0;i<doors.length;i++){const {o,s}=doors[i];for(const f of model.furniture.filter(f=>(Number(f.floor)||0)===floor))if(polygonIntersects(s.poly,furnitureCorners(f)))out.push({kind:"furniture",door:o.id,name:f.name});for(let k=i+1;k<doors.length;k++)if(polygonIntersects(s.poly,doors[k].s.poly))out.push({kind:"door",door:o.id,other:doors[k].o.id});}return out;
+}
+const api={cleanPlanDetails,floorGeometry,doorSwing,doorSwingWarnings,cleanBrand,cleanClient,cleanTraces,cleanBudget,budgetSummary,currencies,shoppingKey,cleanShopping,shoppingSummary,csvCell,furnitureGap,clearanceWarnings,units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.EasyHomeCore=api;
 })(typeof window!=="undefined"?window:globalThis);

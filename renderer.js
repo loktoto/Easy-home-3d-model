@@ -30,8 +30,8 @@ function planLabelLayout(ctx,w,h,labels,reserved){
  }
  return placed;
 }
-function grid(ctx,w,h,view,toScreen){
- const s=view.scale;let step=s>105?.25:s>48?.5:s>24?1:2;
+function grid(ctx,w,h,view,toScreen,paper=false){
+ const s=view.scale;let step=paper?.25:s>105?.25:s>48?.5:s>24?1:2;
  const min=toWorld({x:0,y:0},view,w,h),max=toWorld({x:w,y:h},view,w,h);
  const a=Math.floor(min.x/step)*step,b=Math.ceil(max.x/step)*step,c=Math.floor(min.y/step)*step,d=Math.ceil(max.y/step)*step;
  ctx.strokeStyle=C("#203249","#dce5dd");ctx.lineWidth=1;ctx.beginPath();
@@ -47,10 +47,10 @@ function paint2D(ctx,w,h,model,opts){
  const on=v=>G.clamp(Math.round(Number(v.floor)||0),0,4)===floor;
  const walls=model.walls.filter(on),openings=model.openings.filter(on),furniture=model.furniture.filter(on),measurements=model.measurements.filter(on);
  const S=p=>({x:w/2+view.panX+p.x*sc,y:h/2+view.panY+p.y*sc});
- grid(ctx,w,h,view,S);
+ grid(ctx,w,h,view,S,G.cleanPlanDetails(model.details).grid);
  if(opts.trace&&opts.traceImage&&opts.traceImage.complete){const q=opts.trace,p=S({x:q.x,y:q.y});ctx.save();ctx.globalAlpha=q.opacity;ctx.drawImage(opts.traceImage,p.x,p.y,q.w*sc,q.h*sc);ctx.restore();}
  const chosen=opts.selected||{}, dims=opts.dimensions!==false, bounds=G.getBounds(model,floor);
- const labels=[],reserved=[];
+ const labels=[],reserved=[];if(opts.planAnnotations!==false){reserved.push({x:8,y:h-65,w:Math.min(w-16,220),h:62});reserved.push({x:w-67,y:5,w:62,h:70});}
  const annotate=(text,x,y,fg)=>opts.avoidLabelOverlap?labels.push({text,x,y,fg}):pill(ctx,text,x,y,fg);
  const wallOpening=new Map();
  for(const o of openings){const list=wallOpening.get(o.wallId)||[];list.push(o);wallOpening.set(o.wallId,list);}
@@ -73,12 +73,8 @@ function paint2D(ctx,w,h,model,opts){
    line(ctx,a,b,c,6);line(ctx,a,b,C("#18314d","#e1f1e9"),2);
   }else{
    line(ctx,a,b,c,2,[4,4]);
-   const dx=b.x-a.x,dy=b.y-a.y,midWall=G.midpoint(wall.a,wall.b);
-   const nx=-(wall.b.y-wall.a.y),ny=wall.b.x-wall.a.x;
-   const sign=(bounds.cx-midWall.x)*nx+(bounds.cy-midWall.y)*ny>=0?1:-1;
-   const hinge=a,edge={x:a.x-dy*sign,y:a.y+dx*sign};
-   line(ctx,hinge,edge,c,1);
-   ctx.beginPath();ctx.arc(hinge.x,hinge.y,Math.hypot(dx,dy),Math.atan2(edge.y-hinge.y,edge.x-hinge.x),Math.atan2(b.y-hinge.y,b.x-hinge.x),true);ctx.strokeStyle=rgba(C("#ebad68","#986020"),.5);ctx.lineWidth=1;ctx.stroke();
+   const swing=G.doorSwing(model,o);
+   if(swing&&G.cleanPlanDetails(model.details).swing){const hinge=S(swing.a),edge=S(swing.edge);polygon(ctx,swing.poly.map(S),rgba(c,.07),rgba(c,.3),.5);line(ctx,hinge,edge,c,1);ctx.beginPath();ctx.arc(hinge.x,hinge.y,o.width*sc,swing.start,swing.end,swing.sign<0);ctx.strokeStyle=rgba(c,.5);ctx.lineWidth=1;ctx.stroke();}
   }
   if(dims&&sc>35)annotate(F(o.width),mid.x,mid.y-12,c);
  }
@@ -222,11 +218,22 @@ function paint3D(ctx,w,h,model,opts){
  }
  return hits;
 }
+function paintAnnotations(ctx,w,h,model,opts){
+ const details=G.cleanPlanDetails(model.details),floor=opts.floor||0,sc=opts.view.scale;if(w<170||h<130)return;
+ const fg=C("#dcebf6","#23443c"),bg=C("#102438","#f5f7f1"),border=C("#527083","#9cb6a9"),pad=9;
+ ctx.save();ctx.font="11px system-ui";ctx.textAlign="left";ctx.textBaseline="middle";
+ // north is clockwise from screen up, set by the user, not geolocation.
+ const cx=w-36,cy=39,angle=details.north*Math.PI/180;ctx.fillStyle=bg;ctx.strokeStyle=border;ctx.beginPath();ctx.arc(cx,cy,25,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.save();ctx.translate(cx,cy);ctx.rotate(angle);ctx.fillStyle=fg;ctx.beginPath();ctx.moveTo(0,-19);ctx.lineTo(-6,9);ctx.lineTo(0,5);ctx.lineTo(6,9);ctx.closePath();ctx.fill();ctx.restore();ctx.fillStyle=fg;ctx.textAlign="center";ctx.fillText("N "+details.north+"°",cx,72);
+ const max=Math.min(125,w*.33);let meters=.05;for(const q of [.05,.1,.2,.25,.5,1,2,5,10,20,50])if(q*sc<=max)meters=q;const px=meters*sc,y=h-19,x=14;
+ ctx.fillStyle=bg;ctx.fillRect(x-6,y-19,Math.max(px+12,88),33);ctx.fillStyle=fg;ctx.fillRect(x,y,px,4);ctx.fillRect(x,y-4,1,10);ctx.fillRect(x+px-1,y-4,1,10);ctx.textAlign="left";ctx.fillText(G.formatLength(meters,opts.unit||"m"),x,y-9);
+ if(details.legend&&w>=270&&h>=220){const items=[],on=o=>(Number(o.floor)||0)===floor;if(model.walls.some(on))items.push(["#7896ac","Wall"]);if(model.openings.some(o=>on(o)&&o.type==="door"))items.push(["#c59153","Door"]);if(model.openings.some(o=>on(o)&&o.type==="window"))items.push(["#3faac0","Window"]);if(model.furniture.some(on))items.push(["#85bda8","Furniture"]);if(items.length){const width=items.length*58+12,x=w-width-9,y=h-23;ctx.fillStyle=bg;ctx.fillRect(x,y-10,width,24);ctx.fillStyle=fg;items.forEach(([color,label],i)=>{const p=x+7+i*58;ctx.fillStyle=color;ctx.fillRect(p,y-3,8,8);ctx.fillStyle=fg;ctx.fillText(label,p+11,y+1);});}}
+ ctx.restore();
+}
 function draw(canvas,ctx,model,opts){
  const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return [];
  ctx.clearRect(0,0,w,h);ctx.fillStyle=C("#0b1727","#f7f7f2");ctx.fillRect(0,0,w,h);
  if(opts.mode==="3d")return paint3D(ctx,w,h,model,opts);
- paint2D(ctx,w,h,model,opts);return [];
+ paint2D(ctx,w,h,model,opts);if(opts.planAnnotations!==false)paintAnnotations(ctx,w,h,model,opts);return [];
 }
 function projectPoint(canvas,model,orbit,xyz){
  return projectFactory(canvas.clientWidth,canvas.clientHeight,G.getBounds(model),{orbit})(xyz);

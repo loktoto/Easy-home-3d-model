@@ -166,3 +166,5 @@ html[lang="en"] .tool-scroll .tool{max-width:none}html[lang="en"] .start-buttons
 /* Preserve contrast for selected controls after generic light-mode text styles. */
 [data-theme="light"] :is(.tab.active,.tool.active,.floor-tab.active,.primary){color:#fff;background:#11685a;border-color:#11685a}
 [data-theme="light"] :is(.tab.active,.tool.active,.floor-tab.active,.primary) :is(span,b,small){color:inherit}
+
+#planDetailsDialog h3{font-size:15px;margin:18px 0 6px}#openingSchedule .project-item{flex-wrap:wrap}#openingSchedule .project-item button{min-height:44px}#floorGeometry .mini-stat{gap:10px}#floorGeometry .mini-stat strong{text-align:right}

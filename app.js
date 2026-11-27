@@ -155,7 +155,7 @@ const position=e=>{const r=canvas.getBoundingClientRect();return {x:e.clientX-r.
 const world=e=>R.toWorld(position(e),ui.view,canvas.clientWidth,canvas.clientHeight);
 function snapped(p,original=null){
  if(!ui.snap)return G.point(G.round(p.x,3),G.round(p.y,3));
- let q=G.point(Math.round(p.x*10)/10,Math.round(p.y*10)/10);
+ const step=G.cleanPlanDetails(model().details).grid?.25:.1;let q=G.point(Math.round(p.x/step)*step,Math.round(p.y/step)*step);
  let d=.24;
  for(const wall of visibleModel().walls)for(const end of [wall.a,wall.b]){
   const len=G.length(p,end);if(len<d){d=len;q=G.point(end.x,end.y);}
@@ -665,11 +665,20 @@ function showTemplates(){
   name.textContent=t(preset.name);details.textContent=preset.width+" × "+preset.depth+" m · "+preset.floors+t(" 層");
   const m=generateHome({...preset,name:t(preset.name)}),w=200,h=112,bounds=G.getBounds(m,0),scale=Math.min(w/(bounds.width+1),h/(bounds.height+1));
   preview.width=w;preview.height=h;preview.style.width="100%";preview.style.borderRadius="8px";preview.setAttribute("aria-hidden","true");
-  const c=preview.getContext("2d");if(c)R.draw({clientWidth:w,clientHeight:h},c,m,{mode:"2d",floor:0,view:{scale,panX:-bounds.cx*scale,panY:-bounds.cy*scale},dimensions:false,selected:null,tool:"select",orbit:ui.orbit});
+  const c=preview.getContext("2d");if(c)R.draw({clientWidth:w,clientHeight:h},c,m,{mode:"2d",floor:0,view:{scale,panX:-bounds.cx*scale,panY:-bounds.cy*scale},dimensions:false,selected:null,tool:"select",orbit:ui.orbit,planAnnotations:false});
   b.append(preview,name,details);b.onclick=()=>{const p=newProject(generateHome({...preset,name:t(preset.name)}));state.projects.push(p);state.activeId=p.id;clearUndo();ui.mode="2d";ui.tool="select";saveNow();$("templatesDialog").close();fit();refresh();};list.append(b);
  }
  $("projectsDialog").close();showDialog("templatesDialog");
 }
+function renderPlanDetails(){
+ const m=model(),d=G.cleanPlanDetails(m.details);$("northAngle").value=d.north;$("legendToggle").checked=d.legend;$("swingToggle").checked=d.swing;$("gridToggle").checked=d.grid;
+ const geom=G.floorGeometry(m,ui.floor);const box=$("floorGeometry");box.innerHTML=geom?row(t("封閉面積"),area(geom.gross))+row(t("內部面積估算"),area(geom.net))+geom.rooms.map((q,i)=>row(t("房間")+" "+(i+1),area(q.net)+" · "+fmt(q.perimeter)+" · "+G.round(q.volume,2)+" m³")).join(""):t("未有可計算的封閉直角房間");
+ const schedule=$("openingSchedule");schedule.replaceChildren();let doors=0,windows=0;const ops=m.openings.filter(o=>(Number(o.floor)||0)===ui.floor);for(const o of ops){const item=document.createElement("div");item.className="project-item";const title=document.createElement("strong");title.textContent=(o.type==="door"?"D"+(++doors):"W"+(++windows))+" · "+t(o.type==="door"?"門":"窗")+" · "+fmt(o.width)+" × "+fmt(o.height);item.append(title);
+ if(o.type==="door"){const flip=document.createElement("button");flip.textContent=t("反轉開門方向");flip.dataset.flipDoor=o.id;flip.onclick=()=>{commit(()=>{o.swingSide=-G.doorSwing(m,o).sign;});renderPlanDetails();};item.append(flip);}const select=document.createElement("button");select.textContent=t("選取");select.onclick=()=>{$("planDetailsDialog").close();setSelection("opening",o.id);refresh();};item.append(select);schedule.append(item);}
+ const warns=G.doorSwingWarnings(m,ui.floor),warning=$("doorSwingWarnings");warning.replaceChildren();if(!warns.length)warning.textContent=t("沒有門擺弧碰撞提示");for(const w of warns){const el=document.createElement("p");el.className="issue";el.textContent=w.kind==="furniture"?t("門擺弧與傢俬重疊")+" · "+w.name:t("兩道門擺弧重疊");warning.append(el);}
+}
+function openPlanDetails(){$("projectsDialog").close();renderPlanDetails();showDialog("planDetailsDialog");}
+function changePlanDetails(){const value=Number($("northAngle").value);if(!Number.isFinite(value)||value<0||value>359)return;commit(()=>{model().details=G.cleanPlanDetails({north:value,legend:$("legendToggle").checked,swing:$("swingToggle").checked,grid:$("gridToggle").checked});});renderPlanDetails();}
 function exportJSON(){
  saveNow();
  const data=G.fileExport(model()),blob=new Blob([data],{type:"application/json;charset=utf-8"});
@@ -792,6 +801,7 @@ function applyTheme(){document.documentElement.dataset.theme=theme==="system"?(s
 function setWizardUnits(oldUnit){for(const id of ["homeWidth","homeDepth"]){const input=$(id),m=G.parseUnit(input.value,oldUnit);input.type=unit==="ft-in"?"text":"number";input.inputMode=unit==="ft-in"?"text":"decimal";input.value=G.unitValue(Number.isFinite(m)?m:8,unit);if(unit!=="ft-in"){input.min=G.unitValue(4,unit);input.max=G.unitValue(24,unit);input.step="any";}else{input.removeAttribute("min");input.removeAttribute("max");input.removeAttribute("step");}const label=document.querySelector('label[for="'+id+'"]');label.textContent=label.textContent.replace(/\s*\([^)]*\)$/,"")+" ("+unitLabel()+")";}}
 function updateCatalogUnits(){[...$("furnitureCatalog").querySelectorAll("small")].forEach((el,i)=>{const c=G.catalog[i];if(c)el.textContent=[c.w,c.d,c.h].map(fmt).join(" × ");});}
 function bind(){
+ $("planDetailsButton").onclick=openPlanDetails;for(const id of ["northAngle","legendToggle","swingToggle","gridToggle"])$(id).onchange=changePlanDetails;
  $("unitSelect").value=unit;setWizardUnits("m");$("unitSelect").onchange=e=>{const old=unit;unit=e.target.value;try{localStorage.setItem(unitKey,unit);}catch(e){}setWizardUnits(old);updateCatalogUnits();refresh();};
  $("themeSelect").onchange=e=>{theme=e.target.value;try{localStorage.setItem(themeKey,theme);}catch(e){}applyTheme();};
  systemTheme.addEventListener("change",()=>{if(theme==="system")applyTheme();});applyTheme();
