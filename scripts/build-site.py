@@ -7,12 +7,15 @@ out=root/'dist'/'site'
 if out.exists(): shutil.rmtree(out)
 out.mkdir(parents=True)
 public=['.nojekyll','index.html','style.css','core.js','renderer.js','app.js','i18n.js','cloud.js','cloud-config.js','robots.txt','sitemap.xml','welcome/index.html','welcome/landing.css','welcome/zh-hant/index.html','welcome/zh-hans/index.html','welcome/es/index.html','welcome/ja/index.html','welcome/de/index.html','welcome/fr/index.html','welcome/ko/index.html','welcome/pt/index.html']
+public.append('welcome/social-card.png')
 for rel in public:
     src=root/rel
     if not src.is_file(): raise SystemExit(f'Missing public asset: {rel}')
     dst=out/rel
     dst.parent.mkdir(parents=True,exist_ok=True)
     shutil.copyfile(src,dst)
+# Add share metadata only to the packaged public landing pages.
+subprocess.run(['python3',str(root/'scripts/add-social-metadata.py'),str(out)],check=True)
 # Offline bundle must be built from the SAME commit.
 subprocess.run(['python3',str(root/'scripts/build-single.py')],check=True)
 shutil.copyfile(root/'dist/easy-home-3d.html',out/'easy-home-3d-standalone.html')

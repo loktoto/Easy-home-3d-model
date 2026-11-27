@@ -13,6 +13,8 @@ The root files are intentionally kept in place: the static deployment, standalon
 | `core.js` | Geometry, data model, safe serialization |
 | `renderer.js` | 2D drawing and 3D rendering |
 | `app.js` | Editor interactions, local storage and projects |
+| `cloud.js` / `cloud-config.js` | Optional cloud client and public configuration |
+| `backend/` | Self-hosted database migrations; never deploy as static assets |
 | `easy-home-3d-standalone.html` | Checked-in standalone snapshot; do not assume parity with modular source |
 | `welcome/` | Product landing pages and language variants |
 | `scripts/` | Standalone build tooling |
@@ -37,13 +39,13 @@ npx playwright install --with-deps chromium webkit
 npm run test:e2e
 ```
 
-The Python builder generates `dist/easy-home-3d.html` and `dist/easy-home-3d-convika.zip` (ZIP contains `index.html`). The CI artifact is named `easy-home-3d-convika`. Keep modular source authoritative; standalone reconciliation is tracked in [#42](https://github.com/loktoto/Easy3DHomeModel/issues/42).
+The Python builder generates `dist/easy-home-3d.html` and `dist/easy-home-3d-convika.zip` (ZIP contains `index.html`). The CI artifact is named `easy-home-3d-convika`. Keep modular source authoritative and rebuild the standalone after source changes. See [release guide](RELEASING.md).
 
 ## Deployment
 
 - **GitHub Pages:** repository owners can enable Settings → Pages → Build and deployment → Source: GitHub Actions. The existing workflow checks whether Pages is enabled before publishing. Expected URL: https://loktoto.github.io/Easy3DHomeModel/ — not confirmed live as of 27 November 2026.
 - **Cloudflare:** existing demo at https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/; verify deployment revision before promoting it.
-- **Other static hosts:** deploy the root static source with its relative paths, or build a single HTML file. For third-party HTML hosting such as [Convika](https://convika.com/zh-hant/), upload the built HTML or ZIP using your own account, publish and test the actual public page. Private previews may disable JavaScript. No third-party publication is implied.
+- **Other static hosts:** run `python3 scripts/build-site.py` and deploy only `dist/site/`, or build a single HTML file. Never publish the whole checkout. For third-party HTML hosting such as [Convika](https://convika.com/zh-hant/), upload the built HTML or ZIP using your own account, publish and test the actual public page. Private previews may disable JavaScript. No third-party publication is implied.
 
 Production readiness is tracked in [#30](https://github.com/loktoto/Easy3DHomeModel/issues/30). Verify all public links, editor entry points, language landing pages, mobile/desktop navigation and rollback before release.
 
