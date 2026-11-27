@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0c1423">
-  <meta name="description" content="Easy Home 3D — 免費開源的 2D 平面圖與 3D 裝修規劃工具。畫牆、加門窗、放傢俬、量尺寸、自動儲存。">
-  <title>Easy Home 3D · 免費開源裝修圖</title>
+  <meta name="description" content="Easy3DHome — 免費開源的 2D 平面圖與 3D 裝修規劃工具。畫牆、加門窗、放傢俬、量尺寸、自動儲存。">
+  <title>Easy3DHome · 免費開源裝修圖</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
   <header class="top">
     <div class="identity">
       <span class="mark" aria-hidden="true">⌂</span>
-      <div><div class="eyebrow">FREE · OPEN SOURCE · LOCAL FIRST</div><h1>Easy Home <b>3D</b></h1></div>
+      <div><div class="eyebrow">FREE · OPEN SOURCE · LOCAL FIRST</div><h1>Easy<b>3D</b>Home</h1></div>
     </div>
     <div class="project-head">
       <label class="sr-only" for="projectName">專案名稱</label>
@@ -24,7 +24,7 @@
       <button id="projectsButton" class="subtle">專案</button>
       <button id="exportButton" class="subtle">匯出 JSON</button>
       <button id="helpButton" class="subtle icon-button" title="使用教學" aria-label="使用教學">?</button>
-      <a class="source-link" href="https://github.com/loktoto/Easy-home-3d-model" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      <a class="source-link" href="https://github.com/loktoto/Easy3DHomeModel" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
     </div>
   </header>
   <nav class="toolbar" aria-label="編輯工具">
@@ -76,14 +76,14 @@
       </div>
     </aside>
   </main>
-  <footer class="footer"><span>Easy Home 3D · MIT License</span><span>免費開源 · 無需帳號 · 個人資料預設只存在本機</span><a href="https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/welcome/zh-hant/" target="_blank" rel="noopener noreferrer">產品介紹／Languages ↗</a></footer>
+  <footer class="footer"><span>Easy3DHome · MIT License</span><span>免費開源 · 無需帳號 · 個人資料預設只存在本機</span><a href="https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/welcome/zh-hant/" target="_blank" rel="noopener noreferrer">產品介紹／Languages ↗</a></footer>
 </div>
 
 <dialog id="projectsDialog" class="dialog">
   <div class="dialog-head"><h2>我的專案</h2><button class="close-dialog" data-close="projectsDialog" aria-label="關閉">✕</button></div>
   <p class="muted">每個專案獨立保存在此瀏覽器。清除瀏覽資料可能導致資料消失，請定期匯出 JSON 備份。</p>
-  <div id="projectList" class="project-list"></div>
-  <div class="dialog-actions"><button id="newBlank" class="primary">＋ 新建空白平面圖</button><button id="newDemo" class="ghost">新建示範圖</button><button id="importButton" class="ghost">匯入 JSON</button><button id="exportPngButton" class="ghost">匯出高清 PNG</button></div>
+  <div class="field"><label for="localeSelect">語言</label><select id="localeSelect"><option value="zh-Hant">繁體中文</option><option value="en">English</option><option value="zh-Hans">简体中文</option></select></div><div id="projectList" class="project-list"></div>
+  <div class="dialog-actions"><button id="newBlank" class="primary">＋ 新建空白平面圖</button><button id="newDemo" class="ghost">新建示範圖</button><button id="templatesButton" class="ghost">設計模板</button><button id="exportPngButton" class="ghost">匯出高清 PNG</button><button id="importButton" class="ghost">匯入 JSON</button></div>
 </dialog>
 <dialog id="furnitureDialog" class="dialog">
   <div class="dialog-head"><h2>選擇傢俬</h2><button class="close-dialog" data-close="furnitureDialog" aria-label="關閉">✕</button></div>
@@ -123,8 +123,10 @@
   <div id="checkList" class="check-list"></div>
   <div class="dialog-actions"><button class="primary" data-close="checkDialog">知道了</button></div>
 </dialog>
+<dialog id="templatesDialog" class="dialog"><div class="dialog-head"><h2>設計模板</h2><button class="close-dialog" data-close="templatesDialog" aria-label="關閉">✕</button></div><p class="muted">選擇後建立獨立新專案，不會覆蓋現有圖則。尺寸為示範值，施工前請覆尺。</p><div id="templateList" class="catalog"></div></dialog>
 <dialog id="pngDialog" class="dialog"><div class="dialog-head"><h2>匯出高清 PNG</h2><button class="close-dialog" data-close="pngDialog" aria-label="關閉">✕</button></div><p class="muted">預設將整個圖則置中並留白，適合分享；也可匯出目前視角。不包括工具列。此圖片不保證印刷比例。</p><div class="field"><label for="pngSize">最長邊像素</label><select id="pngSize"><option value="1600">1600 px</option><option value="2400" selected>2400 px</option><option value="3200">3200 px</option></select></div><div class="field"><label for="pngFraming">構圖</label><select id="pngFraming"><option value="fit" selected>完整圖則（橫向）</option><option value="current">目前視角</option></select></div><div class="dialog-actions"><button class="primary" id="downloadPng">下載 PNG</button><button class="ghost" data-close="pngDialog">取消</button></div><p id="pngStatus" role="status"></p></dialog>
 <input id="importFile" type="file" accept=".json,application/json" hidden>
+<script src="./i18n.js" defer></script>
 <script src="./core.js" defer></script>
 <script src="./renderer.js" defer></script>
 <script src="./app.js" defer></script>

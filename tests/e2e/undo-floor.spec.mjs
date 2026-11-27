@@ -1,0 +1,4 @@
+import {test,expect} from '@playwright/test';
+test('undo/redo floor creation keeps active floor valid and clears redo after new edit',async({page},info)=>{
+ await page.goto('/');await page.locator('#addFloor').click();await expect(page.locator('.floor-tab')).toHaveCount(2);await expect(page.locator('.floor-tab').last()).toHaveClass(/active/);await page.locator('#undoButton').click();await expect(page.locator('.floor-tab')).toHaveCount(1);await expect(page.locator('.floor-tab').first()).toHaveClass(/active/);await page.locator('#redoButton').click();await expect(page.locator('.floor-tab')).toHaveCount(2);await page.locator('#undoButton').click();await page.locator('#addFloor').click();await expect(page.locator('#redoButton')).toBeDisabled();await page.screenshot({path:info.outputPath('undo-floor.png')});
+});
