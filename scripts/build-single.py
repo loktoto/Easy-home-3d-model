@@ -16,11 +16,11 @@ OUT.parent.mkdir(parents=True, exist_ok=True)
 
 page = SOURCE.read_text("utf-8")
 css = (ROOT / "style.css").read_text("utf-8")
-scripts = [ (ROOT / f).read_text("utf-8") for f in ["i18n.js", "core.js", "renderer.js", "app.js"] ]
+scripts = [ (ROOT / f).read_text("utf-8") for f in ["cloud-config.js", "cloud.js", "i18n.js", "core.js", "renderer.js", "app.js"] ]
 assert "</style" not in css.lower()
 assert all("</script" not in code.lower() for code in scripts)
 page = page.replace('<link rel="stylesheet" href="./style.css">', "<style>\n" + css + "\n</style>")
-for name in ["i18n.js", "core.js", "renderer.js", "app.js"]:
+for name in ["cloud-config.js", "cloud.js", "i18n.js", "core.js", "renderer.js", "app.js"]:
     page = page.replace(f'<script src="./{name}" defer></script>', "")
 page = page.replace("</body>", "<script>\n" + "\n;\n".join(scripts) + "\n</script>\n</body>")
 assert '<script src="' not in page
