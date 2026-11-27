@@ -861,6 +861,7 @@ function bind(){
  $("budgetButton").onclick=showBudget;$("budgetCsv").onclick=budgetCsv;$("budgetAdd").onclick=()=>{const b=G.cleanBudget(model().budget);if(b.rows.length>=100)return;commit(()=>{b.rows.push({id:G.uid(),name:t("新工程項目"),qty:1,cost:null});model().budget=b;});renderBudget();};$("budgetContingency").onchange=e=>{if(!e.target.checkValidity())return;commit(()=>{const b=G.cleanBudget(model().budget);b.contingency=Number(e.target.value);model().budget=b;});budgetTotals();};
  $("shoppingButton").onclick=showShopping;$("shoppingCsv").onclick=shoppingCsv;$("shoppingCurrency").onchange=e=>{const old=G.cleanShopping(model().shopping);if((Object.keys(old.prices).length||G.cleanBudget(model().budget).rows.some(r=>r.cost!==null))&&!confirm(t("改變貨幣會清除現有價格，不會自動換算。繼續？"))){e.target.value=old.currency;return;}commit(()=>{model().shopping={currency:e.target.value,prices:{}};if(model().budget){const b=G.cleanBudget(model().budget);b.rows.forEach(r=>r.cost=null);model().budget=b;}});renderShopping();};
  $("helpButton").onclick=()=>showDialog("helpDialog");
+ $("projectHelpButton").onclick=()=>{$("projectsDialog").close();showDialog("helpDialog");};
  $("addFurnitureButton").onclick=()=>showDialog("furnitureDialog");
  $("startWall").onclick=()=>tool("wall");
  $("startRoom").onclick=()=>tool("room");

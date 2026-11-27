@@ -12,7 +12,9 @@ const projectDialogs=[
  ['versionsButton','versionsDialog','版本歷史'],
  ['clientButton','clientDialog','客戶資料'],
  ['brandButton','brandDialog','報告品牌設定'],
- ['cloudButton','cloudDialog','雲端專案']
+ ['cloudButton','cloudDialog','雲端專案'],
+ ['planStatsButton','planStatsDialog','圖則資料'],
+ ['projectHelpButton','helpDialog','30 秒學識用']
 ];
 const localDialogs=[['helpButton','helpDialog','30 秒學識用'],['buildButton','homeDialog',null],['addFurnitureButton','furnitureDialog',null],['checkButton','checkDialog',null]];
 async function noOverflow(page){
@@ -57,7 +59,9 @@ for(const locale of locales){
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('/?lang='+locale);await expect(page.locator('html')).toHaveAttribute('lang',locale);
   for(const [button,dialog,heading] of localDialogs){
-   await page.locator('#'+button).click();
+   if(button==='helpButton'&&info.project.name==='mobile-webkit'){
+    await expect(page.locator('#helpButton')).toBeHidden();await page.locator('#projectsButton').click();await expect(page.locator('#projectHelpButton')).toBeVisible();await page.locator('#projectHelpButton').click({timeout:10000});
+   }else await page.locator('#'+button).click({timeout:10000});
    await inspectDialog(page,info,dialog,heading,locale);
   }
   await page.locator('#view3d').click();
