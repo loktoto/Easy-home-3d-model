@@ -28,13 +28,17 @@ Open [the project homepage](../README.md). To use a local copy, [download ZIP](h
 | [scripts/](../scripts/README.md) | Standalone build |
 | [.github/workflows/](../.github/workflows/) | CI and conditional deployment |
 | [package.json](../package.json), [playwright.config.mjs](../playwright.config.mjs) | Developer test configuration |
-| [easy-home-3d-standalone.html](../easy-home-3d-standalone.html) | Checked-in standalone snapshot; parity not guaranteed |
+| [easy-home-3d-standalone.html](../easy-home-3d-standalone.html) | Checked-in standalone; CI verifies byte-for-byte parity with built standalone and offline ZIP |
 | [robots.txt](../robots.txt), [sitemap.xml](../sitemap.xml), `.nojekyll` | Static deployment and search metadata |
 | [LICENSE](../LICENSE), [CONTRIBUTING.md](../CONTRIBUTING.md), `.gitignore` | Project maintenance |
 
 ## Why source files remain in the root
 
-The static entry point uses relative JS/CSS paths; the standalone builder reads these files directly. The browser tests serve the repository root, and deployment currently uses root-based URLs. Moving these files requires coordinated changes to all those consumers and active feature branches. Do not move or remove the standalone snapshot until [#42](https://github.com/loktoto/Easy3DHomeModel/issues/42) is resolved. Public asset isolation and release work are tracked in [#30](https://github.com/loktoto/Easy3DHomeModel/issues/30).
+The static entry point uses relative JS/CSS paths; the standalone builder reads these files directly. The browser tests serve the repository root, and deployment currently uses root-based URLs. Moving these files requires coordinated changes to all those consumers and active feature branches. Retain the existing public URLs for old bookmarks and offline users. The build gate classifies every tracked path and rejects unclassified root files or non-allow-listed public assets. Public asset isolation and release work are tracked in [#30](https://github.com/loktoto/Easy3DHomeModel/issues/30).
+
+## Automated inventory
+
+Run `python3 scripts/build-site.py && python3 scripts/check-repo-layout.py`. The generated `dist/repository-inventory.json` lists every tracked file by role. Public site contents and offline bundle parity are verified in CI. Historical evidence and backend sources are never included in the deployable site.
 
 ## Find current status
 

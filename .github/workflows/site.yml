@@ -32,6 +32,7 @@ jobs:
         run: python3 scripts/build-site.py
       - name: Validate and package the release Worker
         run: |
+          python3 scripts/check-repo-layout.py
           node --test tests/worker-release.test.mjs
           node scripts/build-worker.mjs
       - name: Upload versioned Worker module
