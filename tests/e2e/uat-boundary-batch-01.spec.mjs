@@ -98,7 +98,7 @@ test('UAT-010 explicit clear controls keep user project after reload',async({pag
  await page.locator('#dimsButton').click();await expect(page.locator('#dimsButton')).toHaveAttribute('aria-pressed','false');
  await page.locator('#zoomIn').click();await page.locator('#zoomOut').click();await page.locator('#fitBottom').click();await page.locator('#fitButton').click();
  await page.locator('#view3d').click();await expect(page.locator('#view3d')).toHaveAttribute('aria-pressed','true');await shot(page,info,'3d-empty');
- await page.locator('#view2d').click();await expect(page.locator('#view2d')).toHaveAttribute('aria-pressed','true');await page.locator('#helpButton').click();await expect(page.locator('#helpDialog')).toBeVisible();await close(page,'helpDialog');
+ await page.locator('#view2d').click();await expect(page.locator('#view2d')).toHaveAttribute('aria-pressed','true');if(await page.locator('#helpButton').isVisible())await page.locator('#helpButton').click();else await open(page,'projectHelpButton');await expect(page.locator('#helpDialog')).toBeVisible();await close(page,'helpDialog');
  await page.reload();await expect(page.locator('#projectName')).toHaveValue('UAT controls');await shot(page,info,'controls-reloaded');
 });
 
