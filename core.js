@@ -258,6 +258,7 @@ function sanitize(raw){
  if(raw.budget)m.budget=cleanBudget(raw.budget);
  if(raw.traces)m.traces=cleanTraces(raw.traces,m.floorCount);
  if(raw.client)m.client=cleanClient(raw.client);
+ if(raw.brand)m.brand=cleanBrand(raw.brand);
  return m;
 }
 function getBounds(model,floor){
@@ -307,7 +308,8 @@ function cleanBudget(raw){return {rows:Array.isArray(raw?.rows)?raw.rows.slice(0
 function budgetSummary(m){const b=cleanBudget(m.budget),s=shoppingSummary(m),rows=b.rows.map(r=>({...r,total:r.cost===null?null:Math.round(r.qty*r.cost)})),work=rows.reduce((sum,r)=>sum+(r.total??0),0),subtotal=work+s.total,contingency=Math.round(subtotal*b.contingency/100);return {currency:s.currency,rows,work,furniture:s.total,unpriced:s.unpriced+rows.filter(r=>r.cost===null).length,subtotal,contingency,total:subtotal+contingency,rate:b.contingency};}
 function cleanTraces(raw,floors=5){const list=[];for(const v of Array.isArray(raw)?raw.slice(0,5):[]){if(!v||!Number.isInteger(v.floor)||v.floor<0||v.floor>=floors||list.some(x=>x.floor===v.floor)||typeof v.data!=="string"||v.data.length>450000||!/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(v.data)||!(v.w>0&&v.w<=1000&&v.h>0&&v.h<=1000))continue;list.push({floor:v.floor,data:v.data,w:num(v.w),h:num(v.h),x:clamp(num(v.x),-1000,1000),y:clamp(num(v.y),-1000,1000),opacity:clamp(num(v.opacity,.4),.05,1)});}return list;}
 function cleanClient(raw){return {client:String(raw?.client||"").slice(0,100),reference:String(raw?.reference||"").slice(0,80),status:["draft","active","completed","archived"].includes(raw?.status)?raw.status:"draft",notes:String(raw?.notes||"").slice(0,1000)};}
-const api={cleanClient,cleanTraces,cleanBudget,budgetSummary,currencies,shoppingKey,cleanShopping,shoppingSummary,csvCell,furnitureGap,clearanceWarnings,units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
+function cleanBrand(raw){return {company:String(raw?.company||"").slice(0,80),title:String(raw?.title||"").slice(0,80),color:/^#[0-9a-f]{6}$/i.test(raw?.color||"")?raw.color:"#11685a",logo:typeof raw?.logo==="string"&&raw.logo.length<=160000&&/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(raw.logo)?raw.logo:""};}
+const api={cleanBrand,cleanClient,cleanTraces,cleanBudget,budgetSummary,currencies,shoppingKey,cleanShopping,shoppingSummary,csvCell,furnitureGap,clearanceWarnings,units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.EasyHomeCore=api;
 })(typeof window!=="undefined"?window:globalThis);
