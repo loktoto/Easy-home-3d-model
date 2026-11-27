@@ -6,8 +6,8 @@
 
 ## 開始使用
 
-- **網上版：** [開啟現有示範網站](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/)。目前尚未核實部署與最新主分支一致。
-- **電腦離線使用：** [下載 ZIP](https://github.com/loktoto/Easy3DHomeModel/archive/refs/heads/main.zip) → 解壓縮整個資料夾 → 雙擊 `index.html` 用瀏覽器開啟。請勿只移走 HTML 檔案。
+- **網上版：** [開啟正式網站](https://easy3dhome.pages.dev/)。
+- **電腦離線使用：** [下載 ZIP](https://github.com/loktoto/Easy3DHomeModel/releases/latest/download/Easy3DHome-offline.zip) → 解壓縮整個資料夾 → 雙擊 `index.html` 用瀏覽器開啟。請勿只移走 HTML 檔案。
 - **手機及平板：** 建議使用可正常載入的網上版。工具列可橫向捲動，雙指縮放，按「設定」開啟屬性面板。
 
 ## 由零開始設計
@@ -48,3 +48,7 @@
 [提交問題或建議](https://github.com/loktoto/Easy3DHomeModel/issues/new/choose)（需登入 GitHub）。請勿公開私人住宅圖則、地址、帳戶資料或金鑰。
 
 [返回首頁](../README.md)
+
+## 由舊網址搬遷圖則
+
+在[舊網站](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/)逐一開啟專案並匯出 JSON，再到[新網站](https://easy3dhome.pages.dev/)「專案」內匯入。兩個網域的瀏覽器本機儲存彼此獨立，不會自動同步；請保留原始備份。

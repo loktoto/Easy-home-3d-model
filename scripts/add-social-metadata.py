@@ -6,7 +6,7 @@ from html import escape
 import struct
 import sys
 
-origin = "https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev"
+origin = "https://easy3dhome.pages.dev"
 image = origin + "/welcome/social-card.png"
 root = Path(sys.argv[1])
 raw = (root / "welcome/social-card.png").read_bytes()

@@ -6,8 +6,8 @@
 
 A free, open-source home planner for everyone.
 
-[![Open planner](https://img.shields.io/badge/OPEN-ONLINE%20DEMO-167D6B?style=for-the-badge)](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/)
-[![Download](https://img.shields.io/badge/DOWNLOAD-OFFLINE%20ZIP-34495E?style=for-the-badge)](https://github.com/loktoto/Easy3DHomeModel/archive/refs/heads/main.zip)
+[![Open planner](https://img.shields.io/badge/OPEN-ONLINE%20DEMO-167D6B?style=for-the-badge)](https://easy3dhome.pages.dev/)
+[![Download](https://img.shields.io/badge/DOWNLOAD-OFFLINE%20ZIP-34495E?style=for-the-badge)](https://github.com/loktoto/Easy3DHomeModel/releases/latest/download/Easy3DHome-offline.zip)
 
 [User guide](docs/USER_GUIDE.md) · [繁體中文教學](docs/USER_GUIDE.zh-Hant.md) · [Help](#need-help) · [Support](#support-the-project)
 
@@ -15,9 +15,9 @@ A free, open-source home planner for everyone.
 [![Build](https://github.com/loktoto/Easy3DHomeModel/actions/workflows/site.yml/badge.svg)](https://github.com/loktoto/Easy3DHomeModel/actions/workflows/site.yml)
 [![Browser tests](https://github.com/loktoto/Easy3DHomeModel/actions/workflows/e2e.yml/badge.svg)](https://github.com/loktoto/Easy3DHomeModel/actions/workflows/e2e.yml)
 
-<img src="evidence/07-two-floor-3d.png" alt="Actual 3D editor showing a two-floor home" width="900">
+<img src="evidence/v1.1.0-two-floor-3d.png" alt="Actual 3D editor showing a two-floor home" width="900">
 
-*Actual editor example from browser testing.*
+*Actual Easy3DHome v1.1.0 editor: synthetic two-floor example captured on the public site (commit `bfc413b`).*
 
 </div>
 
@@ -25,10 +25,10 @@ A free, open-source home planner for everyone.
 
 | Online | Offline |
 | --- | --- |
-| [Open the existing demo](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/) | [Download the ZIP](https://github.com/loktoto/Easy3DHomeModel/archive/refs/heads/main.zip) |
+| [Open Easy3DHome](https://easy3dhome.pages.dev/) | [Download the ZIP](https://github.com/loktoto/Easy3DHomeModel/releases/latest/download/Easy3DHome-offline.zip) |
 | Use a modern browser. No account required. | Extract the entire folder, then open `index.html`. |
 
-The online demo may be behind the current source. [Deployment status](https://github.com/loktoto/Easy3DHomeModel/issues/30).
+The [public release](https://github.com/loktoto/Easy3DHomeModel/releases/latest) is hosted at [easy3dhome.pages.dev](https://easy3dhome.pages.dev/). [Deployment status](https://easy3dhome.pages.dev/version.json). Existing users of the [legacy URL](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/) should export their projects as JSON there and import them on the new site; browser storage is isolated by origin. The legacy site remains available.
 
 ## Everything you need to plan a space
 
@@ -43,9 +43,9 @@ The online demo may be behind the current source. [Deployment status](https://gi
 | **Check your layout** — clearance and collision warnings | **Plan annotations** — area estimates, north arrow, scale and openings |
 | **Choose your preferences** — light/dark themes and m/cm/mm/ft-in units | **Work in your language** — nine editor language options (six in beta) |
 
-<img src="evidence/03-ground-floor-2d.png" alt="Actual dimensioned 2D floor plan with furniture" width="900">
+<img src="evidence/v1.1.0-ground-floor-2d.png" alt="Actual dimensioned 2D floor plan with furniture" width="900">
 
-*Actual 2D editor example. [See more screenshots and testing evidence](docs/TESTING.md).*
+*Actual v1.1.0 ground-floor example from the same synthetic layout. [See testing evidence and current CI results](docs/TESTING.md).*
 
 **Languages:** English · 繁體中文 · 简体中文 · Español (beta) · 日本語 (beta) · Deutsch (beta) · Français (beta) · 한국어 (beta) · Português (beta). See [landing pages](welcome/README.md).
 
@@ -80,7 +80,7 @@ If Easy3DHome is useful, a star, bug report, translation or contribution is appr
 | Report a bug or request a feature | [Get help on GitHub](https://github.com/loktoto/Easy3DHomeModel/issues/new/choose) |
 | Build, self-host or contribute | [Developer guide](docs/DEVELOPMENT.md) · [Contributing](CONTRIBUTING.md) |
 | Browse the source | [Repository map](docs/REPOSITORY_MAP.md) |
-| Find versioned downloads | [Releases](https://github.com/loktoto/Easy3DHomeModel/releases) (when published) |
+| Find versioned downloads | [Releases](https://github.com/loktoto/Easy3DHomeModel/releases) |
 | Check project quality | [Testing](docs/TESTING.md) · [CI](https://github.com/loktoto/Easy3DHomeModel/actions) |
 
 **Privacy:** Export JSON backups regularly. Clearing browser data can erase local plans. **Accuracy:** This is a planning aid, not certified construction or structural advice. Verify measurements on site.
