@@ -38,5 +38,7 @@ async function claimInvite(raw){return call("/rest/v1/rpc/easy3d_claim_invite",{
 async function invites(owner,id){return call("/rest/v1/easy3d_invites?owner="+eq(owner)+"&project_id="+eq(id)+"&select=token_hash,role,expires_at,claimed_at",{},true);}
 async function revokeInvite(hash){return call("/rest/v1/easy3d_invites?token_hash="+eq(hash),{method:"DELETE"},true);}
 async function revokeMember(owner,id,member){return call("/rest/v1/easy3d_members?owner="+eq(owner)+"&project_id="+eq(id)+"&member="+eq(member),{method:"DELETE"},true);}
-root.Easy3DHomeCloud={memberships,createInvite,claimInvite,invites,revokeInvite,revokeMember,configured,user,login,signup,logout,list,get,put,remove,call};
+async function versions(owner,id){return call("/rest/v1/easy3d_versions?owner="+eq(owner)+"&project_id="+eq(id)+"&select=revision,name,created_at&order=revision.desc&limit=50",{},true);}
+async function version(owner,id,rev){const r=await call("/rest/v1/easy3d_versions?owner="+eq(owner)+"&project_id="+eq(id)+"&revision="+eq(rev)+"&select=*",{},true);return r[0]||null;}
+root.Easy3DHomeCloud={versions,version,memberships,createInvite,claimInvite,invites,revokeInvite,revokeMember,configured,user,login,signup,logout,list,get,put,remove,call};
 })(window);
