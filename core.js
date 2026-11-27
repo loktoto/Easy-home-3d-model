@@ -258,7 +258,20 @@ function fileImport(text){
  if(text.length>3000000)throw new Error(t("檔案超過 3 MB 限制"));
  const obj=JSON.parse(text);return sanitize(obj&&obj.format===SCHEMA?obj.project:obj);
 }
-const api={SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
+const units=["m","cm","mm","ft-in"];
+const factors={m:1,cm:100,mm:1000};
+function unitValue(m,unit){
+ if(unit==="ft-in"){const neg=m<0?"-":"",inches=Math.abs(m)/.0254;let feet=Math.floor(inches/12),rest=round(inches-feet*12,6);if(rest>=12){feet++;rest=0;}return neg+feet+"' "+rest+'"';}
+ return String(round(m*(factors[unit]||1),9));
+}
+function parseUnit(value,unit){
+ const s=String(value).trim();if(!s)return NaN;
+ if(unit==="ft-in"){const match=s.match(/^([+-]?)(\d+)\s*'\s*(\d+(?:\.\d+)?)\s*"?$/);if(match){const inch=Number(match[3]);return inch<12?(match[1]==="-"?-1:1)*(Number(match[2])*12+inch)*.0254:NaN;}const n=Number(s);return Number.isFinite(n)?n*.3048:NaN;}
+ return Number(s)/(factors[unit]||1);
+}
+function formatLength(m,unit="m"){if(unit==="ft-in"){const sign=m<0?"-":"",inch=Math.abs(m)/.0254;let feet=Math.floor(inch/12),rest=round(inch-feet*12,2);if(rest>=12){feet++;rest=0;}return sign+feet+"' "+rest+'"';}return (unit==="m"?round(m,2).toFixed(2):String(round(m*(factors[unit]||1),unit==="mm"?1:2)))+" "+unit;}
+function formatArea(m,unit="m"){const f=unit==="ft-in"?1/.3048:(factors[unit]||1);return round(m*f*f,2)+" "+(unit==="ft-in"?"ft":unit)+"²";}
+const api={units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.EasyHomeCore=api;
 })(typeof window!=="undefined"?window:globalThis);

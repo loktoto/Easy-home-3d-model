@@ -2,6 +2,7 @@
 (function(){
 "use strict";
 const messages={
+"尺寸單位":["Measurement units","尺寸单位"],"目前單位：":["Units: ","当前单位："],
 "外觀":["Appearance","外观"],
 "深色":["Dark","深色"],
 "淺色":["Light","浅色"],

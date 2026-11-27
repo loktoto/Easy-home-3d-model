@@ -1,0 +1,8 @@
+import {test,expect} from '@playwright/test';
+test('metric and feet/inches edit canonical meters without switching drift',async({page},info)=>{
+ await page.goto('/');await page.locator('#addFurnitureButton').click();await page.locator('#furnitureCatalog button').filter({hasText:'梳化'}).click();
+ const get=()=>page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('easy-home-3d:projects:v1'));return s.projects.find(p=>p.id===s.activeId).data.furniture[0].w;});
+ await expect(page.locator('#saveStatus')).toContainText('本機已儲存');const initial=await get();
+ for(const unit of ['cm','mm','ft-in','m']){if(info.project.name==='mobile-webkit'&&await page.locator('#inspector').evaluate(e=>e.classList.contains('open')))await page.locator('#closeInspector').click();await page.locator('#projectsButton').click();await page.locator('#unitSelect').selectOption(unit);await page.locator('[data-close=projectsDialog]').click();if(info.project.name==='mobile-webkit')await page.locator('#propertiesButton').click();expect(await get()).toBe(initial);await page.screenshot({path:info.outputPath('units-'+unit+'.png')});}
+ if(info.project.name==='mobile-webkit')await page.locator('#closeInspector').click();await page.locator('#projectsButton').click();await page.locator('#unitSelect').selectOption('ft-in');await page.locator('[data-close=projectsDialog]').click();if(info.project.name==='mobile-webkit')await page.locator('#propertiesButton').click();await page.locator('#prop-w').fill("6' 6\"");await page.locator('#prop-w').press('Tab');await expect(page.locator('#saveStatus')).toContainText('本機已儲存');expect(await get()).toBeCloseTo(1.9812,6);await page.reload();await expect(page.locator('#scaleLabel')).toContainText('ft / in');
+});
