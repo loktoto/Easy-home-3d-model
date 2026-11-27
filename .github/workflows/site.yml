@@ -1,4 +1,4 @@
-name: Validate, bundle and publish Easy3DHome
+name: Validate, bundle and publish Easy Home 3D
 on:
   push:
     branches: [main]
@@ -28,6 +28,13 @@ jobs:
         run: node --test tests/*.test.cjs
       - name: Build standalone Convika HTML and ZIP
         run: python3 scripts/build-single.py
+      - name: Build allow-listed public website
+        run: python3 scripts/build-site.py
+      - name: Upload versioned public website
+        uses: actions/upload-artifact@v4
+        with:
+          name: easy3dhome-public-site
+          path: dist/site/
       - name: Upload standalone HTML and ZIP
         uses: actions/upload-artifact@v4
         with:
@@ -60,11 +67,17 @@ jobs:
       - name: Configure Pages
         if: steps.pages-ready.outputs.enabled == 'true'
         uses: actions/configure-pages@v5
+      - name: Download tested public site
+        if: steps.pages-ready.outputs.enabled == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: easy3dhome-public-site
+          path: dist/site
       - name: Upload static files
         if: steps.pages-ready.outputs.enabled == 'true'
         uses: actions/upload-pages-artifact@v4
         with:
-          path: .
+          path: dist/site
       - name: Publish
         if: steps.pages-ready.outputs.enabled == 'true'
         id: deployment

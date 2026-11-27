@@ -1,0 +1,3 @@
+# Release gate
+
+Issue #30: publish only an integrated, reviewed commit. The public artifact is allow-listed and includes version.json; verify its SHA after deployment. Cloud and billing are deliberately disabled until dedicated hosted Supabase/Stripe configuration, security review and actual sandbox checkout/refund tests pass. Never publish source directories, test data, credentials, or the full Git checkout. GitHub Pages deployment consumes the tested public artifact. Cloudflare production migration is a separate deployment operation after final approval; no production endpoint is changed by this PR.

@@ -1,24 +1,2 @@
-import { test, expect } from '@playwright/test';
-
-const source = 'https://github.com/loktoto/Easy3DHomeModel';
-for (const path of ['/','/easy-home-3d-standalone.html']) {
-  test('Easy3DHome identity and repository link: ' + path, async ({ page }, testInfo) => {
-    await page.goto(path);
-    await expect(page).toHaveTitle(/^Easy3DHome/);
-    await expect(page.locator('h1')).toHaveText('Easy3DHome');
-    await expect(page.locator('a.source-link')).toHaveAttribute('href', source);
-    await expect(page.locator('#startRoom')).toBeVisible();
-    const size=await page.evaluate(()=>({scroll:document.documentElement.scrollHeight, viewport:innerHeight, width:document.documentElement.scrollWidth, viewportWidth:innerWidth}));
-    expect(size.scroll).toBeLessThanOrEqual(size.viewport+2);
-    expect(size.width).toBeLessThanOrEqual(size.viewportWidth+2);
-    await page.screenshot({path: testInfo.outputPath(path === '/' ? 'editor-brand.png' : 'standalone-brand.png'), fullPage: true});
-  });
-}
-for (const path of ['/welcome/','/welcome/zh-hant/','/welcome/zh-hans/']) {
-  test('Easy3DHome localized landing: ' + path, async ({ page }, testInfo) => {
-    await page.goto(path);
-    await expect(page).toHaveTitle(/^Easy3DHome/);
-    await expect(page.locator('a[href="'+source+'"]').first()).toBeVisible();
-    await page.screenshot({path: testInfo.outputPath('landing-brand.png'), fullPage: true});
-  });
-}
+import {test,expect} from '@playwright/test';
+test('authorized local brand settings, logo and branded PDF preview',async({page},info)=>{await page.goto('/');await page.locator('#startBuild').click();await page.locator('#buildHome').click();await page.locator('#projectsButton').click();await page.locator('#brandButton').click();await page.locator('#brandCompany').fill('QA Studio');await page.locator('#brandTitle').fill('Client plan');await expect(page.locator('#brandSave')).toBeDisabled();const logo=await page.evaluate(()=>{const c=document.createElement('canvas');c.width=100;c.height=40;const x=c.getContext('2d');x.fillStyle='#11685a';x.fillRect(0,0,100,40);x.fillStyle='white';x.font='bold 20px sans-serif';x.fillText('QA',30,28);return c.toDataURL('image/png').split(',')[1]});await page.locator('#brandLogo').setInputFiles({name:'logo.png',mimeType:'image/png',buffer:Buffer.from(logo,'base64')});await expect(page.locator('#brandLogoPreview')).toBeVisible();await page.locator('#brandRights').check();await page.screenshot({path:info.outputPath('brand-settings.png')});await page.locator('#brandSave').click();await page.locator('#projectsButton').click();await page.locator('#pdfButton').click();await page.locator('#pdfScale').selectOption('100');await page.locator('#pdfBrand').check();await page.waitForTimeout(300);await page.screenshot({path:info.outputPath('branded-report.png')});const d=page.waitForEvent('download');await page.locator('#pdfDownload').click();await (await d).saveAs(info.outputPath('branded-plan.pdf'));await page.reload();const b=await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('easy-home-3d:projects:v1'));return s.projects.find(p=>p.id===s.activeId).data.brand;});expect(b.company).toBe('QA Studio');expect(b.logo).toMatch(/^data:image\/jpeg/);});

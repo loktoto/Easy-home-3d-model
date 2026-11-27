@@ -1,4 +1,4 @@
-/* Easy3DHome — geometry and document format. MIT © 2026 loktoto */
+/* Easy Home 3D — geometry and document format. MIT © 2026 loktoto */
 (function(root){
 "use strict";
 const t=s=>root.EasyHomeI18n?root.EasyHomeI18n.t(s):s;
@@ -60,7 +60,7 @@ function segmentDistance(a,b,c,d){
 function furnitureClearances(f,walls){
  const poly=furnitureCorners(f);const result=[];
  for(let i=0;i<walls.length;i++){
-  const wall=walls[i];let d=Infinity;
+  const wall=walls[i];if((Number(wall.floor)||0)!==(Number(f.floor)||0))continue;let d=inPoly(wall.a,poly)||inPoly(wall.b,poly)?0:Infinity;
   for(let k=0;k<4;k++)d=Math.min(d,segmentDistance(poly[k],poly[(k+1)%4],wall.a,wall.b));
   result.push({wallId:wall.id,index:i+1,distance:round(Math.max(0,d-wall.thickness/2),3)});
  }
@@ -68,6 +68,7 @@ function furnitureClearances(f,walls){
 }
 function furnitureIntersectsWall(f,w){
  const poly=furnitureCorners(f);
+ if(inPoly(w.a,poly)||inPoly(w.b,poly))return true;
  for(let i=0;i<4;i++)if(segmentDistance(poly[i],poly[(i+1)%4],w.a,w.b)<Math.max(.02,w.thickness/2-.01))return true;
  return false;
 }
@@ -75,10 +76,23 @@ function furnitureOverlap(a,b){
  const A=furnitureCorners(a),B=furnitureCorners(b),TOL=.01;
  for(const poly of [A,B])for(let i=0;i<4;i++){
   const p=poly[i],q=poly[(i+1)%4],axis={x:-(q.y-p.y),y:q.x-p.x};
+  const norm=Math.hypot(axis.x,axis.y)||1;axis.x/=norm;axis.y/=norm;
   const pa=A.map(v=>v.x*axis.x+v.y*axis.y),pb=B.map(v=>v.x*axis.x+v.y*axis.y);
   if(Math.max(...pa)<=Math.min(...pb)+TOL||Math.max(...pb)<=Math.min(...pa)+TOL)return false;
  }
  return true;
+}
+function furnitureGap(a,b){
+ if((Number(a.floor)||0)!==(Number(b.floor)||0))return Infinity;
+ if(furnitureOverlap(a,b))return 0;
+ const A=furnitureCorners(a),B=furnitureCorners(b);if(inPoly(A[0],B)||inPoly(B[0],A))return 0;
+ let d=Infinity;for(let i=0;i<4;i++)for(let j=0;j<4;j++)d=Math.min(d,segmentDistance(A[i],A[(i+1)%4],B[j],B[(j+1)%4]));return d;
+}
+function clearanceWarnings(model,limit=.1){
+ const out=[],f=model.furniture||[],walls=model.walls||[];
+ for(const a of f){const nearest=furnitureClearances(a,walls)[0];if(nearest&&nearest.distance<limit)out.push({kind:"wall",id:a.id,name:a.name,distance:nearest.distance});}
+ for(let i=0;i<f.length;i++)for(let j=i+1;j<f.length;j++){const d=furnitureGap(f[i],f[j]);if(d<limit)out.push({kind:"furniture",id:f[i].id,name:f[i].name+" / "+f[j].name,distance:d});}
+ return out.sort((a,b)=>a.distance-b.distance);
 }
 function inPoly(pt,poly){
  let inside=false;
@@ -188,7 +202,7 @@ function validate(model){
  const issues=[],add=(severity,code,message,ids)=>issues.push({severity,code,message,ids:ids||[]});
  const m=model||{},walls=Array.isArray(m.walls)?m.walls:[],openings=Array.isArray(m.openings)?m.openings:[],furniture=Array.isArray(m.furniture)?m.furniture:[];
  const floorOf=v=>clamp(Math.round(num(v.floor,0)),0,Math.max(0,num(m.floorCount,1)-1));
- if(!walls.length){add("warning","empty",t("圖則尚沒有牆身，先畫第一間房。"));return issues;}
+ if(!walls.length)add("warning","empty",t("圖則尚沒有牆身，先畫第一間房。"));
  for(const w of walls)if(length(w.a,w.b)<.1)add("error","short-wall",t("有牆身短於 0.1 米。"),[w.id]);
  const ends=[];walls.forEach(w=>{ends.push({p:w.a,id:w.id,wall:w});ends.push({p:w.b,id:w.id,wall:w});});
  const dangling=new Set();
@@ -240,6 +254,11 @@ function sanitize(raw){
    return {id:id(f.id),type:c.type,name:safeName(f.name,c.name),x:safePos(f.x),y:safePos(f.y),w:clamp(num(f.w,c.w),.1,15),d:clamp(num(f.d,c.d),.1,15),h:clamp(num(f.h,c.h),.1,6),rotation:clamp(num(f.rotation),-Math.PI*100,Math.PI*100),locked:f.locked===true,color:/^#[0-9a-f]{6}$/i.test(f.color||"")?f.color:c.color,floor:safeFloor(f)};
  });
  m.measurements=raw.measurements.map(q=>({id:id(q.id),a:safePoint(q.a),b:safePoint(q.b),floor:safeFloor(q)}));
+ if(raw.shopping)m.shopping=cleanShopping(raw.shopping);
+ if(raw.budget)m.budget=cleanBudget(raw.budget);
+ if(raw.traces)m.traces=cleanTraces(raw.traces,m.floorCount);
+ if(raw.client)m.client=cleanClient(raw.client);
+ if(raw.brand)m.brand=cleanBrand(raw.brand);
  return m;
 }
 function getBounds(model,floor){
@@ -258,7 +277,39 @@ function fileImport(text){
  if(text.length>3000000)throw new Error(t("檔案超過 3 MB 限制"));
  const obj=JSON.parse(text);return sanitize(obj&&obj.format===SCHEMA?obj.project:obj);
 }
-const api={SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
+const units=["m","cm","mm","ft-in"];
+const factors={m:1,cm:100,mm:1000};
+function unitValue(m,unit){
+ if(unit==="ft-in"){const neg=m<0?"-":"",inches=Math.abs(m)/.0254;let feet=Math.floor(inches/12),rest=round(inches-feet*12,6);if(rest>=12){feet++;rest=0;}return neg+feet+"' "+rest+'"';}
+ return String(round(m*(factors[unit]||1),9));
+}
+function parseUnit(value,unit){
+ const s=String(value).trim();if(!s)return NaN;
+ if(unit==="ft-in"){const match=s.match(/^([+-]?)(\d+)\s*'\s*(\d+(?:\.\d+)?)\s*"?$/);if(match){const inch=Number(match[3]);return inch<12?(match[1]==="-"?-1:1)*(Number(match[2])*12+inch)*.0254:NaN;}const n=Number(s);return Number.isFinite(n)?n*.3048:NaN;}
+ return Number(s)/(factors[unit]||1);
+}
+function formatLength(m,unit="m"){if(unit==="ft-in"){const sign=m<0?"-":"",inch=Math.abs(m)/.0254;let feet=Math.floor(inch/12),rest=round(inch-feet*12,2);if(rest>=12){feet++;rest=0;}return sign+feet+"' "+rest+'"';}return (unit==="m"?round(m,2).toFixed(2):String(round(m*(factors[unit]||1),unit==="mm"?1:2)))+" "+unit;}
+function formatArea(m,unit="m"){const f=unit==="ft-in"?1/.3048:(factors[unit]||1);return round(m*f*f,2)+" "+(unit==="ft-in"?"ft":unit)+"²";}
+const currencies=["HKD","USD","EUR","GBP","CNY","TWD","JPY"];
+function shoppingKey(f){return JSON.stringify([f.type,f.name,round(f.w,6),round(f.d,6),round(f.h,6)]);}
+function cleanShopping(raw){
+ const currency=currencies.includes(raw?.currency)?raw.currency:"HKD",prices=Object.create(null);
+ if(raw?.prices&&typeof raw.prices==="object")for(const [k,v] of Object.entries(raw.prices).slice(0,500)){if(k.length<=400&&Number.isSafeInteger(v)&&v>=0&&v<=1000000000)prices[k]=v;}
+ return {currency,prices};
+}
+function shoppingSummary(model){
+ const store=cleanShopping(model.shopping),groups=new Map();
+ for(const f of model.furniture){const key=shoppingKey(f);if(!groups.has(key))groups.set(key,{key,name:f.name,w:f.w,d:f.d,h:f.h,count:0,price:store.prices[key]??null});groups.get(key).count++;}
+ const rows=[...groups.values()].map(r=>({...r,total:r.price===null?null:r.count*r.price}));
+ return {currency:store.currency,rows,total:rows.reduce((n,r)=>n+(r.total??0),0),unpriced:rows.reduce((n,r)=>n+(r.price===null?r.count:0),0)};
+}
+function csvCell(v){let s=String(v??"");if(/^[\s]*[=+\-@\t\r]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';}
+function cleanBudget(raw){return {rows:Array.isArray(raw?.rows)?raw.rows.slice(0,100).map(row=>({id:String(row.id||uid()).slice(0,100),name:String(row.name||"").slice(0,80),qty:clamp(num(row.qty,1),0,100000),cost:row.cost===null||row.cost===undefined?null:clamp(Math.round(num(row.cost)),0,1000000000)})):[],contingency:clamp(num(raw?.contingency,0),0,100)};}
+function budgetSummary(m){const b=cleanBudget(m.budget),s=shoppingSummary(m),rows=b.rows.map(r=>({...r,total:r.cost===null?null:Math.round(r.qty*r.cost)})),work=rows.reduce((sum,r)=>sum+(r.total??0),0),subtotal=work+s.total,contingency=Math.round(subtotal*b.contingency/100);return {currency:s.currency,rows,work,furniture:s.total,unpriced:s.unpriced+rows.filter(r=>r.cost===null).length,subtotal,contingency,total:subtotal+contingency,rate:b.contingency};}
+function cleanTraces(raw,floors=5){const list=[];for(const v of Array.isArray(raw)?raw.slice(0,5):[]){if(!v||!Number.isInteger(v.floor)||v.floor<0||v.floor>=floors||list.some(x=>x.floor===v.floor)||typeof v.data!=="string"||v.data.length>450000||!/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(v.data)||!(v.w>0&&v.w<=1000&&v.h>0&&v.h<=1000))continue;list.push({floor:v.floor,data:v.data,w:num(v.w),h:num(v.h),x:clamp(num(v.x),-1000,1000),y:clamp(num(v.y),-1000,1000),opacity:clamp(num(v.opacity,.4),.05,1)});}return list;}
+function cleanClient(raw){return {client:String(raw?.client||"").slice(0,100),reference:String(raw?.reference||"").slice(0,80),status:["draft","active","completed","archived"].includes(raw?.status)?raw.status:"draft",notes:String(raw?.notes||"").slice(0,1000)};}
+function cleanBrand(raw){return {company:String(raw?.company||"").slice(0,80),title:String(raw?.title||"").slice(0,80),color:/^#[0-9a-f]{6}$/i.test(raw?.color||"")?raw.color:"#11685a",logo:typeof raw?.logo==="string"&&raw.logo.length<=160000&&/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(raw.logo)?raw.logo:""};}
+const api={cleanBrand,cleanClient,cleanTraces,cleanBudget,budgetSummary,currencies,shoppingKey,cleanShopping,shoppingSummary,csvCell,furnitureGap,clearanceWarnings,units,unitValue,parseUnit,formatLength,formatArea,SCHEMA,VERSION,catalog,clamp,round,uid,point,length,midpoint,lerp,distancePointSegment,segmentsIntersect,segmentDistance,openingFits,furnitureCorners,furnitureClearances,furnitureOverlap,inPoly,empty,wall,demo,home,house,validate,sanitize,getBounds,fileExport,fileImport};
 if(typeof module!=="undefined"&&module.exports)module.exports=api;
 root.EasyHomeCore=api;
 })(typeof window!=="undefined"?window:globalThis);

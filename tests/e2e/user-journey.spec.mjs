@@ -29,7 +29,7 @@ async function drawRectangle(page){
 test('no blank-screen, no console exceptions and safe first-run empty plan',async({page})=>{
  const errors=[];page.on('pageerror',err=>errors.push(err.message));
  await page.goto('/');
- await expect(page.getByRole('heading',{name:/Easy\s*3D\s*Home/})).toBeVisible();
+ await expect(page.getByRole('heading',{name:/Easy Home/})).toBeVisible();
  await expect(page.locator('#startTip')).toBeVisible();
  const p=await saved(page);
  expect(p.model.walls).toHaveLength(0);
@@ -396,10 +396,10 @@ test('remaining controls: toggles, measure, rotate, nudge, rename and project de
  await page.locator('#projectsButton').click();
  await page.locator('#newBlank').click();
  await page.locator('#projectsButton').click();
- expect(await page.locator('.project-item').count()).toBe(2);
+ expect(await page.locator('#projectList .project-item').count()).toBe(2);
  page.once('dialog',d=>d.accept());
- await page.locator('.project-item').first().locator('button.danger').click();
- await expect(page.locator('.project-item')).toHaveCount(1);
+ await page.locator('#projectList .project-item').first().locator('button.danger').click();
+ await expect(page.locator('#projectList .project-item')).toHaveCount(1);
  expect(errors).toEqual([]);
 });
 

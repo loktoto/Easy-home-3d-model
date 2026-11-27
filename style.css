@@ -96,6 +96,43 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
 html[lang="en"] .tool-scroll .tool{max-width:none}html[lang="en"] .start-buttons .ghost{white-space:normal}html[lang="en"] .identity h1{white-space:nowrap}html[lang="en"] .save-status{max-width:150px;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:420px){html[lang="en"] #projectsButton::after{font-size:10px}html[lang="en"] .project-head{min-width:45px}}
 
+/* Accessible light palette, scoped to user preference. */
+:root[data-theme="light"]{color-scheme:light;--bg:#f7f7f2;--panel:#fff;--line:#c3d0ca;--ink:#172b2a;--sub:#435954;--blue:#11685a;--blue-dark:#11685a;--mint:#11685a;--danger:#a52131}
+[data-theme="light"] :is(.top,.toolbar,.footer,.dialog,.inspector,.dialog-actions){background:#fff;color:var(--ink);border-color:var(--line)}
+[data-theme="light"] :is(.tabs,.floor-bar,.project-head input,.field input,.field select,.tool,.subtle,.source-link,.ghost,.floor-tab,.floor-act,.close-dialog,.panel-close,.viewport-controls button,.project-item,.catalog button,.item-summary,.wizard-preview){background:#f1f5f2;color:var(--ink);border-color:#b7c8c0}
+[data-theme="light"] :is(.tab.active,.tool.active,.floor-tab.active,.primary){background:#11685a;color:white;border-color:#11685a}
+[data-theme="light"] :is(.tab,.muted,.field label,.mini-stat strong,.panel-footer,.panel-footer strong,.item-summary small,.catalog small,.project-item small,.help-list,.empty-inspector,.inspector .tip,.footer a,.start-tip p,.start-tip small){color:#39504a}
+[data-theme="light"] .start-tip{background:#fff;border-color:#b7c8c0;box-shadow:0 12px 36px #172b2a20}
+[data-theme="light"] :is(.stage-wrap,.viewport-info span,.view-corner span){background:#f7f7f2;color:#172b2a;border-color:#b7c8c0}
+[data-theme="light"] .mini-stat{border-color:#d2ded7}
+[data-theme="light"] .project-item.current{background:#e2f2e8;border-color:#11685a}
+[data-theme="light"] :is(.badge,.check-ok,.lock){background:#e1f2e9;color:#164b3b;border-color:#86b7a2}
+[data-theme="light"] :is(.check-ok strong,.check-ok p,.tip.good){color:#164b3b}
+[data-theme="light"] :is(.danger,.issue.error){background:#fce8e8;color:#8e1b2c;border-color:#b96b75}
+[data-theme="light"] :is(.issue,.tip.bad){background:#fff1d9;color:#754900;border-color:#caa46a}
+[data-theme="light"] .issue strong{color:#754900}
+[data-theme="light"] .issue.error strong{color:#8e1b2c}
+[data-theme="light"] :is(button,a,input,select):focus-visible{outline-color:#11685a}
+[data-theme="light"] .save-status.error{color:#a52131}
+
+.wide-dialog{max-width:min(760px,calc(100vw - 24px))}.report-rows{display:grid;gap:8px}.report-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(75px,110px) minmax(80px,130px);gap:8px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:9px}.report-row strong,.report-row small{display:block;overflow-wrap:anywhere}.report-row small{font-size:11px;color:var(--sub);margin-top:4px}.report-row input{width:100%;min-height:44px;padding:8px 6px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}.report-subtotal{text-align:right;font-size:12px;overflow-wrap:anywhere}#shoppingTotal{font-weight:750;color:var(--ink)}@media(max-width:420px){.report-row{grid-template-columns:minmax(0,1fr) 88px;gap:5px}.report-subtotal{grid-column:1/-1}}
+
+#pdfPreview{display:block;width:100%;height:auto;border:1px solid var(--line);background:white;border-radius:6px}#pdfStatus{font-size:12px;line-height:1.5}
+
+#tracePreview{display:block;width:100%;height:auto;background:white;border:1px solid var(--line);border-radius:6px;cursor:crosshair}#traceStatus{font-size:12px;color:var(--sub)}
+
+.brand-toggle{display:flex;align-items:center;gap:8px;min-height:44px;font-size:13px}.brand-toggle input{width:20px;height:20px;accent-color:var(--blue-dark)}#brandLogoPreview{max-width:160px;max-height:72px;object-fit:contain;background:white;padding:8px;border-radius:6px;margin:8px 0}#brandLogoPreview[hidden]{display:none}
+
+/* Imperial input needs room for feet and inches. */
+.field input[data-prop][type=text]{font-variant-numeric:tabular-nums;font-size:14px;min-width:0;padding-inline:7px}
+
+/* Accessible action grid: prevent narrow vertical labels on phones. */
+#projectsDialog .dialog-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));position:static;box-shadow:none}
+#projectsDialog .dialog-actions button{min-width:0;min-height:44px;white-space:normal;overflow-wrap:anywhere;line-height:1.35}
+.field textarea{display:block;width:100%;min-height:80px;resize:vertical;font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:10px}
+.project-item button{white-space:nowrap;min-height:36px}
+@media(max-width:480px){#projectsDialog .dialog-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.project-item{flex-wrap:wrap}.project-item .buttons{margin-left:auto}}
+
 /* Closed mobile inspector must not extend the document's scrollable viewport. */
 @media(max-width:780px){.workspace{overflow:hidden}.inspector:not(.open){visibility:hidden;pointer-events:none}.inspector.open{visibility:visible;pointer-events:auto}}
 
@@ -123,3 +160,5 @@ html[lang="en"] .tool-scroll .tool{max-width:none}html[lang="en"] .start-buttons
  .floor-tab,.floor-act{flex:none}
  .tool-top .floor-act{width:44px;min-width:44px}
 }
+
+[data-theme=light] :is(.tab.active,.tool.active,.floor-tab.active){background:#11685a!important;color:#fff!important}
