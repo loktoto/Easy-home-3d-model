@@ -98,8 +98,9 @@ function projectFactory(w,h,bounds,opts){
  const orbit=opts.orbit||{azimuth:-.65,elevation:.82,distance:1};
  const cx=bounds.cx,cy=bounds.cy,span=Math.max(bounds.width,bounds.height,4);
  const dist=span*1.85*orbit.distance+4,el=G.clamp(orbit.elevation,.15,1.48),az=orbit.azimuth;
- const camera=[cx+dist*Math.cos(el)*Math.sin(az),cy+dist*Math.cos(el)*Math.cos(az),dist*Math.sin(el)+2];
- const target=[cx,cy,1];
+ const targetZ=Number.isFinite(orbit.targetZ)?orbit.targetZ:1;
+ const camera=[cx+dist*Math.cos(el)*Math.sin(az),cy+dist*Math.cos(el)*Math.cos(az),dist*Math.sin(el)+targetZ+1];
+ const target=[cx,cy,targetZ];
  function normalize(a){const m=Math.hypot(...a)||1;return a.map(v=>v/m);}
  function cross(a,b){return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
  function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}

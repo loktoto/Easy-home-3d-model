@@ -545,7 +545,7 @@ function exportJSON(){
  setTimeout(()=>URL.revokeObjectURL(link.href),1200);toast("已下載 JSON 備份（包括傢俬及尺寸）");
 }
 function exportPNG(){
- const width=canvas.clientWidth,height=canvas.clientHeight,longest=Number($("pngSize").value),mode=ui.mode;
+ const fitted=$("pngFraming").value==="fit",width=fitted?1200:canvas.clientWidth,height=fitted?800:canvas.clientHeight,longest=Number($("pngSize").value),mode=ui.mode;
  if(!width||!height||![1600,2400,3200].includes(longest))return;
  const scale=longest/Math.max(width,height),out=document.createElement("canvas");
  out.width=Math.round(width*scale);out.height=Math.round(height*scale);
@@ -553,7 +553,21 @@ function exportPNG(){
  const button=$("downloadPng");button.disabled=true;$("pngStatus").textContent="產生圖片中…";
  try{
   c.setTransform(scale,0,0,scale,0,0);
-  R.draw({clientWidth:width,clientHeight:height},c,model(),{...ui,selected:null,pending:null,cursor:null,drag:null,floor:ui.floor});
+  const surface={clientWidth:width,clientHeight:height},opts={...ui,selected:null,pending:null,cursor:null,drag:null,floor:ui.floor};
+  if(fitted){
+   const b=G.getBounds(model(),mode==="2d"?ui.floor:undefined);
+   if(mode==="2d"){
+    const zoom=Math.min((width-160)/Math.max(1,b.width+.5),(height-160)/Math.max(1,b.height+.5));
+    opts.view={scale:zoom,panX:-b.cx*zoom,panY:-b.cy*zoom};
+   }else{
+    const m=model(),top=Math.max(1,...m.walls.map(w=>(w.floor||0)*m.floorHeight+w.height),...m.furniture.map(f=>(f.floor||0)*m.floorHeight+f.h),(m.floorCount-1)*m.floorHeight);
+    const orbit={...ui.orbit,distance:1,targetZ:top/2};
+    const corners=[];for(const x of [b.minX-1.5,b.maxX+1.5])for(const y of [b.minY-1.5,b.maxY+1.5])for(const z of [-.25,top])corners.push([x,y,z]);
+    for(let i=0;i<25;i++){const projected=corners.map(p=>R.projectPoint(surface,m,orbit,p));if(projected.every(p=>p.valid&&p.x>=55&&p.x<=width-55&&p.y>=55&&p.y<=height-55))break;orbit.distance*=1.15;}
+    opts.orbit=orbit;
+   }
+  }
+  R.draw(surface,c,model(),opts);
   out.toBlob(blob=>{
    button.disabled=false;if(!blob){$("pngStatus").textContent="匯出失敗";return;}
    const url=URL.createObjectURL(blob),link=document.createElement("a");

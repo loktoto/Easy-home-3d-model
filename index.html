@@ -123,7 +123,7 @@
   <div id="checkList" class="check-list"></div>
   <div class="dialog-actions"><button class="primary" data-close="checkDialog">知道了</button></div>
 </dialog>
-<dialog id="pngDialog" class="dialog"><div class="dialog-head"><h2>匯出高清 PNG</h2><button class="close-dialog" data-close="pngDialog" aria-label="關閉">✕</button></div><p class="muted">匯出目前 2D 或 3D 視角，保持比例。不包括工具列。此圖片不保證印刷比例。</p><div class="field"><label for="pngSize">最長邊像素</label><select id="pngSize"><option value="1600">1600 px</option><option value="2400" selected>2400 px</option><option value="3200">3200 px</option></select></div><div class="dialog-actions"><button class="primary" id="downloadPng">下載 PNG</button><button class="ghost" data-close="pngDialog">取消</button></div><p id="pngStatus" role="status"></p></dialog>
+<dialog id="pngDialog" class="dialog"><div class="dialog-head"><h2>匯出高清 PNG</h2><button class="close-dialog" data-close="pngDialog" aria-label="關閉">✕</button></div><p class="muted">預設將整個圖則置中並留白，適合分享；也可匯出目前視角。不包括工具列。此圖片不保證印刷比例。</p><div class="field"><label for="pngSize">最長邊像素</label><select id="pngSize"><option value="1600">1600 px</option><option value="2400" selected>2400 px</option><option value="3200">3200 px</option></select></div><div class="field"><label for="pngFraming">構圖</label><select id="pngFraming"><option value="fit" selected>完整圖則（橫向）</option><option value="current">目前視角</option></select></div><div class="dialog-actions"><button class="primary" id="downloadPng">下載 PNG</button><button class="ghost" data-close="pngDialog">取消</button></div><p id="pngStatus" role="status"></p></dialog>
 <input id="importFile" type="file" accept=".json,application/json" hidden>
 <script src="./core.js" defer></script>
 <script src="./renderer.js" defer></script>
