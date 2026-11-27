@@ -35,7 +35,7 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
  .project-head input{min-width:0;padding:8px 5px;letter-spacing:-.04em}
  .head-actions{gap:3px;flex:none}
  .head-actions .subtle{padding:8px 6px;font-size:0;min-height:36px}
- #projectsButton::after{content:"專案";font-size:11px}
+ #projectsButton::after{content:attr(data-short-label);font-size:11px}
  #exportButton::after{content:"⇩";font-size:18px}
 }
 
@@ -92,3 +92,6 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
 :root{--mint:#8CE0C1;--blue:#9BC5FF;--sub:#B0C3D8;--danger:#FFAAAA}
 .mark{background:#11685A;color:#fff}
 :where(button,a,input,select):focus-visible{outline:3px solid #9BC5FF;outline-offset:3px}
+
+html[lang="en"] .tool-scroll .tool{max-width:none}html[lang="en"] .start-buttons .ghost{white-space:normal}html[lang="en"] .identity h1{white-space:nowrap}html[lang="en"] .save-status{max-width:150px;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:420px){html[lang="en"] #projectsButton::after{font-size:10px}html[lang="en"] .project-head{min-width:45px}}
