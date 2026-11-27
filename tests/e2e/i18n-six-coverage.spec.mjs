@@ -1,0 +1,2 @@
+import {test,expect} from '@playwright/test';
+test('six additional locales cover every catalog entry',async({request})=>{const s=await (await request.get('/i18n.js')).text();const m=JSON.parse(s.split('const messages=')[1].split(';\nconst extra=')[0]);const x=JSON.parse(s.split('const extra=')[1].split(';\nconst allowed')[0]);for(const k of Object.keys(m))for(const l of ['es','ja','de','fr','ko','pt'])expect(x[k]?.[l],l+': '+k).toBeTruthy();});
