@@ -83,7 +83,7 @@
   <div class="dialog-head"><h2>我的專案</h2><button class="close-dialog" data-close="projectsDialog" aria-label="關閉">✕</button></div>
   <p class="muted">每個專案獨立保存在此瀏覽器。清除瀏覽資料可能導致資料消失，請定期匯出 JSON 備份。</p>
   <div id="projectList" class="project-list"></div>
-  <div class="dialog-actions"><button id="newBlank" class="primary">＋ 新建空白平面圖</button><button id="newDemo" class="ghost">新建示範圖</button><button id="importButton" class="ghost">匯入 JSON</button></div>
+  <div class="dialog-actions"><button id="newBlank" class="primary">＋ 新建空白平面圖</button><button id="newDemo" class="ghost">新建示範圖</button><button id="templatesButton" class="ghost">設計模板</button><button id="importButton" class="ghost">匯入 JSON</button></div>
 </dialog>
 <dialog id="furnitureDialog" class="dialog">
   <div class="dialog-head"><h2>選擇傢俬</h2><button class="close-dialog" data-close="furnitureDialog" aria-label="關閉">✕</button></div>
@@ -123,6 +123,7 @@
   <div id="checkList" class="check-list"></div>
   <div class="dialog-actions"><button class="primary" data-close="checkDialog">知道了</button></div>
 </dialog>
+<dialog id="templatesDialog" class="dialog"><div class="dialog-head"><h2>設計模板</h2><button class="close-dialog" data-close="templatesDialog" aria-label="關閉">✕</button></div><p class="muted">選擇後建立獨立新專案，不會覆蓋現有圖則。尺寸為示範值，施工前請覆尺。</p><div id="templateList" class="catalog"></div></dialog>
 <input id="importFile" type="file" accept=".json,application/json" hidden>
 <script src="./core.js" defer></script>
 <script src="./renderer.js" defer></script>

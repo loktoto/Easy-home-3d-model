@@ -536,6 +536,19 @@ function createProject(demoMode=false){
  state.projects.push(p);state.activeId=p.id;clearUndo();saveNow();$("projectsDialog").close();fit();refresh();
  toast(demoMode?"已新增示範圖則":"已新增空白平面圖");
 }
+const templates=[{name:"小型一房住宅",width:6,depth:5,bedrooms:1,floors:1},{name:"兩房公寓",width:8,depth:6,bedrooms:2,floors:1},{name:"三房家庭住宅",width:10,depth:7,bedrooms:3,floors:1},{name:"雙層住宅",width:10,depth:8,bedrooms:3,floors:2}];
+function showTemplates(){
+ const list=$("templateList");list.replaceChildren();
+ for(const t of templates){
+  const b=document.createElement("button"),name=document.createElement("strong"),details=document.createElement("small"),preview=document.createElement("canvas");
+  name.textContent=t.name;details.textContent=t.width+" × "+t.depth+" m · "+t.floors+" 層";
+  const m=generateHome(t),w=200,h=112,bounds=G.getBounds(m,0),scale=Math.min(w/(bounds.width+1),h/(bounds.height+1));
+  preview.width=w;preview.height=h;preview.style.width="100%";preview.style.borderRadius="8px";preview.setAttribute("aria-hidden","true");
+  const c=preview.getContext("2d");if(c)R.draw({clientWidth:w,clientHeight:h},c,m,{mode:"2d",floor:0,view:{scale,panX:-bounds.cx*scale,panY:-bounds.cy*scale},dimensions:false,selected:null,tool:"select",orbit:ui.orbit});
+  b.append(preview,name,details);b.onclick=()=>{const p=newProject(generateHome(t));state.projects.push(p);state.activeId=p.id;clearUndo();ui.mode="2d";ui.tool="select";saveNow();$("templatesDialog").close();fit();refresh();};list.append(b);
+ }
+ $("projectsDialog").close();showDialog("templatesDialog");
+}
 function exportJSON(){
  saveNow();
  const data=G.fileExport(model()),blob=new Blob([data],{type:"application/json;charset=utf-8"});
@@ -643,6 +656,7 @@ function bind(){
  };
  $("propertiesButton").onclick=()=>$("inspector").classList.toggle("open");
  $("closeInspector").onclick=()=>$("inspector").classList.remove("open");
+ $("templatesButton").onclick=showTemplates;
  $("newBlank").onclick=()=>createProject(false);$("newDemo").onclick=()=>createProject(true);
  $("importButton").onclick=()=>$("importFile").click();$("importFile").onchange=importJSON;
  document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>$((b.dataset.close)).close());
