@@ -104,3 +104,13 @@ button:focus-visible,.catalog button:focus-visible,.tool:focus-visible{outline:3
  .project-head{min-width:45px}
  .head-actions .subtle{min-width:44px}
 }
+
+/* Keep view tabs fixed while the independent floor rail can scroll. */
+@media(max-width:780px){
+ .tool-top{overflow:visible;min-width:0;align-items:center}
+ .tool-top .tabs{flex:0 0 auto}
+ .floor-bar{min-width:0;flex:1;overflow:hidden}
+ .floor-tabs{min-width:0;overflow-x:auto;scrollbar-width:thin;flex:1}
+ .floor-tab,.floor-act{flex:none}
+ .tool-top .floor-act{width:44px;min-width:44px}
+}
