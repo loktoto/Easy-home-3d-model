@@ -47,7 +47,7 @@ function paint2D(ctx,w,h,model,opts){
  const on=v=>G.clamp(Math.round(Number(v.floor)||0),0,4)===floor;
  const walls=model.walls.filter(on),openings=model.openings.filter(on),furniture=model.furniture.filter(on),measurements=model.measurements.filter(on);
  const S=p=>({x:w/2+view.panX+p.x*sc,y:h/2+view.panY+p.y*sc});
- grid(ctx,w,h,view,S);
+ const meta=G.cleanPlanMeta(model.planMeta);if(meta.grid)grid(ctx,w,h,view,S);
  if(opts.trace&&opts.traceImage&&opts.traceImage.complete){const q=opts.trace,p=S({x:q.x,y:q.y});ctx.save();ctx.globalAlpha=q.opacity;ctx.drawImage(opts.traceImage,p.x,p.y,q.w*sc,q.h*sc);ctx.restore();}
  const chosen=opts.selected||{}, dims=opts.dimensions!==false, bounds=G.getBounds(model,floor);
  const labels=[],reserved=[];
@@ -73,12 +73,10 @@ function paint2D(ctx,w,h,model,opts){
    line(ctx,a,b,c,6);line(ctx,a,b,C("#18314d","#e1f1e9"),2);
   }else{
    line(ctx,a,b,c,2,[4,4]);
-   const dx=b.x-a.x,dy=b.y-a.y,midWall=G.midpoint(wall.a,wall.b);
-   const nx=-(wall.b.y-wall.a.y),ny=wall.b.x-wall.a.x;
-   const sign=(bounds.cx-midWall.x)*nx+(bounds.cy-midWall.y)*ny>=0?1:-1;
-   const hinge=a,edge={x:a.x-dy*sign,y:a.y+dx*sign};
-   line(ctx,hinge,edge,c,1);
-   ctx.beginPath();ctx.arc(hinge.x,hinge.y,Math.hypot(dx,dy),Math.atan2(edge.y-hinge.y,edge.x-hinge.x),Math.atan2(b.y-hinge.y,b.x-hinge.x),true);ctx.strokeStyle=rgba(C("#ebad68","#986020"),.5);ctx.lineWidth=1;ctx.stroke();
+   const swing=G.doorSwingGeometry(model,o);if(meta.doorSwing&&swing){const p=swing.poly.map(S),edge=S(swing.edge);
+    ctx.beginPath();p.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));ctx.closePath();ctx.fillStyle=rgba(C("#ebad68","#986020"),.09);ctx.fill();
+    line(ctx,a,edge,c,1);ctx.beginPath();swing.arc.map(S).forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));ctx.strokeStyle=rgba(C("#ebad68","#986020"),.55);ctx.lineWidth=1;ctx.stroke();
+   }
   }
   if(dims&&sc>35)annotate(F(o.width),mid.x,mid.y-12,c);
  }
@@ -87,7 +85,7 @@ function paint2D(ctx,w,h,model,opts){
   ctx.beginPath();corners.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();
   ctx.fillStyle=rgba(f.color,.62);ctx.fill();ctx.strokeStyle=chosen.kind==="furniture"&&chosen.id===f.id?C("#ffdd89","#9a5600"):f.locked?C("#edca96","#745322"):C("#b9dbea","#355b52");ctx.lineWidth=chosen.id===f.id&&chosen.kind==="furniture"?3:1.5;ctx.stroke();
   const center=S(f);ctx.font="700 12px system-ui,sans-serif";ctx.textBaseline="middle";ctx.textAlign="center";ctx.fillStyle=C("#f5f9ff","#172b2a");
-  if(Math.min(f.w,f.d)*sc>39){const name=(f.locked?"🔒 ":"")+f.name.slice(0,10),size=G.round(f.w,2)+" × "+G.round(f.d,2)+" m";ctx.fillText(name,center.x,center.y-6);if(dims)ctx.fillText(size,center.x,center.y+11);if(opts.avoidLabelOverlap){const width=Math.max(ctx.measureText(name).width,dims?ctx.measureText(size).width:0)+8;reserved.push({x:center.x-width/2,y:center.y-16,w:width,h:36});}}
+  if(Math.min(f.w,f.d)*sc>39){const name=(f.locked?"🔒 ":"")+f.name.slice(0,10),size=F(f.w)+" × "+F(f.d);ctx.fillText(name,center.x,center.y-6);if(dims)ctx.fillText(size,center.x,center.y+11);if(opts.avoidLabelOverlap){const width=Math.max(ctx.measureText(name).width,dims?ctx.measureText(size).width:0)+8;reserved.push({x:center.x-width/2,y:center.y-16,w:width,h:36});}}
   else ctx.fillText(f.locked?"🔒":"▣",center.x,center.y);
  }
  for(const q of measurements){
@@ -106,7 +104,7 @@ function paint2D(ctx,w,h,model,opts){
    const width=G.round(Math.abs(opts.pending.x-opts.cursor.x),2).toFixed(2);
    const depth=G.round(Math.abs(opts.pending.y-opts.cursor.y),2).toFixed(2);
    pill(ctx,F(Number(width)),x+rw/2,y-13);pill(ctx,F(Number(depth)),x-28,y+rh/2);
-   pill(ctx,G.round(Math.abs(opts.pending.x-opts.cursor.x)*Math.abs(opts.pending.y-opts.cursor.y),2)+" m²",x+rw/2,y+rh/2,"#e0fff1","#215c50");
+   pill(ctx,G.formatArea(Math.abs(opts.pending.x-opts.cursor.x)*Math.abs(opts.pending.y-opts.cursor.y),opts.unit||"m"),x+rw/2,y+rh/2,"#e0fff1","#215c50");
   }else{
    line(ctx,a,b,C("#7dc3ff","#12684d"),2,[7,5]);
    pill(ctx,F(G.length(opts.pending,opts.cursor)),(a.x+b.x)/2,(a.y+b.y)/2-15);
@@ -116,6 +114,18 @@ function paint2D(ctx,w,h,model,opts){
  if(opts.cursor&&(opts.tool==="wall"||opts.tool==="room")&&!opts.pending){
   const p=S(opts.cursor);line(ctx,{x:p.x-7,y:p.y},{x:p.x+7,y:p.y},"#a6d9ff");line(ctx,{x:p.x,y:p.y-7},{x:p.x,y:p.y+7},"#a6d9ff");
  }
+}
+function drawPlanDecorations(ctx,w,h,model,opts){
+ const floor=opts.floor||0,meta=G.cleanPlanMeta(model.planMeta),s=G.niceScale(opts.view.scale,Math.min(w*.13,140)),font=Math.max(11,Math.min(20,Math.min(w,h)*.018)),fg=C("#dce9f1","#18382d"),bg=C("#15283a","#f5f8f3");
+ const t=window.EasyHomeI18n?.t||((x)=>x),names={wall:"牆身",door:"門",window:"窗",furniture:"傢俬",measurement:"量度線"};
+ const text=(v,x,y)=>{ctx.fillStyle=fg;ctx.fillText(v,x,y);};
+ ctx.save();ctx.font="600 "+font+"px system-ui,sans-serif";ctx.textBaseline="middle";ctx.textAlign="left";
+ const info=G.planAreas(model,floor);
+ if(info.available&&info.gross>0){const rows=[t("封閉面積（估算）")+" "+G.round(info.gross,2)+" m²",t("淨面積（估算）")+" "+G.round(info.net,2)+" m²"];const width=Math.max(...rows.map(x=>ctx.measureText(x).width))+20;ctx.fillStyle=bg;ctx.fillRect(8,8,width,font*2+18);rows.forEach((q,i)=>text(q,18,18+font*(i+.5)));}
+ const cx=w-38,cy=34;ctx.fillStyle=bg;ctx.fillRect(cx-26,cy-26,52,64);ctx.save();ctx.translate(cx,cy);ctx.rotate(meta.north*Math.PI/180);ctx.strokeStyle=fg;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,14);ctx.lineTo(0,-17);ctx.lineTo(-7,-7);ctx.moveTo(0,-17);ctx.lineTo(7,-7);ctx.stroke();ctx.restore();ctx.textAlign="center";text("N "+meta.north+"°",cx,cy+27);ctx.textAlign="left";
+ const y=h-22;ctx.fillStyle=bg;ctx.fillRect(w-s.pixels-30,y-16,s.pixels+24,34);ctx.strokeStyle=fg;ctx.lineWidth=2;const x=w-s.pixels-18;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+s.pixels,y);ctx.moveTo(x,y-4);ctx.lineTo(x,y+4);ctx.moveTo(x+s.pixels,y-4);ctx.lineTo(x+s.pixels,y+4);ctx.stroke();text(G.formatLength(s.meters,opts.unit||"m"),x,y-10);
+ if(meta.legend){const syms=G.planSymbols(model,floor).map(k=>t(names[k]));if(syms.length){const txt=syms.join(" · ");ctx.fillStyle=bg;ctx.fillRect(8,y-13,Math.min(ctx.measureText(txt).width+20,w-s.pixels-40),26);ctx.fillStyle=fg;ctx.fillText(txt,18,y,Math.max(1,w-s.pixels-70));}}
+ ctx.restore();
 }
 function projectFactory(w,h,bounds,opts){
  const orbit=opts.orbit||{azimuth:-.65,elevation:.82,distance:1};
@@ -226,7 +236,7 @@ function draw(canvas,ctx,model,opts){
  const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return [];
  ctx.clearRect(0,0,w,h);ctx.fillStyle=C("#0b1727","#f7f7f2");ctx.fillRect(0,0,w,h);
  if(opts.mode==="3d")return paint3D(ctx,w,h,model,opts);
- paint2D(ctx,w,h,model,opts);return [];
+ paint2D(ctx,w,h,model,opts);if(opts.planDecorations)drawPlanDecorations(ctx,w,h,model,opts);return [];
 }
 function projectPoint(canvas,model,orbit,xyz){
  return projectFactory(canvas.clientWidth,canvas.clientHeight,G.getBounds(model),{orbit})(xyz);

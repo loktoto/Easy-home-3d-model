@@ -1,13 +1,15 @@
 import { test, expect } from '@playwright/test';
-for (const [url,lang] of [['/welcome/','en'],['/welcome/zh-hant/','zh-Hant'],['/welcome/zh-hans/','zh-Hans']]) {
+for (const [url,lang] of [['/welcome/','en'],['/welcome/zh-hant/','zh-Hant'],['/welcome/zh-hans/','zh-Hans'],...['es','ja','de','fr','ko','pt'].map(l=>['/welcome/'+l+'/',l])]) {
  test('localized landing '+lang, async ({page},testInfo)=>{
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(url);await expect(page.locator('html')).toHaveAttribute('lang',lang);
-  await expect(page.locator('h1')).toBeVisible();await expect(page.locator('link[rel=alternate][hreflang]')).toHaveCount(4);
+  await expect(page.locator('h1')).toBeVisible();await expect(page.locator('link[rel=alternate][hreflang]')).toHaveCount(10);
   await expect(page.locator('.cta')).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2)).toBe(true);
   await page.screenshot({path:testInfo.outputPath('landing-'+lang+'.png'),fullPage:true,animations:'disabled'});
-  await page.locator('.cta').click();await expect(page.locator('#stage')).toBeVisible();await expect(page.locator('#startTip')).toBeVisible();expect(errors).toEqual([]);
+  await page.locator('.cta').click();await expect(page.locator('#stage')).toBeVisible();await expect(page.locator('html')).toHaveAttribute('lang',lang);await expect(page.locator('#startTip')).toBeVisible();expect(errors).toEqual([]);
  });
 }
  test('language navigation preserves direct editor entry',async({page})=>{await page.goto('/welcome/');await page.locator('nav a[lang="zh-Hant"]').click();await expect(page.locator('html')).toHaveAttribute('lang','zh-Hant');await page.locator('nav a[lang="zh-Hans"]').click();await expect(page.locator('html')).toHaveAttribute('lang','zh-Hans');await page.locator('nav a[lang="en"]').click();await expect(page.locator('html')).toHaveAttribute('lang','en');});
+
+ test('nine-language navigation routes and editor links',async({page})=>{await page.goto('/welcome/');for(const l of ['es','ja','de','fr','ko','pt','zh-Hant','zh-Hans','en']){await page.locator('nav a[lang="'+l+'"]').click();await expect(page.locator('html')).toHaveAttribute('lang',l);await expect(page.locator('nav a[aria-current=page]')).toHaveAttribute('lang',l);await expect(page.locator('.cta')).toHaveAttribute('href',new RegExp('lang='+l+'$'));}});
