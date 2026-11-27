@@ -8,8 +8,13 @@ permissions:
   contents: read
 jobs:
   browser-e2e:
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [desktop-chromium, mobile-webkit]
+        shard: [1, 2]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,28 +27,20 @@ jobs:
       - name: Install Chromium and WebKit
         run: npx playwright install --with-deps chromium webkit
       - name: Run browser E2E tests
-        run: npx playwright test --shard=${{ matrix.shard }}/4
-      - name: Upload Chromium screenshots and traces
+        run: npx playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/2
+      - name: Upload screenshots and traces
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: easy-home-3d-e2e-chromium
-          path: test-results/*-desktop-chromium*/**
-          if-no-files-found: error
-          retention-days: 14
-      - name: Upload WebKit screenshots and traces
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: easy-home-3d-e2e-webkit
-          path: test-results/*-mobile-webkit*/**
+          name: easy-home-3d-e2e-${{ matrix.browser }}-${{ matrix.shard }}-results
+          path: test-results/
           if-no-files-found: error
           retention-days: 14
       - name: Upload HTML report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: easy-home-3d-e2e-report
+          name: easy-home-3d-e2e-${{ matrix.browser }}-${{ matrix.shard }}-report
           path: playwright-report/
           if-no-files-found: error
           retention-days: 14

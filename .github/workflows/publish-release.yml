@@ -77,30 +77,6 @@ jobs:
       # The dedicated sharded E2E workflow runs on every PR. Manual publication
       # also requires its successful exact-main result above. Do not duplicate
       # the full suite here or overwrite its screenshot evidence.
-      - name: Preserve Chromium source regression evidence
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: easy3dhome-release-source-chromium
-          path: test-results/*-desktop-chromium*/**
-          if-no-files-found: error
-          retention-days: 14
-      - name: Preserve WebKit source regression evidence
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: easy3dhome-release-source-webkit
-          path: test-results/*-mobile-webkit*/**
-          if-no-files-found: error
-          retention-days: 14
-      - name: Preserve source regression HTML report
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: easy3dhome-release-source-report
-          path: playwright-report/
-          if-no-files-found: error
-          retention-days: 14
       - name: Package release assets
         run: |
           python3 scripts/package-release.py
