@@ -40,5 +40,7 @@ async function revokeInvite(hash){return call("/rest/v1/easy3d_invites?token_has
 async function revokeMember(owner,id,member){return call("/rest/v1/easy3d_members?owner="+eq(owner)+"&project_id="+eq(id)+"&member="+eq(member),{method:"DELETE"},true);}
 async function versions(owner,id){return call("/rest/v1/easy3d_versions?owner="+eq(owner)+"&project_id="+eq(id)+"&select=revision,name,created_at&order=revision.desc&limit=50",{},true);}
 async function version(owner,id,rev){const r=await call("/rest/v1/easy3d_versions?owner="+eq(owner)+"&project_id="+eq(id)+"&revision="+eq(rev)+"&select=*",{},true);return r[0]||null;}
-root.Easy3DHomeCloud={versions,version,memberships,createInvite,claimInvite,invites,revokeInvite,revokeMember,configured,user,login,signup,logout,list,get,put,remove,call};
+async function entitlements(){return call("/rest/v1/easy3d_entitlements?select=plan,active,expires_at",{},true);}
+async function checkout(plan){return call("/functions/v1/easy3d-billing",{method:"POST",body:JSON.stringify({plan})},true);}
+root.Easy3DHomeCloud={entitlements,checkout,versions,version,memberships,createInvite,claimInvite,invites,revokeInvite,revokeMember,configured,user,login,signup,logout,list,get,put,remove,call};
 })(window);
