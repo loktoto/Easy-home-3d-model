@@ -6,25 +6,28 @@
 
 Free, open-source home and furniture planner · No account required
 
-[**Get started**](#get-started) · [User guide](docs/USER_GUIDE.md) · [繁體中文](docs/USER_GUIDE.zh-Hant.md) · [Help & feedback](#help--feedback)
+免費開源 2D／3D 家居設計工具，毋須註冊。
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+### [Open web demo](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/) · [Download for offline use](https://github.com/loktoto/Easy3DHomeModel/archive/refs/heads/main.zip)
+
+[User guide](docs/USER_GUIDE.md) · [繁體中文教學](docs/USER_GUIDE.zh-Hant.md) · [Help & feedback](#help--feedback) · [MIT License](LICENSE)
 
 </div>
 
-![Example of a two-floor home in the Easy3DHome 3D editor](evidence/07-two-floor-3d.png)
-
-*Example from earlier browser testing, not a screenshot of the latest release.*
+> The existing online demo has not yet been verified against the current source. For a local copy, download the ZIP below. [Deployment status](https://github.com/loktoto/Easy3DHomeModel/issues/30).
 
 ## Get started
 
 **No GitHub account, coding or installation is needed to use the editor.**
 
-- **Online:** [Open the existing web demo](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/). The deployment has not yet been verified against this repository's current code. If it is unavailable, use the download below.
-- **On your computer:** [Download ZIP](https://github.com/loktoto/Easy3DHomeModel/archive/refs/heads/main.zip), extract the whole folder, then double-click `index.html` to open it in a browser. Keep all extracted files together.
-- **On your phone or tablet:** use the online editor when available. See the [user guide](docs/USER_GUIDE.md) for browser and backup tips.
+1. [Open the web demo](https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/) if available (phone, tablet or computer).
+2. Or [download the ZIP](https://github.com/loktoto/Easy3DHomeModel/archive/refs/heads/main.zip) on your computer, extract the entire folder, then double-click `index.html`. Keep all extracted files together.
 
-GitHub Pages is not enabled as of 27 November 2026. Online release verification is tracked in [#30](https://github.com/loktoto/Easy3DHomeModel/issues/30).
+If you need help, see the [user guide](docs/USER_GUIDE.md). GitHub Pages is not enabled as of 27 November 2026.
+
+![Example of a two-floor home in the Easy3DHome 3D editor](evidence/07-two-floor-3d.png)
+
+*Example from earlier browser testing, not a screenshot of the latest release.*
 
 ## Design a room in three steps
 
