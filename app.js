@@ -559,6 +559,34 @@ function exportJSON(){
  link.download="easy-home-3d-"+safe+".json";document.body.append(link);link.click();link.remove();
  setTimeout(()=>URL.revokeObjectURL(link.href),1200);toast(t("已下載 JSON 備份（包括傢俬及尺寸）"));
 }
+function exportPNG(){
+ const fitted=$("pngFraming").value==="fit",width=fitted?1200:canvas.clientWidth,height=fitted?800:canvas.clientHeight,longest=Number($("pngSize").value),mode=ui.mode;
+ if(!width||!height||![1600,2400,3200].includes(longest))return;
+ const scale=longest/Math.max(width,height),out=document.createElement("canvas");
+ out.width=Math.round(width*scale);out.height=Math.round(height*scale);
+ const c=out.getContext("2d");if(!c){$("pngStatus").textContent=t("無法建立圖片");return;}
+ const button=$("downloadPng");button.disabled=true;$("pngStatus").textContent=t("產生圖片中…");
+ try{
+  c.setTransform(scale,0,0,scale,0,0);
+  const surface={clientWidth:width,clientHeight:height},opts={...ui,selected:null,pending:null,cursor:null,drag:null,floor:ui.floor,avoidLabelOverlap:true};
+  if(fitted){
+   const b=G.getBounds(model(),mode==="2d"?ui.floor:undefined);
+   if(mode==="2d"){
+    const zoom=Math.min((width-160)/Math.max(1,b.width+.5),(height-160)/Math.max(1,b.height+.5));
+    opts.view={scale:zoom,panX:-b.cx*zoom,panY:-b.cy*zoom};
+   }else{
+    opts.orbit=R.fitOrbit(surface,model(),ui.orbit);
+   }
+  }
+  R.draw(surface,c,model(),opts);
+  out.toBlob(blob=>{
+   button.disabled=false;if(!blob){$("pngStatus").textContent=t("匯出失敗");return;}
+   const url=URL.createObjectURL(blob),link=document.createElement("a");
+   link.href=url;link.download="easy-home-3d-"+mode+"-"+longest+".png";document.body.append(link);link.click();link.remove();
+   setTimeout(()=>URL.revokeObjectURL(url),30000);$("pngStatus").textContent=t("圖片已產生");
+  },"image/png");
+ }catch(err){button.disabled=false;$("pngStatus").textContent=t("匯出失敗：")+err.message;}
+}
 async function importJSON(e){
  const file=e.target.files&&e.target.files[0];e.target.value="";if(!file)return;
  try{
@@ -650,6 +678,8 @@ function bind(){
  $("homeBedrooms").addEventListener("change",previewHome);$("homeFloors").addEventListener("change",previewHome);
  $("buildHome").onclick=buildHome;
  $("exportButton").onclick=exportJSON;
+ $("exportPngButton").onclick=()=>{$("projectsDialog").close();$("pngStatus").textContent="";showDialog("pngDialog");};
+ $("downloadPng").onclick=exportPNG;
  $("helpButton").onclick=()=>showDialog("helpDialog");
  $("addFurnitureButton").onclick=()=>showDialog("furnitureDialog");
  $("startWall").onclick=()=>tool("wall");

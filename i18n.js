@@ -2,6 +2,18 @@
 (function(){
 "use strict";
 const messages={
+"匯出高清 PNG":["Export high-resolution PNG","导出高清 PNG"],
+"預設將整個圖則置中並留白，適合分享；也可匯出目前視角。不包括工具列。此圖片不保證印刷比例。":["Center the complete plan with margins, or export the current view. Toolbars are excluded. Print scale is not guaranteed.","默认将整张图纸居中并留白，适合分享；也可导出当前视角。不包括工具栏。此图片不保证印刷比例。"],
+"最長邊像素":["Longest side in pixels","最长边像素"],
+"構圖":["Framing","构图"],
+"完整圖則（橫向）":["Full plan (landscape)","完整图纸（横向）"],
+"目前視角":["Current view","当前视角"],
+"下載 PNG":["Download PNG","下载 PNG"],
+"無法建立圖片":["Unable to create image","无法创建图片"],
+"產生圖片中…":["Generating image…","正在生成图片…"],
+"匯出失敗":["Export failed","导出失败"],
+"圖片已產生":["Image generated","图片已生成"],
+"匯出失敗：":["Export failed: ","导出失败："],
 "設計模板":["Design templates","设计模板"],
 "選擇後建立獨立新專案，不會覆蓋現有圖則。尺寸為示範值，施工前請覆尺。":["Choose a template to create an independent project. Dimensions are examples; verify site measurements.","选择后创建独立新项目，不会覆盖现有图纸。尺寸为示例值，施工前请复尺。"],
 "小型一房住宅":["Compact one-bedroom home","小型一居室住宅"],

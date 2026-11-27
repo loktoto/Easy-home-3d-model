@@ -11,6 +11,23 @@ function pill(ctx,text,x,y,fg="#e9f2ff",bg="#173049"){
  ctx.fillStyle=bg;ctx.beginPath();ctx.roundRect(x-w/2,y-10,w,19,5);ctx.fill();
  ctx.fillStyle=fg;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(text,x,y);
 }
+function planLabelLayout(ctx,w,h,labels,reserved){
+ const placed=[],occupied=reserved.slice();
+ const overlap=(a,b)=>a.x<b.x+b.w+3&&a.x+a.w+3>b.x&&a.y<b.y+b.h+3&&a.y+a.h+3>b.y;
+ ctx.font="700 11px system-ui,sans-serif";
+ for(const q of labels){
+  const width=ctx.measureText(q.text).width+13,height=19;
+  let chosen=null;
+  for(let radius=0;radius<=240&&!chosen;radius+=22){
+   const angles=radius===0?[0]:[0,Math.PI,Math.PI/2,-Math.PI/2,Math.PI/4,-Math.PI/4,3*Math.PI/4,-3*Math.PI/4];
+   for(const angle of angles){const x=q.x+Math.cos(angle)*radius,y=q.y+Math.sin(angle)*radius;const b={x:x-width/2,y:y-10,w:width,h:height};
+    if(b.x>=4&&b.y>=4&&b.x+b.w<=w-4&&b.y+b.h<=h-4&&!occupied.some(o=>overlap(b,o))){chosen={...q,x,y,rect:b,anchorX:q.x,anchorY:q.y};break;}}
+  }
+  if(!chosen){for(let y=12;y<h-12&&!chosen;y+=23)for(let x=width/2+5;x<w-width/2-4;x+=width+5){const b={x:x-width/2,y:y-10,w:width,h:height};if(!occupied.some(o=>overlap(b,o))){chosen={...q,x,y,rect:b,anchorX:q.x,anchorY:q.y};break;}}}
+  if(chosen){occupied.push(chosen.rect);placed.push(chosen);}
+ }
+ return placed;
+}
 function grid(ctx,w,h,view,toScreen){
  const s=view.scale;let step=s>105?.25:s>48?.5:s>24?1:2;
  const min=toWorld({x:0,y:0},view,w,h),max=toWorld({x:w,y:h},view,w,h);
@@ -30,6 +47,8 @@ function paint2D(ctx,w,h,model,opts){
  const S=p=>({x:w/2+view.panX+p.x*sc,y:h/2+view.panY+p.y*sc});
  grid(ctx,w,h,view,S);
  const chosen=opts.selected||{}, dims=opts.dimensions!==false, bounds=G.getBounds(model,floor);
+ const labels=[],reserved=[];
+ const annotate=(text,x,y,fg)=>opts.avoidLabelOverlap?labels.push({text,x,y,fg}):pill(ctx,text,x,y,fg);
  const wallOpening=new Map();
  for(const o of openings){const list=wallOpening.get(o.wallId)||[];list.push(o);wallOpening.set(o.wallId,list);}
  for(const wall of walls){
@@ -40,7 +59,7 @@ function paint2D(ctx,w,h,model,opts){
   for(const interval of intervals){if(interval.start>cursor){line(ctx,S(G.lerp(wall.a,wall.b,cursor)),S(G.lerp(wall.a,wall.b,interval.start)),col,Math.max(4,wall.thickness*sc));}cursor=Math.max(cursor,interval.end);}
   if(cursor<1)line(ctx,S(G.lerp(wall.a,wall.b,cursor)),b,col,Math.max(4,wall.thickness*sc));
   if(chosen.kind==="wall"&&chosen.id===wall.id){for(const p of [a,b]){ctx.fillStyle="#ffcb7f";ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fill();}}
-  if(dims){const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2,nx=-(b.y-a.y)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y)),ny=(b.x-a.x)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y));pill(ctx,G.round(len,2).toFixed(2)+" m",cx+nx*18,cy+ny*18);}
+  if(dims){const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2,nx=-(b.y-a.y)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y)),ny=(b.x-a.x)/Math.max(1,Math.hypot(b.x-a.x,b.y-a.y));annotate(G.round(len,2).toFixed(2)+" m",cx+nx*18,cy+ny*18);}
  }
  for(const o of openings){
   const wall=walls.find(v=>v.id===o.wallId);if(!wall)continue;
@@ -58,22 +77,23 @@ function paint2D(ctx,w,h,model,opts){
    line(ctx,hinge,edge,c,1);
    ctx.beginPath();ctx.arc(hinge.x,hinge.y,Math.hypot(dx,dy),Math.atan2(edge.y-hinge.y,edge.x-hinge.x),Math.atan2(b.y-hinge.y,b.x-hinge.x),true);ctx.strokeStyle=rgba("#ebad68",.5);ctx.lineWidth=1;ctx.stroke();
   }
-  if(dims&&sc>35)pill(ctx,G.round(o.width,2).toFixed(2)+" m",mid.x,mid.y-12,c);
+  if(dims&&sc>35)annotate(G.round(o.width,2).toFixed(2)+" m",mid.x,mid.y-12,c);
  }
  for(const f of furniture){
   const corners=G.furnitureCorners(f).map(S);
   ctx.beginPath();corners.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();
   ctx.fillStyle=rgba(f.color,.62);ctx.fill();ctx.strokeStyle=chosen.kind==="furniture"&&chosen.id===f.id?"#ffdd89":f.locked?"#edca96":"#b9dbea";ctx.lineWidth=chosen.id===f.id&&chosen.kind==="furniture"?3:1.5;ctx.stroke();
   const center=S(f);ctx.font="700 12px system-ui,sans-serif";ctx.textBaseline="middle";ctx.textAlign="center";ctx.fillStyle="#f5f9ff";
-  if(Math.min(f.w,f.d)*sc>39){ctx.fillText((f.locked?"🔒 ":"")+f.name.slice(0,10),center.x,center.y-6);if(dims)ctx.fillText(G.round(f.w,2)+" × "+G.round(f.d,2)+" m",center.x,center.y+11);}
+  if(Math.min(f.w,f.d)*sc>39){const name=(f.locked?"🔒 ":"")+f.name.slice(0,10),size=G.round(f.w,2)+" × "+G.round(f.d,2)+" m";ctx.fillText(name,center.x,center.y-6);if(dims)ctx.fillText(size,center.x,center.y+11);if(opts.avoidLabelOverlap){const width=Math.max(ctx.measureText(name).width,dims?ctx.measureText(size).width:0)+8;reserved.push({x:center.x-width/2,y:center.y-16,w:width,h:36});}}
   else ctx.fillText(f.locked?"🔒":"▣",center.x,center.y);
  }
  for(const q of measurements){
   const a=S(q.a),b=S(q.b),active=chosen.kind==="measurement"&&chosen.id===q.id;
   line(ctx,a,b,active?"#ffd17e":"#7ee5bb",1.6,[4,4]);
   for(const p of [a,b]){ctx.fillStyle=active?"#ffd17e":"#8fe7c8";ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();}
-  pill(ctx,G.round(G.length(q.a,q.b),2).toFixed(2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-12,"#92e4ca");
+  annotate(G.round(G.length(q.a,q.b),2).toFixed(2)+" m",(a.x+b.x)/2,(a.y+b.y)/2-12,"#92e4ca");
  }
+ if(opts.avoidLabelOverlap){for(const q of planLabelLayout(ctx,w,h,labels,reserved)){if(Math.hypot(q.x-q.anchorX,q.y-q.anchorY)>24)line(ctx,{x:q.anchorX,y:q.anchorY},{x:q.x,y:q.y},"#7896ac",.8);pill(ctx,q.text,q.x,q.y,q.fg);}}
  if(opts.pending&&opts.cursor){
   const a=S(opts.pending),b=S(opts.cursor);
   if(opts.tool==="room"){
@@ -218,5 +238,5 @@ function fitOrbit(canvas,model,orbit){
  for(let i=0;i<70;i++){const project=projectFactory(w,h,b,{orbit:fitted});if(points.map(project).every(p=>p.valid&&p.x>=margin&&p.x<=w-margin&&p.y>=margin&&p.y<=h-margin))break;fitted.distance*=1.12;}
  return fitted;
 }
-root.EasyHomeRenderer={draw,toWorld,screenToFloor,projectPoint,fitOrbit};
+root.EasyHomeRenderer={draw,toWorld,screenToFloor,projectPoint,fitOrbit,planLabelLayout};
 })(window);
