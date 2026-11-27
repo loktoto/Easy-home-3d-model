@@ -19,5 +19,5 @@ shutil.copyfile(root/'dist/easy-home-3d.html',out/'easy-home-3d-standalone.html'
 shutil.copyfile(root/'dist/easy-home-3d-convika.zip',out/'easy-home-3d-convika.zip')
 # Public build ships with cloud intentionally disabled until a hosted project is configured.
 (out/'cloud-config.js').write_text('window.Easy3DHomeCloudConfig = null;\n',encoding='utf-8')
-(out/'version.json').write_text(json.dumps({'commit':os.environ.get('GITHUB_SHA') or subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),'cloud':'disabled','billing':'disabled'},indent=2)+'\n',encoding='utf-8')
+(out/'version.json').write_text(json.dumps({'commit':os.environ.get('GITHUB_SHA') or subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),'cloud':'disabled'},indent=2)+'\n',encoding='utf-8')
 print('Public site:',out, len(list(out.rglob('*'))),'entries')
