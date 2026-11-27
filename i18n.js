@@ -2,6 +2,7 @@
 (function(){
 "use strict";
 const messages={
+ "總長及總闊必須在 4 至 24 米之間":["Width and depth must be between 4 and 24 m","总长及总宽必须在 4 至 24 米之间"],
  "尺寸必須在 0.1 至 6 米之間":["Dimension must be between 0.1 and 6 m","尺寸必须在 0.1 至 6 米之间"],
  "尺寸必須在 0.1 至 15 米之間":["Dimension must be between 0.1 and 15 m","尺寸必须在 0.1 至 15 米之间"],
  "Easy3DHome · 免費開源裝修圖": [

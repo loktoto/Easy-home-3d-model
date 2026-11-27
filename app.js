@@ -562,7 +562,8 @@ function wizardOptions(){
 function generateHome(o){return Number(o.floors)>1?G.house(o):G.home(o);}
 function previewHome(){
  const o=wizardOptions();
- if(!Number.isFinite(o.width)||!Number.isFinite(o.depth))return;
+ if(!Number.isFinite(o.width)||!Number.isFinite(o.depth)||o.width<4||o.width>24||o.depth<4||o.depth>24){$("homePreview").textContent=t("總長及總闊必須在 4 至 24 米之間");$("buildHome").disabled=true;return;}
+ $("buildHome").disabled=false;
  const m=generateHome(o),issues=G.validate(m),errors=issues.filter(v=>v.severity==="error").length;
  $("homePreview").innerHTML='<div class="wizard-preview-grid">'+
   row(t("建築面積"),G.round(o.width*o.depth,2)+" m² × "+m.floorCount+t(" 層"))+row(t("睡房"),o.bedrooms+t(" 間"))+
@@ -571,7 +572,7 @@ function previewHome(){
 }
 function buildHome(){
  const o=wizardOptions();
- if(!Number.isFinite(o.width)||!Number.isFinite(o.depth))return toast(t("請輸入有效長度及闊度"));
+ if(!Number.isFinite(o.width)||!Number.isFinite(o.depth)||o.width<4||o.width>24||o.depth<4||o.depth>24)return toast(t("總長及總闊必須在 4 至 24 米之間"));
  const p=newProject(generateHome(o));
  state.projects.push(p);state.activeId=p.id;clearUndo();saveNow();$("homeDialog").close();fit();refresh();
  toast(t("已建立")+model().floorCount+t(" 層家居：")+model().walls.length+t(" 幅牆 · ")+model().openings.length+t(" 個門窗 · ")+model().furniture.length+t(" 件傢俬"));
