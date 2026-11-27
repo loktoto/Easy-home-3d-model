@@ -114,3 +114,7 @@ html[lang="en"] .tool-scroll .tool{max-width:none}html[lang="en"] .start-buttons
 [data-theme="light"] .issue.error strong{color:#8e1b2c}
 [data-theme="light"] :is(button,a,input,select):focus-visible{outline-color:#11685a}
 [data-theme="light"] .save-status.error{color:#a52131}
+
+/* Active tabs must retain high contrast after the generic light text rules. */
+[data-theme="light"] :is(.tab.active,.tool.active,.floor-tab.active,.primary){color:#fff;background:#11685a;border-color:#11685a}
+[data-theme="light"] :is(.tab.active,.tool.active,.floor-tab.active,.primary) :is(span,b,small){color:inherit}
