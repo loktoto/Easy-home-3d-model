@@ -1,15 +1,15 @@
-# Easy Home 3D 🏠
+# Easy3DHome 🏠
 
 **免費、開源、免登入的 2D 平面圖 + 3D 裝修規劃工具。**  
 A free, open-source, privacy-first 2D/3D floor-plan and furniture editor that runs entirely in your browser.
 
 [繁體中文](#繁體中文) · [English](#english) · [MIT License](LICENSE)
 
-**Live public demo (Cloudflare Workers):** https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/
+**Existing demo address (Cloudflare Workers; redeployment verification pending):** https://easy-home-3d-open-source.bballinbrowser-loktoto.workers.dev/
 
-**E2E QA：** [15 個 browser tests 通過（Chromium + mobile WebKit）+ 18 個 unit tests](https://github.com/loktoto/Easy-home-3d-model/actions) · [兩層屋端到端實測及截圖](evidence/two-floor-home-report.html) · [完整 UI／UX 審核與修正紀錄](docs/UX_E2E_AUDIT.md)
+**歷史 E2E QA（非本次遷移驗收）：** [15 個 browser tests 通過（Chromium + mobile WebKit）+ 18 個 unit tests](https://github.com/loktoto/Easy3DHomeModel/actions) · [兩層屋端到端實測及截圖](evidence/two-floor-home-report.html) · [完整 UI／UX 審核與修正紀錄](docs/UX_E2E_AUDIT.md)
 
-**Download standalone HTML for Convika (no build needed):** [easy-home-3d-standalone.html](easy-home-3d-standalone.html) · [Raw file](https://raw.githubusercontent.com/loktoto/Easy-home-3d-model/main/easy-home-3d-standalone.html)
+**Download standalone HTML (no build needed):** [easy-home-3d-standalone.html](easy-home-3d-standalone.html) · [Raw file](https://raw.githubusercontent.com/loktoto/Easy3DHomeModel/main/easy-home-3d-standalone.html)
 
 > 已透過 Cloudflare Browser Rendering 實際開啟公開網址，確認頁面標題、空白圖則和編輯屬性介面成功渲染。GitHub Pages 目前仍須在倉庫 Settings → Pages 啟用。
 
@@ -42,11 +42,11 @@ A free, open-source, privacy-first 2D/3D floor-plan and furniture editor that ru
 
 **GitHub Pages：** 專案設有自動部署工作流程。第一次使用時進入倉庫 **Settings → Pages → Build and deployment → Source: GitHub Actions** 啟用 Pages。正式部署成功後，預設網址是：
 
-https://loktoto.github.io/Easy-home-3d-model/
+https://loktoto.github.io/Easy3DHomeModel/
 
 > 未核實已啟用、部署成功及網址回應之前，不要把上面當作已上線網址。
 
-### 在 Convika 發佈免費公開連結
+### 可選：使用第三方 HTML 託管平台（例如 Convika）
 
 1. 在 GitHub Actions 下載 `easy-home-3d-convika` 建置成果，或在本機執行 `python3 scripts/build-single.py`。
 2. `dist/easy-home-3d.html` 是**自足單一 HTML**，`dist/easy-home-3d-convika.zip` 是同一 HTML 的 ZIP。無外部 JS 依賴，檔案低於 2 MB。
@@ -98,7 +98,7 @@ npm run test:e2e
 
 ## English
 
-**Easy Home 3D** is a zero-login, dependency-free 2D/3D home-planning tool. Start from a blank canvas or generate a complete multi-room home from width, depth and bedroom count, then run the built-in plan check. Draw dimensioned walls, add doors and windows, place and lock customizable furniture, measure distances, orbit in 3D, manage locally saved projects, and export/import JSON backups. Reimagined from the owner's private prototype without publishing private plans or data.
+**Easy3DHome** is a zero-login, dependency-free 2D/3D home-planning tool. Start from a blank canvas or generate a complete multi-room home from width, depth and bedroom count, then run the built-in plan check. Draw dimensioned walls, add doors and windows, place and lock customizable furniture, measure distances, orbit in 3D, manage locally saved projects, and export/import JSON backups. Reimagined from the owner's private prototype without publishing private plans or data.
 
 **Run:** Open `index.html` in a modern browser or use the CI-generated standalone HTML. **Publish:** Enable GitHub Pages (Settings → Pages → GitHub Actions), or upload the standalone HTML to [Convika](https://convika.com/zh-hant/). **Test:** `node --test tests/*.test.cjs` and `python3 scripts/build-single.py`.
 

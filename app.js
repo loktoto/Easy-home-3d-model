@@ -1,4 +1,4 @@
-/* Easy Home 3D — browser editor. No tracking, account or server required. MIT © 2026 loktoto */
+/* Easy3DHome — browser editor. No tracking, account or server required. MIT © 2026 loktoto */
 (function(){
 "use strict";
 const G=window.EasyHomeCore,R=window.EasyHomeRenderer;
@@ -551,7 +551,7 @@ async function importJSON(e){
   const data=G.fileImport(await file.text());
   const p=newProject(data);state.projects.push(p);state.activeId=p.id;clearUndo();
   saveNow();$("projectsDialog").close();fit();refresh();toast("成功匯入："+p.name);
- }catch(err){alert("匯入失敗："+err.message+"\n\n只接受 Easy Home 3D 匯出的 JSON。");}
+ }catch(err){alert("匯入失敗："+err.message+"\n\n只接受 Easy3DHome 匯出的 JSON。");}
 }
 function wizardOptions(){
  return {width:Number($("homeWidth").value),depth:Number($("homeDepth").value),
