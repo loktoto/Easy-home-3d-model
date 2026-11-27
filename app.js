@@ -21,18 +21,26 @@ function visibleModel(){
 function newProject(data){return {id:G.uid(),name:data.name,data,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};}
 function cleanCloudRef(ref){return ref&&typeof ref.owner==="string"&&typeof ref.id==="string"&&Number.isInteger(ref.revision)&&ref.revision>0?{owner:ref.owner.slice(0,80),id:ref.id.slice(0,100),revision:ref.revision}:null;}
 function cleanVersions(raw){const rows=[];let size=0;for(const v of Array.isArray(raw)?raw.slice(0,12):[]){try{const data=G.sanitize(v.data),len=JSON.stringify(data).length;if(size+len>1000000)continue;size+=len;rows.push({id:String(v.id||G.uid()).slice(0,100),label:String(v.label||"").slice(0,80),at:String(v.at||"").slice(0,40),data});}catch(e){}}return rows;}
+const MAX_LOCAL_PROJECTS=100;
+let storageReadOnly=false,recoveryRaw=null;
 function readStore(){
+ let saved=null;
  try{
-  const raw=JSON.parse(localStorage.getItem(STORAGE)||"null");
-  if(raw&&Array.isArray(raw.projects)&&raw.projects.length<=100){
+  saved=localStorage.getItem(STORAGE);
+  const raw=saved===null?null:JSON.parse(saved);
+  if(raw&&Array.isArray(raw.projects)&&raw.projects.length){
    const projects=[];
    for(const p of raw.projects){try{
     const m=G.sanitize(p.data);
     projects.push({id:String(p.id||G.uid()),name:String(p.name||m.name).slice(0,80),data:m,createdAt:p.createdAt||"",updatedAt:p.updatedAt||"",versions:cleanVersions(p.versions),cloudRef:cleanCloudRef(p.cloudRef)});
    }catch(e){}}
-   if(projects.length)return {projects,activeId:projects.some(p=>p.id===raw.activeId)?raw.activeId:projects[0].id};
+   if(projects.length){
+    if(projects.length!==raw.projects.length||new Set(projects.map(p=>p.id)).size!==projects.length){storageReadOnly=true;recoveryRaw=saved;}
+    return {projects,activeId:projects.some(p=>p.id===raw.activeId)?raw.activeId:projects[0].id};
+   }
   }
- }catch(e){console.warn("Local storage unavailable or invalid",e);}
+  if(saved!==null){storageReadOnly=true;recoveryRaw=saved;}
+ }catch(e){storageReadOnly=true;recoveryRaw=saved;console.warn("Local storage unavailable or invalid",e);}
  const p=newProject(G.empty());return {projects:[p],activeId:p.id};
 }
 state=readStore();
@@ -41,6 +49,7 @@ const model=()=>active().data;
 function saveNow(){
  clearTimeout(saveTimer);saveTimer=null;
  try{
+  if(storageReadOnly)throw Error("Original local storage preserved for recovery");
   localStorage.setItem(STORAGE,JSON.stringify(state));
   $("saveStatus").textContent=t("✓ 本機已儲存");$("saveStatus").classList.remove("error");
  }catch(e){$("saveStatus").textContent=t("⚠ 未能儲存，請匯出備份");$("saveStatus").classList.add("error");}
@@ -567,13 +576,16 @@ function renderProjects(){
   buttons.append(remove);item.append(txt,buttons);box.append(item);
  }
  if(!box.children.length)box.textContent=t("沒有符合搜尋的專案");
+ if(recoveryRaw!==null){const recover=document.createElement("button");recover.id="recoveryBackup";recover.textContent=t("Download recovery backup");recover.onclick=()=>downloadText(recoveryRaw,"application/json","easy3dhome-local-recovery.json");box.prepend(recover);}
 }
 function switchProject(id){
  if(!state.projects.some(p=>p.id===id))return;
  saveNow();state.activeId=id;clearUndo();saveNow();$("projectsDialog").close();fit();refresh();
  toast(t("已載入專案：")+active().name);
 }
+function projectCapacity(){if(state.projects.length<MAX_LOCAL_PROJECTS)return true;alert(t("Local project limit"));return false;}
 function createProject(demoMode=false){
+ if(!projectCapacity())return;
  const p=newProject(demoMode?G.demo():G.empty());
  state.projects.push(p);state.activeId=p.id;clearUndo();saveNow();$("projectsDialog").close();fit();refresh();
  toast(demoMode?t("已新增示範圖則"):t("已新增空白平面圖"));
@@ -594,7 +606,7 @@ function renderShopping(){
 function showShopping(){$("projectsDialog").close();renderShopping();showDialog("shoppingDialog");}
 function shoppingCsv(){const s=G.shoppingSummary(model()),rows=[["Name","Width (m)","Depth (m)","Height (m)","Quantity","Currency","Unit price","Subtotal"],...s.rows.map(r=>[r.name,r.w,r.d,r.h,r.count,s.currency,r.price===null?"":r.price/100,r.total===null?"":r.total/100])];downloadText("\uFEFF"+rows.map(r=>r.map(G.csvCell).join(",")).join("\r\n"),"text/csv;charset=utf-8","easy3dhome-shopping.csv");}
 function budgetTotals(){const s=G.budgetSummary(model()),box=$("budgetSummary");box.innerHTML=row(t("工程合計"),currencyAmount(s.work,s.currency))+row(t("傢俬合計"),currencyAmount(s.furniture,s.currency))+row(t("預備金"),currencyAmount(s.contingency,s.currency))+row(t("預算合計"),currencyAmount(s.total,s.currency))+row(t("未定價項目"),s.unpriced);}
-function renderBudget(){const b=G.cleanBudget(model().budget),box=$("budgetRows");box.replaceChildren();$("budgetContingency").value=b.contingency;
+function renderBudget(){const b=G.cleanBudget(model().budget),box=$("budgetRows");box.replaceChildren();$("budgetContingency").value=b.contingency;const note=$("budgetContingencyStatus");if(note)note.textContent="";
  for(const item of b.rows){const wrap=document.createElement("div");wrap.className="report-row budget-row";
  for(const [key,label,type,value] of [["name",t("工程項目"),"text",item.name],["qty",t("數量"),"number",item.qty],["cost",t("單價"),"number",item.cost===null?"":item.cost/100]]){const field=document.createElement("div"),l=document.createElement("label"),input=document.createElement("input");field.className="field";l.textContent=label;input.type=type;input.value=String(value);input.dataset.budgetProp=key;input.setAttribute("aria-label",label);if(type==="number"){input.min="0";input.step="0.01";input.max=key==="qty"?"100000":"10000000";}else input.maxLength=80;
  input.onchange=()=>{if(type==="number"&&(input.validity.badInput||Number(input.value)<0||Number(input.value)>Number(input.max))){input.value=String(value);return;}commit(()=>{const b=G.cleanBudget(model().budget),r=b.rows.find(r=>r.id===item.id);if(!r)return;r[key]=key==="name"?input.value.trim():key==="qty"?Number(input.value):input.value===""?null:Math.round(Number(input.value)*100);model().budget=b;});budgetTotals();};field.append(l,input);wrap.append(field);}
@@ -667,7 +679,7 @@ function cloudMessage(msg){$("cloudStatus").textContent=msg;}
 function cloudUI(){const configured=Cloud.configured(),user=Cloud.user();$("cloudAuth").hidden=!configured||!!user;$("cloudWorkspace").hidden=!configured||!user;if(user)$("cloudAccount").textContent=user.email||user.id;if(!configured)cloudMessage(t("雲端服務未配置；仍可使用本機功能。"));}
 async function cloudTask(fn){if(cloudBusy)return;cloudBusy=true;const controls=[...$("cloudDialog").querySelectorAll("button:not([data-close])")];controls.forEach(b=>b.disabled=true);cloudMessage("…");try{await fn();}catch(e){cloudMessage(window.EasyHomeI18n.cloudError(e));}finally{controls.forEach(b=>b.disabled=false);cloudBusy=false;cloudUI();}}
 async function renderCloudRows(){const rows=await Cloud.list(),members=await Cloud.memberships(),box=$("cloudRows");box.replaceChildren();if(!rows.length)box.textContent=t("未有雲端專案");for(const row of rows){const item=document.createElement("div");item.className="project-item";const desc=document.createElement("div"),name=document.createElement("strong"),sub=document.createElement("small");desc.className="project-text";name.textContent=row.name;const own=row.owner===Cloud.user().id,member=members.find(m=>m.owner===row.owner&&m.project_id===row.id&&m.member===Cloud.user().id);sub.textContent="v"+row.revision+" · "+String(row.updated_at).slice(0,16)+(own?"":" · "+t(member?.role==="editor"?"可編輯":"唯讀"));desc.append(name,sub);const b=document.createElement("button"),del=document.createElement("button");b.textContent=t("下載圖則");b.dataset.cloudPull=row.id;b.onclick=()=>cloudTask(()=>pullCloud(row));del.textContent=t("刪除雲端版本");del.className="danger";del.dataset.cloudDelete=row.id;del.onclick=()=>{if(confirm(t("確定刪除雲端版本？本機資料仍會保留。")))cloudTask(async()=>{await Cloud.remove(row.owner,row.id,row.revision);for(const p of state.projects)if(p.cloudRef?.owner===row.owner&&p.cloudRef?.id===row.id)p.cloudRef=null;saveNow();await renderCloudRows();cloudMessage(t("雲端同步成功"));});};item.append(desc,b);if(own){const share=document.createElement("button");share.textContent=t("共享圖則");share.dataset.cloudShare=row.id;share.onclick=()=>openShare(row);const hist=document.createElement("button");hist.textContent=t("版本歷史");hist.dataset.cloudHistory=row.id;hist.onclick=()=>openCloudHistory(row);item.append(share,hist,del);}box.append(item);}}
-async function pullCloud(row){const remote=await Cloud.get(row.owner,row.id);if(!remote)throw Error("Remote project not found");const data=G.sanitize(remote.doc);let p=state.projects.find(p=>p.cloudRef?.owner===remote.owner&&p.cloudRef?.id===remote.id);if(p){if(!confirm(t("下載會取代目前本機同步副本，繼續？")))return;p.data=data;p.name=data.name;}else{if(state.projects.length>=100)throw Error("Local project limit");p=newProject(data);state.projects.push(p);}p.cloudRef={owner:remote.owner,id:remote.id,revision:remote.revision};state.activeId=p.id;clearUndo();saveNow();fit();refresh();cloudMessage(t("雲端同步成功"));}
+async function pullCloud(row){const remote=await Cloud.get(row.owner,row.id);if(!remote)throw Error("Remote project not found");const data=G.sanitize(remote.doc);let p=state.projects.find(p=>p.cloudRef?.owner===remote.owner&&p.cloudRef?.id===remote.id);if(p){if(!confirm(t("下載會取代目前本機同步副本，繼續？")))return;p.data=data;p.name=data.name;}else{if(state.projects.length>=MAX_LOCAL_PROJECTS)throw Error("Local project limit");p=newProject(data);state.projects.push(p);}p.cloudRef={owner:remote.owner,id:remote.id,revision:remote.revision};state.activeId=p.id;clearUndo();saveNow();fit();refresh();cloudMessage(t("雲端同步成功"));}
 async function pushCloud(){const p=active(),user=Cloud.user(),ref=p.cloudRef;if(ref&&ref.owner!==user.id){const members=await Cloud.memberships(),member=members.find(m=>m.owner===ref.owner&&m.project_id===ref.id&&m.member===user.id&&m.role==="editor"&&Date.parse(m.expires_at)>Date.now());if(!member)throw Error("Read-only, revoked or expired project");}const row=await Cloud.put(ref?.owner||user.id,ref?.id||p.id,p.name,model(),ref?.revision??null);p.cloudRef={owner:row.owner,id:row.id,revision:row.revision};saveNow();await renderCloudRows();cloudMessage(t("雲端同步成功"));}
 function showCloud(){const fragment=new URL(location.href).hash.match(/^#share=([a-f0-9]{64})$/);if(fragment)$("shareToken").value=fragment[1];$("projectsDialog").close();$("cloudStatus").textContent="";$("cloudPassword").value="";cloudUI();showDialog("cloudDialog");if(Cloud.user())cloudTask(renderCloudRows);}
 async function cloudSignUpOrIn(signup){const email=$("cloudEmail").value.trim(),password=$("cloudPassword").value;$("cloudPassword").value="";if(!email||password.length<8)throw Error("Enter a valid email and at least 8 password characters");const user=await (signup?Cloud.signup(email,password):Cloud.login(email,password));cloudUI();if(user){await renderCloudRows();cloudMessage(t("雲端同步成功"));}else cloudMessage(t("請確認電郵後再登入。"));}
@@ -692,7 +704,7 @@ function showTemplates(){
   const m=generateHome({...preset,name:t(preset.name)}),w=200,h=112,bounds=G.getBounds(m,0),scale=Math.min(w/(bounds.width+1),h/(bounds.height+1));
   preview.width=w;preview.height=h;preview.style.width="100%";preview.style.borderRadius="8px";preview.setAttribute("aria-hidden","true");
   const c=preview.getContext("2d");if(c)R.draw({clientWidth:w,clientHeight:h},c,m,{mode:"2d",floor:0,view:{scale,panX:-bounds.cx*scale,panY:-bounds.cy*scale},dimensions:false,selected:null,tool:"select",orbit:ui.orbit});
-  b.append(preview,name,details);b.onclick=()=>{const p=newProject(generateHome({...preset,name:t(preset.name)}));state.projects.push(p);state.activeId=p.id;clearUndo();ui.mode="2d";ui.tool="select";saveNow();$("templatesDialog").close();fit();refresh();};list.append(b);
+  b.append(preview,name,details);b.onclick=()=>{if(!projectCapacity())return;const p=newProject(generateHome({...preset,name:t(preset.name)}));state.projects.push(p);state.activeId=p.id;clearUndo();ui.mode="2d";ui.tool="select";saveNow();$("templatesDialog").close();fit();refresh();};list.append(b);
  }
  $("projectsDialog").close();showDialog("templatesDialog");
 }
@@ -737,6 +749,7 @@ async function importJSON(e){
  try{
   if(file.size>3000000)throw new Error(t("檔案大小超過 3 MB"));
   const data=G.fileImport(await file.text());
+  if(!projectCapacity())return;
   const p=newProject(data);state.projects.push(p);state.activeId=p.id;clearUndo();
   saveNow();$("projectsDialog").close();fit();refresh();toast(t("成功匯入：")+p.name);
  }catch(err){alert(t("匯入失敗：")+err.message+t("\n\n只接受 Easy3DHome 匯出的 JSON。"));}
@@ -760,6 +773,7 @@ function previewHome(){
 function buildHome(){
  const o=wizardOptions();
  if(!Number.isFinite(o.width)||!Number.isFinite(o.depth)||o.width<4||o.width>24||o.depth<4||o.depth>24)return toast(t("總長及總闊必須在 4 至 24 米之間"));
+ if(!projectCapacity())return;
  const p=newProject(generateHome(o));
  state.projects.push(p);state.activeId=p.id;clearUndo();saveNow();$("homeDialog").close();fit();refresh();
  toast(t("已建立")+model().floorCount+t(" 層家居：")+model().walls.length+t(" 幅牆 · ")+model().openings.length+t(" 個門窗 · ")+model().furniture.length+t(" 件傢俬"));
@@ -858,7 +872,7 @@ function bind(){
  $("cloudButton").onclick=showCloud;$("cloudLogin").onclick=()=>cloudTask(()=>cloudSignUpOrIn(false));$("cloudSignup").onclick=()=>cloudTask(()=>cloudSignUpOrIn(true));$("cloudLogout").onclick=()=>cloudTask(async()=>{await Cloud.logout();$("cloudRows").replaceChildren();cloudMessage("");});$("cloudPush").onclick=()=>cloudTask(pushCloud);$("cloudRefresh").onclick=()=>cloudTask(renderCloudRows);
  $("brandButton").onclick=showBrand;$("brandLogo").onchange=loadBrandLogo;$("brandRemoveLogo").onclick=()=>{brandDraftLogo="";updateBrandLogo();};$("brandRights").onchange=e=>{$("brandSave").disabled=!e.target.checked;};$("brandSave").onclick=saveBrand;
  $("pdfButton").onclick=()=>{$("projectsDialog").close();$("pdfBrand").checked=false;showDialog("pdfDialog");renderPdf();};$("pdfBrand").onchange=()=>{const b=G.cleanBrand(model().brand);if($("pdfBrand").checked&&b.logo){const img=getTraceImage(b.logo);if(!img.complete)img.addEventListener("load",renderPdf,{once:true});}renderPdf();};$("pdfPaper").onchange=renderPdf;$("pdfScale").onchange=renderPdf;$("pdfDownload").onclick=downloadPdf;
- $("budgetButton").onclick=showBudget;$("budgetCsv").onclick=budgetCsv;$("budgetAdd").onclick=()=>{const b=G.cleanBudget(model().budget);if(b.rows.length>=100)return;commit(()=>{b.rows.push({id:G.uid(),name:t("新工程項目"),qty:1,cost:null});model().budget=b;});renderBudget();};$("budgetContingency").onchange=e=>{if(!e.target.checkValidity())return;commit(()=>{const b=G.cleanBudget(model().budget);b.contingency=Number(e.target.value);model().budget=b;});budgetTotals();};
+ $("budgetButton").onclick=showBudget;$("budgetCsv").onclick=budgetCsv;$("budgetAdd").onclick=()=>{const b=G.cleanBudget(model().budget);if(b.rows.length>=100)return;commit(()=>{b.rows.push({id:G.uid(),name:t("新工程項目"),qty:1,cost:null});model().budget=b;});renderBudget();};{const field=$("budgetContingency"),status=document.createElement("small");status.id="budgetContingencyStatus";status.setAttribute("role","status");status.className="muted";field.setAttribute("aria-describedby",status.id);field.after(status);field.onchange=()=>{const previous=G.cleanBudget(model().budget).contingency;if(!field.value.trim()||!field.checkValidity()||!Number.isFinite(Number(field.value))){field.value=String(previous);status.textContent=t("Invalid contingency; previous value restored.");return;}commit(()=>{const b=G.cleanBudget(model().budget);b.contingency=Number(field.value);model().budget=G.cleanBudget(b);});field.value=String(G.cleanBudget(model().budget).contingency);status.textContent="";budgetTotals();};}
  $("shoppingButton").onclick=showShopping;$("shoppingCsv").onclick=shoppingCsv;$("shoppingCurrency").onchange=e=>{const old=G.cleanShopping(model().shopping);if((Object.keys(old.prices).length||G.cleanBudget(model().budget).rows.some(r=>r.cost!==null))&&!confirm(t("改變貨幣會清除現有價格，不會自動換算。繼續？"))){e.target.value=old.currency;return;}commit(()=>{model().shopping={currency:e.target.value,prices:{}};if(model().budget){const b=G.cleanBudget(model().budget);b.rows.forEach(r=>r.cost=null);model().budget=b;}});renderShopping();};
  $("helpButton").onclick=()=>showDialog("helpDialog");
  $("projectHelpButton").onclick=()=>{$("projectsDialog").close();showDialog("helpDialog");};
